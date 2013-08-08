@@ -10,10 +10,10 @@ use Scabbia\Unittests\TestFixture;
 class SampleTest extends TestFixture
 {
     /**
-     * The method always fails
+     * The method always passes
      */
-    public function firstFailingCondition()
+    public function firstFailProofCondition()
     {
-        $this->assertTrue(true === true, 'no way!');
+        $this->assertFalse(true === true, 'no way!');
     }
 }

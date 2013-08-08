@@ -20,6 +20,10 @@ namespace Scabbia\Unittests;
 abstract class TestFixture
 {
     /**
+     * @var bool Indicates test fixture is failed or not.
+     */
+    public $isFailed = false;
+    /**
      * @var array Track of the unit which is currently testing.
      */
     public $testStack = [];
@@ -136,6 +140,10 @@ abstract class TestFixture
             "failed" => $uIsFailed,
             "message" => $uMessage
         ];
+
+        if ($uIsFailed) {
+            $this->isFailed = true;
+        }
     }
 
     /**
@@ -220,55 +228,5 @@ abstract class TestFixture
     public function ignoreException($uExceptionType)
     {
         $this->testExpectations["ignore"][] = $uExceptionType;
-    }
-
-    /**
-     * Outputs the report in var_dump representation.
-     */
-    public function export()
-    {
-        var_dump($this->testReport);
-    }
-
-    /**
-     * Outputs the report in HTML representation.
-     */
-    public function exportHtml()
-    {
-        foreach ($this->testReport as $tEntryKey => $tEntry) {
-            echo "<p>";
-            echo "<strong>{$tEntryKey}:</strong><br />";
-            echo "<ul>";
-
-            $tPassed = true;
-            foreach ($tEntry as $tTest) {
-                if ($tTest['failed']) {
-                    $tPassed = false;
-                    echo "<li>";
-                    echo "<span style=\"color: red;\">{$tTest['operation']}</span>";
-                    if ($tTest['message'] !== null) {
-                        echo ": {$tTest['message']}";
-                    }
-                    echo "</li>";
-                } else {
-                    echo "<li>";
-                    echo "<span style=\"color: green;\">{$tTest['operation']}</span>";
-                    if ($tTest['message'] !== null) {
-                        echo ": {$tTest['message']}";
-                    }
-                    echo "</li>";
-                }
-            }
-
-            echo "</ul>";
-
-            if (!$tPassed) {
-                echo "<span style=\"color: red;\">FAILED</span>";
-            } else {
-                echo "<span style=\"color: green;\">PASSED</span>";
-            }
-
-            echo "</p>";
-        }
     }
 }

@@ -1,6 +1,9 @@
 <?php
 
 require __DIR__ . "/src/Scabbia/Unittests/TestFixture.php";
+require __DIR__ . "/src/Scabbia/Unittests/IOutput.php";
+require __DIR__ . "/src/Scabbia/Unittests/HtmlOutput.php";
+require __DIR__ . "/src/Scabbia/Unittests/ConsoleOutput.php";
 
 /**
  * Executes tests.
@@ -9,15 +12,32 @@ require __DIR__ . "/src/Scabbia/Unittests/TestFixture.php";
  */
 function doTests(array $uTests)
 {
+    if (PHP_SAPI === "cli") {
+        $tOutput = new Scabbia\Unittests\ConsoleOutput();
+    } else {
+        $tOutput = new Scabbia\Unittests\HtmlOutput();
+    }
+
+    $tIsEverFailed = false;
+
+    $tOutput->writeHeader(1, "Unittests");
+
     foreach ($uTests as $tTest) {
-        echo "<h2>{$tTest}</h2>";
+        $tOutput->writeHeader(2, $tTest);
 
         include __DIR__ . "/tests/{$tTest}.php";
 
         $instance = new $tTest ();
         $instance->test();
-        $instance->exportHtml();
+
+        if ($instance->isFailed) {
+            $tIsEverFailed = true;
+        }
+
+        $tOutput->export($instance);
     }
+
+    exit($tIsEverFailed ? 1 : 0);
 }
 
 /**
@@ -27,5 +47,4 @@ $tTests = [
     'SampleTest'
 ];
 
-echo "<h1>Unittests</h1>";
 doTests($tTests);

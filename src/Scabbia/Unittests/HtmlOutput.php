@@ -28,7 +28,8 @@ class HtmlOutput implements IOutput
      * @param $uHeading integer size
      * @param $uMessage string  message
      */
-    public function writeHeader($uHeading, $uMessage) {
+    public function writeHeader($uHeading, $uMessage)
+    {
         echo "<h{$uHeading}>$uMessage</h{$uHeading}>";
     }
 

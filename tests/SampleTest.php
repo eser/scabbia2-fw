@@ -1,5 +1,7 @@
 <?php
 
+namespace ScabbiaTests;
+
 use Scabbia\Unittests\TestFixture;
 
 /**

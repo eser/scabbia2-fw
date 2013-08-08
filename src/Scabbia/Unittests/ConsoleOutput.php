@@ -28,7 +28,8 @@ class ConsoleOutput implements IOutput
      * @param $uHeading integer size
      * @param $uMessage string  message
      */
-    public function writeHeader($uHeading, $uMessage) {
+    public function writeHeader($uHeading, $uMessage)
+    {
         if ($uHeading === 1) {
             $tChar = "=";
         } else {

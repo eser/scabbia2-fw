@@ -1,0 +1,36 @@
+{
+    "name": "scabbiafw/scabbia2",
+    "description": "Scabbia2 PHP Framework",
+    "type": "library",
+    "minimum-stability": "dev",
+    "keywords": [
+        "larukedi",
+        "scabbia",
+        "scabbia2",
+        "framework"
+    ],
+    "homepage": "http://www.scabbiafw.com/",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Scabbia Framework Organization",
+            "email": "contact@scabbiafw.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "psr/log": "1.0.0"
+    },
+    "suggest": {
+        "ext-curl": "ext/curl for http communication",
+        "ext-mbstring": "ext/json for multibyte string manipulation",
+        "ext-tokenizer": "ext/tokenizer for lexical analysis"
+    },
+    "autoload": {
+        "psr-0": {
+            "Scabbia": "src"
+        }
+    },
+    "scripts": {
+    }
+}

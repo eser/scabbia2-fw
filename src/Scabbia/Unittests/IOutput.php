@@ -1,8 +1,13 @@
 <?php
 /**
- * Scabbia2 PHP Framework Version 0.1
+ * Scabbia2 PHP Framework
  * http://www.scabbiafw.com/
+ *
  * Licensed under the Apache License, Version 2.0
+ *
+ * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
+ * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
 namespace Scabbia\Unittests;
@@ -14,10 +19,6 @@ use Scabbia\Unittests\TestFixture;
  *
  * A small unittest implementation which helps us during the development of
  * Scabbia2 PHP Framework's itself and related production code.
- *
- * @package Scabbia
- * @subpackage Unittests
- * @version 0.1
  */
 interface IOutput
 {

@@ -10,15 +10,14 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Unittests;
+namespace Scabbia\Tests;
 
-use Scabbia\Unittests\TestFixture;
-use Scabbia\Unittests\IOutput;
+use Scabbia\Tests\IOutput;
 
 /**
- * Scabbia\Unittests: ConsoleOutput Class
+ * Scabbia\Tests: ConsoleOutput Class
  *
- * A small unittest implementation which helps us during the development of
+ * A small unit test implementation which helps us during the development of
  * Scabbia2 PHP Framework's itself and related production code.
  */
 class ConsoleOutput implements IOutput
@@ -47,10 +46,10 @@ class ConsoleOutput implements IOutput
     /**
      * Outputs the report to console.
      *
-     * @param TestFixture $uFixture Target TestFixture instance
+     * @param array $uReport Target report will be printed
      */
-    public function export(TestFixture $uFixture)
+    public function export(array $uReport)
     {
-        print_r($uFixture->testReport);
+        print_r($uReport);
     }
 }

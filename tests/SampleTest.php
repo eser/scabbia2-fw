@@ -12,14 +12,14 @@
 
 namespace ScabbiaTests;
 
-use Scabbia\Unittests\TestFixture;
+use Scabbia\Tests\UnitTestFixture;
 
 /**
  * ScabbiaTests: SampleTest Class
  *
  * Just to present how unit-testing works.
  */
-class SampleTest extends TestFixture
+class SampleTest extends UnitTestFixture
 {
     /**
      * The method always passes

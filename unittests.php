@@ -10,24 +10,24 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-require __DIR__ . "/src/Scabbia/Unittests/TestFixture.php";
-require __DIR__ . "/src/Scabbia/Unittests/IOutput.php";
-require __DIR__ . "/src/Scabbia/Unittests/HtmlOutput.php";
-require __DIR__ . "/src/Scabbia/Unittests/ConsoleOutput.php";
+require __DIR__ . "/src/Scabbia/Tests/UnitTestFixture.php";
+require __DIR__ . "/src/Scabbia/Tests/IOutput.php";
+require __DIR__ . "/src/Scabbia/Tests/HtmlOutput.php";
+require __DIR__ . "/src/Scabbia/Tests/ConsoleOutput.php";
 
 $tTests = [
     "ScabbiaTests\\SampleTest"
 ];
 
 if (PHP_SAPI === "cli") {
-    $tOutput = new Scabbia\Unittests\ConsoleOutput();
+    $tOutput = new Scabbia\Tests\ConsoleOutput();
 } else {
-    $tOutput = new Scabbia\Unittests\HtmlOutput();
+    $tOutput = new Scabbia\Tests\HtmlOutput();
 }
 
 $tIsEverFailed = false;
 
-$tOutput->writeHeader(1, "Unittests");
+$tOutput->writeHeader(1, "Unit Tests");
 
 foreach ($tTests as $tTestClass) {
     $tOutput->writeHeader(2, $tTestClass);
@@ -47,7 +47,7 @@ foreach ($tTests as $tTestClass) {
         $tIsEverFailed = true;
     }
 
-    $tOutput->export($instance);
+    $tOutput->export($instance->testReport);
 }
 
 exit($tIsEverFailed ? 1 : 0);

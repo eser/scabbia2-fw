@@ -10,15 +10,15 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Unittests;
+namespace Scabbia\Tests;
 
 /**
- * Scabbia\Unittests: TestFixture Class
+ * Scabbia\Tests: UnitTestFixture Class
  *
- * A small unittest implementation which helps us during the development of
+ * A small unit test implementation which helps us during the development of
  * Scabbia2 PHP Framework's itself and related production code.
  */
-abstract class TestFixture
+abstract class UnitTestFixture
 {
     /**
      * @var bool Indicates test fixture is failed or not.
@@ -39,7 +39,7 @@ abstract class TestFixture
 
 
     /**
-     * Begin testing all methods of TestFixture.
+     * Begin testing all methods of the fixture.
      */
     public function test()
     {
@@ -58,7 +58,7 @@ abstract class TestFixture
     }
 
     /**
-     * Tests the specified method of TestFixture.
+     * Tests the specified method of the fixture.
      *
      * @param $uName        string      Name of the method
      * @param $uCallback    callable    Target method
@@ -148,7 +148,7 @@ abstract class TestFixture
     }
 
     /**
-     * SetUp method of TestFixture.
+     * SetUp method of the fixture.
      *
      * This method is being executed when the test is started.
      */
@@ -158,7 +158,7 @@ abstract class TestFixture
     }
 
     /**
-     * TearDown method of TestFixture.
+     * TearDown method of the fixture.
      *
      * This method is being executed when the test is finished.
      */

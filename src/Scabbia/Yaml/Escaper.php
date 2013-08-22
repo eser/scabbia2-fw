@@ -45,6 +45,7 @@ class Escaper
     const REGEX_ESCAPED_CHARACTER =
         "\\\\([0abt\tnvfre \\\"\\/\\\\N_LP]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})";
 
+
     // Mapping arrays for escaping a double quoted string. The backslash is
     // first to ensure proper escaping because str_replace operates iteratively
     // on the input arrays. This ordering of the characters avoids the use of strtr,
@@ -61,6 +62,7 @@ class Escaper
                                 "\\x10", "\\x11", "\\x12", "\\x13", "\\x14", "\\x15", "\\x16", "\\x17",
                                 "\\x18", "\\x19", "\\x1a", "\\e",   "\\x1c", "\\x1d", "\\x1e", "\\x1f",
                                 "\\N", "\\_", "\\L", "\\P"];
+
 
     /**
      * Determines if a PHP value would require double quoting in YAML.

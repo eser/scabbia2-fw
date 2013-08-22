@@ -37,6 +37,7 @@ class ParserTest extends UnitTestFixture
 {
     protected $parser;
 
+
     protected function setUp()
     {
         $this->parser = new Parser();

@@ -45,6 +45,7 @@ class Parser
     private $currentLine    = "";
     private $refs           = [];
 
+
     /**
      * Constructor
      *

@@ -89,12 +89,16 @@ class ParserTest extends UnitTestFixture
 
         foreach ($yamls as $yaml) {
             try {
-                $content = $this->parser->parse($yaml);
+                $this->parser->parse($yaml);
 
                 $this->fail("YAML files must not contain tabs");
             } catch (\Exception $e) {
                 $this->assertInstanceOf("\\Exception", $e, "YAML files must not contain tabs");
-                $this->assertEquals("A YAML file cannot contain tabs as indentation at line 2 (near \"" . strpbrk($yaml, "\t") . "\").", $e->getMessage(), "YAML files must not contain tabs");
+                $this->assertEquals(
+                    "A YAML file cannot contain tabs as indentation at line 2 (near \"" . strpbrk($yaml, "\t") . "\").",
+                    $e->getMessage(),
+                    "YAML files must not contain tabs"
+                );
             }
         }
     }
@@ -420,7 +424,11 @@ EOF;
 foo: !!php/object:O:29:"Scabbia\Yaml\Tests\DummyClass":1:{s:1:"b";s:3:"foo";}
 bar: 1
 EOF;
-        $this->assertEquals(["foo" => new DummyClass(), "bar" => 1], $this->parser->parse($input, false, true), "->parse() is able to parse objects");
+        $this->assertEquals(
+            ["foo" => new DummyClass(), "bar" => 1],
+            $this->parser->parse($input, false, true),
+            "->parse() is able to parse objects"
+        );
     }
 
     public function testUnindentedCollectionException()
@@ -443,24 +451,26 @@ EOF;
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
 
-        $this->parser->parse(<<<EOF
+        $yaml = <<<EOF
 yaml:
   hash: me
   - array stuff
-EOF
-        );
+EOF;
+
+        $this->parser->parse($yaml);
     }
 
     public function testMappingInASequence()
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
 
-        $this->parser->parse(<<<EOF
+        $yaml = <<<EOF
 yaml:
   - array stuff
   hash: me
-EOF
-        );
+EOF;
+
+        $this->parser->parse($yaml);
     }
 
     public function testEmptyValue()
@@ -474,7 +484,7 @@ EOF;
 
     public function testStringBlockWithComments()
     {
-        $this->assertEquals(["content" => <<<EOT
+        $yaml1 = <<<EOT
 # comment 1
 header
 
@@ -484,8 +494,9 @@ header
     </body>
 
 footer # comment3
-EOT
-        ], $this->parser->parse(<<<EOF
+EOT;
+
+        $yaml2 = <<<EOF
 content: |
     # comment 1
     header
@@ -496,13 +507,14 @@ content: |
         </body>
 
     footer # comment3
-EOF
-        ));
+EOF;
+
+        $this->assertEquals(["content" => $yaml1], $this->parser->parse($yaml2));
     }
 
     public function testNestedStringBlockWithComments()
     {
-        $this->assertEquals([["content" => <<<EOT
+        $yaml1 = <<<EOT
 # comment 1
 header
 
@@ -512,8 +524,9 @@ header
     </body>
 
 footer # comment3
-EOT
-        ]], $this->parser->parse(<<<EOF
+EOT;
+
+        $yaml2 = <<<EOF
 -
     content: |
         # comment 1
@@ -525,7 +538,8 @@ EOT
             </body>
 
         footer # comment3
-EOF
-        ));
+EOF;
+
+        $this->assertEquals([["content" => $yaml1]], $this->parser->parse($yaml2));
     }
 }

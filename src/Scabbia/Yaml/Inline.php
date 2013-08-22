@@ -41,6 +41,8 @@ class Inline
 {
     const REGEX_QUOTED_STRING = "(?:\"([^\"\\\\]*(?:\\\\.[^\"\\\\]*)*)\"|'([^']*(?:''[^']*)*)')";
 
+    const STRING_DELIMITERS = ["\"", "'"];
+
     /**
      * Converts a YAML string to a PHP array.
      *
@@ -90,8 +92,13 @@ class Inline
      *
      * @throws ParseException When malformed inline YAML string is parsed
      */
-    public static function parseScalar($scalar, $delimiters = null, array $stringDelimiters = ["\"", "'"], &$i = 0, $evaluate = true)
-    {
+    public static function parseScalar(
+        $scalar,
+        $delimiters = null,
+        array $stringDelimiters = self::STRING_DELIMITERS,
+        &$i = 0,
+        $evaluate = true
+    ) {
         if (in_array($scalar[$i], $stringDelimiters)) {
             // quoted scalar
             $output = self::parseQuotedScalar($scalar, $i);

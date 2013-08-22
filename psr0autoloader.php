@@ -11,6 +11,11 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
+/**
+ * PSR-0 Autoloader Function
+ *
+ * @param $className string The class is going to be loaded.
+ */
 function autoload($className)
 {
     $fileName = "";

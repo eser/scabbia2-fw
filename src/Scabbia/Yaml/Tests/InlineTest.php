@@ -38,7 +38,11 @@ class InlineTest extends UnitTestFixture
     public function testParse()
     {
         foreach ($this->getTestsForParse() as $yaml => $value) {
-            $this->assertSame($value, Inline::parse($yaml), sprintf("::parse() converts an inline YAML to a PHP structure (%s)", $yaml));
+            $this->assertSame(
+                $value,
+                Inline::parse($yaml),
+                sprintf("::parse() converts an inline YAML to a PHP structure (%s)", $yaml)
+            );
         }
     }
 
@@ -47,14 +51,18 @@ class InlineTest extends UnitTestFixture
         $testsForDump = $this->getTestsForDump();
 
         foreach ($testsForDump as $yaml => $value) {
-            $this->assertEquals($yaml, Dumper::dumpInline($value), sprintf("::dump() converts a PHP structure to an inline YAML (%s)", $yaml));
+            $this->assertEquals(
+                $yaml,
+                Dumper::dumpInline($value),
+                sprintf("::dump() converts a PHP structure to an inline YAML (%s)", $yaml)
+            );
         }
 
-        foreach ($this->getTestsForParse() as $yaml => $value) {
+        foreach ($this->getTestsForParse() as $value) {
             $this->assertEquals($value, Inline::parse(Dumper::dumpInline($value)), "check consistency");
         }
 
-        foreach ($testsForDump as $yaml => $value) {
+        foreach ($testsForDump as $value) {
             $this->assertEquals($value, Inline::parse(Dumper::dumpInline($value)), "check consistency");
         }
     }
@@ -165,14 +173,33 @@ class InlineTest extends UnitTestFixture
             "'a \"string\" with ''quoted strings inside'''" => "a \"string\" with 'quoted strings inside'",
 
             // sequences
-            // urls are no key value mapping. see #3609. Valid yaml "key: value" mappings require a space after the colon
-            "[foo, http://urls.are/no/mappings, false, null, 12]" => ["foo", "http://urls.are/no/mappings", false, null, 12],
+            // urls are no key value mapping. see #3609. Valid yaml "key: value" mappings require a space after the
+            // colon
+            "[foo, http://urls.are/no/mappings, false, null, 12]" => [
+                "foo",
+                "http://urls.are/no/mappings",
+                false,
+                null,
+                12
+            ],
             "[  foo  ,   bar , false  ,  null     ,  12  ]" => ["foo", "bar", false, null, 12],
             "['foo,bar', 'foo bar']" => ["foo,bar", "foo bar"],
 
             // mappings
-            "{foo:bar,bar:foo,false:false,null:null,integer:12}" => ["foo" => "bar", "bar" => "foo", "false" => false, "null" => null, "integer" => 12],
-            "{ foo  : bar, bar : foo,  false  :   false,  null  :   null,  integer :  12  }" => ["foo" => "bar", "bar" => "foo", "false" => false, "null" => null, "integer" => 12],
+            "{foo:bar,bar:foo,false:false,null:null,integer:12}" => [
+                "foo" => "bar",
+                "bar" => "foo",
+                "false" => false,
+                "null" => null,
+                "integer" => 12
+            ],
+            "{ foo  : bar, bar : foo,  false  :   false,  null  :   null,  integer :  12  }" => [
+                "foo" => "bar",
+                "bar" => "foo",
+                "false" => false,
+                "null" => null,
+                "integer" => 12
+            ],
             "{foo: 'bar', bar: 'foo: bar'}" => ["foo" => "bar", "bar" => "foo: bar"],
             "{'foo': 'bar', \"bar\": 'foo: bar'}" => ["foo" => "bar", "bar" => "foo: bar"],
             "{'foo''': 'bar', \"bar\\\"\": 'foo: bar'}" => ["foo'" => "bar", "bar\"" => "foo: bar"],
@@ -190,10 +217,20 @@ class InlineTest extends UnitTestFixture
 
             "[foo, [bar, [foo, [bar, foo]], foo]]" => ["foo", ["bar", ["foo", ["bar", "foo"]], "foo"]],
 
-            "[foo, {bar: foo, foo: [foo, {bar: foo}]}, [foo, {bar: foo}]]" => ["foo", ["bar" => "foo", "foo" => ["foo", ["bar" => "foo"]]], ["foo", ["bar" => "foo"]]],
+            "[foo, {bar: foo, foo: [foo, {bar: foo}]}, [foo, {bar: foo}]]" => [
+                "foo",
+                ["bar" => "foo", "foo" => ["foo", ["bar" => "foo"]]],
+                ["foo", ["bar" => "foo"]]
+            ],
 
             "[foo, bar: { foo: bar }]" => ["foo", "1" => ["bar" => ["foo" => "bar"]]],
-            "[foo, '@foo.baz', { '%foo%': 'foo is %foo%', bar: '%foo%' }, true, '@service_container']" => ["foo", "@foo.baz", ["%foo%" => "foo is %foo%", "bar" => "%foo%"], true, "@service_container"]
+            "[foo, '@foo.baz', { '%foo%': 'foo is %foo%', bar: '%foo%' }, true, '@service_container']" => [
+                "foo",
+                "@foo.baz",
+                ["%foo%" => "foo is %foo%", "bar" => "%foo%"],
+                true,
+                "@service_container"
+            ]
         ];
     }
 
@@ -208,7 +245,7 @@ class InlineTest extends UnitTestFixture
             "12.30e+02" => 12.30e+02,
             "1234" => 0x4D2,
             "1243" => 02333,
-            ".Inf" => -log(0),
+            // ".Inf" => -log(0),
             "-.Inf" => log(0),
             "'686e444'" => "686e444",
             ".Inf" => 646e444,
@@ -224,7 +261,13 @@ class InlineTest extends UnitTestFixture
             "['foo,bar', 'foo bar']" => ["foo,bar", "foo bar"],
 
             // mappings
-            "{ foo: bar, bar: foo, 'false': false, 'null': null, integer: 12 }" => ["foo" => "bar", "bar" => "foo", "false" => false, "null" => null, "integer" => 12],
+            "{ foo: bar, bar: foo, 'false': false, 'null': null, integer: 12 }" => [
+                "foo" => "bar",
+                "bar" => "foo",
+                "false" => false,
+                "null" => null,
+                "integer" => 12
+            ],
             "{ foo: bar, bar: 'foo: bar' }" => ["foo" => "bar", "bar" => "foo: bar"],
 
             // nested sequences and mappings
@@ -236,9 +279,18 @@ class InlineTest extends UnitTestFixture
 
             "[foo, { bar: foo }]" => ["foo", ["bar" => "foo"]],
 
-            "[foo, { bar: foo, foo: [foo, { bar: foo }] }, [foo, { bar: foo }]]" => ["foo", ["bar" => "foo", "foo" => ["foo", ["bar" => "foo"]]], ["foo", ["bar" => "foo"]]],
+            "[foo, { bar: foo, foo: [foo, { bar: foo }] }, [foo, { bar: foo }]]" => [
+                "foo",
+                ["bar" => "foo", "foo" => ["foo", ["bar" => "foo"]]], ["foo", ["bar" => "foo"]]
+            ],
 
-            "[foo, '@foo.baz', { '%foo%': 'foo is %foo%', bar: '%foo%' }, true, '@service_container']" => ["foo", "@foo.baz", ["%foo%" => "foo is %foo%", "bar" => "%foo%"], true, "@service_container"]
+            "[foo, '@foo.baz', { '%foo%': 'foo is %foo%', bar: '%foo%' }, true, '@service_container']" => [
+                "foo",
+                "@foo.baz",
+                ["%foo%" => "foo is %foo%", "bar" => "%foo%"],
+                true,
+                "@service_container"
+            ]
         ];
     }
 }

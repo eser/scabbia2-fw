@@ -60,12 +60,13 @@ class Dumper
             foreach ($input as $key => $value) {
                 $willBeInlined = ($inline - 1 <= 0) || !is_array($value) || empty($value);
 
-                $output .= sprintf("%s%s%s%s",
-                        $prefix,
-                        $isAHash ? self::dumpInline($key) . ":" : "-",
-                        $willBeInlined ? " " : "\n",
-                        self::dump($value, $inline - 1, $willBeInlined ? 0 : $indentation)
-                    ).($willBeInlined ? "\n" : "");
+                $output .= sprintf(
+                    "%s%s%s%s",
+                    $prefix,
+                    $isAHash ? self::dumpInline($key) . ":" : "-",
+                    $willBeInlined ? " " : "\n",
+                    self::dump($value, $inline - 1, $willBeInlined ? 0 : $indentation)
+                ) . ($willBeInlined ? "\n" : "");
             }
         }
 
@@ -100,7 +101,13 @@ class Dumper
             if ($locale !== false) {
                 setlocale(LC_NUMERIC, "C");
             }
-            $repr = is_string($value) ? "'$value'" : (is_infinite($value) ? str_ireplace("INF", ".Inf", strval($value)) : strval($value));
+            if (is_string($value)) {
+                $repr = "'$value'";
+            } elseif (is_infinite($value)) {
+                $repr = str_ireplace("INF", ".Inf", strval($value));
+            } else {
+                $repr = strval($value);
+            }
 
             if ($locale !== false) {
                 setlocale(LC_NUMERIC, $locale);
@@ -113,7 +120,9 @@ class Dumper
             return Escaper::escapeWithSingleQuotes($value);
         } elseif ($value === "") {
             return "''";
-        } elseif (preg_match(Inline::getTimestampRegex(), $value) || in_array(strtolower($value), ["null", "~", "true", "false"])) {
+        } elseif (preg_match(Inline::getTimestampRegex(), $value) ||
+            in_array(strtolower($value), ["null", "~", "true", "false"])
+        ) {
             return "'$value'";
         } else {
             return $value;
@@ -131,8 +140,12 @@ class Dumper
     {
         // array
         $keys = array_keys($value);
-        if ((count($keys) === 1 && $keys[0] === "0")
-            || (count($keys) > 1 && array_reduce($keys, function ($v, $w) { return (int)$v + $w; }, 0) == count($keys) * (count($keys) - 1) / 2)
+        $func = function ($v, $w) {
+            return (int)$v + $w;
+        };
+
+        if ((count($keys) === 1 && $keys[0] === "0") ||
+            (count($keys) > 1 && array_reduce($keys, $func, 0) == count($keys) * (count($keys) - 1) / 2)
         ) {
             $output = [];
             foreach ($value as $val) {

@@ -42,7 +42,8 @@ class Escaper
 
     // Regex fragment that matches an escaped character in a double quoted
     // string.
-    const REGEX_ESCAPED_CHARACTER = "\\\\([0abt\tnvfre \\\"\\/\\\\N_LP]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})";
+    const REGEX_ESCAPED_CHARACTER =
+        "\\\\([0abt\tnvfre \\\"\\/\\\\N_LP]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})";
 
     // Mapping arrays for escaping a double quoted string. The backslash is
     // first to ensure proper escaping because str_replace operates iteratively
@@ -131,7 +132,7 @@ class Escaper
     public function unescapeDoubleQuotedString($value)
     {
         $self = $this;
-        $callback = function($match) use ($self) {
+        $callback = function ($match) use ($self) {
             return $self->unescapeCharacter($match[0]);
         };
 

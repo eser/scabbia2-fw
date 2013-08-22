@@ -73,8 +73,10 @@ abstract class UnitTestFixture
         $tException = null;
 
         $this->testExpectations = [
-            "ignore" => [],
-            "expect" => []
+            "ignoreException" => [],
+            "expectException" => [],
+
+            "result" => null
         ];
         $this->setUp();
         try {
@@ -85,7 +87,7 @@ abstract class UnitTestFixture
         $this->tearDown();
 
         if ($tException !== null) {
-            foreach ($this->testExpectations["ignore"] as $tExpectation) {
+            foreach ($this->testExpectations["ignoreException"] as $tExpectation) {
                 if (!is_a($tException, $tExpectation)) {
                     continue;
                 }
@@ -100,7 +102,7 @@ abstract class UnitTestFixture
             }
         }
 
-        $tExpectations = $this->testExpectations["expect"];
+        $tExpectations = $this->testExpectations["expectException"];
         foreach ($tExpectations as $tExpectationKey => $tExpectation) {
             if ($tException !== null && is_a($tException, $tExpectation)) {
                 unset($tExpectations[$tExpectationKey]);
@@ -119,6 +121,16 @@ abstract class UnitTestFixture
 
         if ($tException !== null) {
             $this->testAddReport("exception", true, get_class($tException) . ": " . $tException->getMessage());
+        }
+
+        if ($this->testExpectations["result"] !== null) {
+            if ($this->testExpectations["result"][0] === "skip") {
+                $this->testAddReport("skip", false, $this->testExpectations["result"][1]);
+                $this->isFailed = false;
+            } elseif ($this->testExpectations["result"][0] === "fail") {
+                $this->testAddReport("fail", true, $this->testExpectations["result"][1]);
+                $this->isFailed = true;
+            }
         }
 
         array_pop($this->testStack);
@@ -274,7 +286,7 @@ abstract class UnitTestFixture
      */
     public function expectException($uExceptionType)
     {
-        $this->testExpectations["expect"][] = $uExceptionType;
+        $this->testExpectations["expectException"][] = $uExceptionType;
     }
 
     /**
@@ -284,6 +296,26 @@ abstract class UnitTestFixture
      */
     public function ignoreException($uExceptionType)
     {
-        $this->testExpectations["ignore"][] = $uExceptionType;
+        $this->testExpectations["ignoreException"][] = $uExceptionType;
+    }
+
+    /**
+     * Marks current unit test as skipped.
+     *
+     * @param $uMessage     mixed   Message (optional)
+     */
+    public function markTestSkipped($uMessage = null)
+    {
+        $this->testExpectations["result"] = ["skip", $uMessage];
+    }
+
+    /**
+     * Marks current unit test as failed.
+     *
+     * @param $uMessage     mixed   Message (optional)
+     */
+    public function fail($uMessage = null)
+    {
+        $this->testExpectations["result"] = ["fail", $uMessage];
     }
 }

@@ -14,8 +14,6 @@
 namespace Scabbia\Tests;
 
 /**
- * Scabbia\Tests: UnitTestFixture Class
- *
  * A small unit test implementation which helps us during the development of
  * Scabbia2 PHP Framework's itself and related production code.
  *

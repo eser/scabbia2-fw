@@ -33,6 +33,9 @@ use Scabbia\Tests\UnitTestFixture;
 use Scabbia\Yaml\Parser;
 use Scabbia\Yaml\Tests\DummyClass;
 
+/**
+ * Tests of Parser class
+ */
 class ParserTest extends UnitTestFixture
 {
     protected $parser;

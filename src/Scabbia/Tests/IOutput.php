@@ -14,10 +14,7 @@
 namespace Scabbia\Tests;
 
 /**
- * Scabbia\Tests: IOutput Interface
- *
- * A small unit test implementation which helps us during the development of
- * Scabbia2 PHP Framework's itself and related production code.
+ * Default methods needed for implementation of test output in various interfaces.
  *
  * @author Eser Ozvataf <eser@sent.com>
  */

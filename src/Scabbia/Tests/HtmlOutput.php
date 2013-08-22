@@ -16,10 +16,7 @@ namespace Scabbia\Tests;
 use Scabbia\Tests\IOutput;
 
 /**
- * Scabbia\Tests: HtmlOutput Class
- *
- * A small unit test implementation which helps us during the development of
- * Scabbia2 PHP Framework's itself and related production code.
+ * Implementation of test output in Html format.
  *
  * @author Eser Ozvataf <eser@sent.com>
  */

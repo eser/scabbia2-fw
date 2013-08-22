@@ -177,6 +177,7 @@ class Parser
                         } else {
                             $value = $this->getNextEmbedBlock();
                         }
+
                         $c = $this->getRealCurrentLineNb() + 1;
                         $parser = new static($c);
                         $parser->refs =& $this->refs;
@@ -239,7 +240,7 @@ class Parser
             } else {
                 // 1-liner optionally followed by newline
                 $lineCount = count($this->lines);
-                if ($lineCount === 1 || ($lineCount === 2 && empty($this->lines[1]))) {
+                if ($lineCount === 1 || ($lineCount === 2 && strlen($this->lines[1]) === 0)) {
                     try {
                         $value = Inline::parse($this->lines[0]);
                     } catch (ParseException $e) {
@@ -291,7 +292,7 @@ class Parser
             }
         }
 
-        if (empty($data)) {
+        if (count($data) === 0) {
             return null;
         }
 
@@ -331,7 +332,7 @@ class Parser
     {
         $this->moveToNextLine();
 
-        if (null === $indentation) {
+        if ($indentation === null) {
             $newIndent = $this->getCurrentLineIndentation();
 
             $unindentedEmbedBlock = $this->isStringUnIndentedCollectionItem($this->currentLine);
@@ -645,7 +646,7 @@ class Parser
             $notEOF = $this->moveToNextLine();
         }
 
-        if (false === $notEOF) {
+        if ($notEOF === false) {
             return false;
         }
 

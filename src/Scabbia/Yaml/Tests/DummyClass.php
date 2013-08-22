@@ -29,6 +29,9 @@
 
 namespace Scabbia\Yaml\Tests;
 
+/**
+ * A dummy class for serialization tests
+ */
 class DummyClass
 {
     public $b = "foo";

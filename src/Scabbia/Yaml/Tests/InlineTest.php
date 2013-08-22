@@ -33,6 +33,9 @@ use Scabbia\Tests\UnitTestFixture;
 use Scabbia\Yaml\Dumper;
 use Scabbia\Yaml\Inline;
 
+/**
+ * Tests of Inline class
+ */
 class InlineTest extends UnitTestFixture
 {
     public function testParse()

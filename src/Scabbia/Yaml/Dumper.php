@@ -52,13 +52,13 @@ class Dumper
         $output = "";
         $prefix = $indentation ? str_repeat(" ", $indentation) : "";
 
-        if ($inline <= 0 || !is_array($input) || empty($input)) {
+        if ($inline <= 0 || !is_array($input) || count($input) === 0) {
             $output .= $prefix . self::dumpInline($input);
         } else {
             $isAHash = array_keys($input) !== range(0, count($input) - 1);
 
             foreach ($input as $key => $value) {
-                $willBeInlined = ($inline - 1 <= 0) || !is_array($value) || empty($value);
+                $willBeInlined = ($inline - 1 <= 0) || !is_array($value) || count($value) === 0;
 
                 $output .= sprintf(
                     "%s%s%s%s",

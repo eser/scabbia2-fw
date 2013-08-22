@@ -3,20 +3,20 @@
  * Scabbia2 PHP Framework
  * http://www.scabbiafw.com/
  *
- * Licensed under the Apache License, Version 2.0
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
  * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-require __DIR__ . "/src/Scabbia/Tests/UnitTestFixture.php";
-require __DIR__ . "/src/Scabbia/Tests/IOutput.php";
-require __DIR__ . "/src/Scabbia/Tests/HtmlOutput.php";
-require __DIR__ . "/src/Scabbia/Tests/ConsoleOutput.php";
+require __DIR__ . "/psr0autoloader.php";
+spl_autoload_register('autoload');
 
 $tTests = [
-    "ScabbiaTests\\SampleTest"
+    "Scabbia\\Yaml\\Tests\\ParserTest",
+    "Scabbia\\Yaml\\Tests\\InlineTest"
 ];
 
 if (PHP_SAPI === "cli") {
@@ -32,13 +32,7 @@ $tOutput->writeHeader(1, "Unit Tests");
 foreach ($tTests as $tTestClass) {
     $tOutput->writeHeader(2, $tTestClass);
 
-    if (($tPos = strrpos($tTestClass, '\\')) !== false) {
-        $uTestFile = substr($tTestClass, $tPos + 1);
-    } else {
-        $uTestFile = $tTestClass;
-    }
-
-    include __DIR__ . "/tests/{$uTestFile}.php";
+    include __DIR__ . "/src/". strtr($tTestClass, ["\\" => "/"]) . ".php";
 
     $instance = new $tTestClass ();
     $instance->test();

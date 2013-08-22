@@ -3,7 +3,8 @@
  * Scabbia2 PHP Framework
  * http://www.scabbiafw.com/
  *
- * Licensed under the Apache License, Version 2.0
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
  * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
@@ -17,6 +18,8 @@ namespace Scabbia\Tests;
  *
  * A small unit test implementation which helps us during the development of
  * Scabbia2 PHP Framework's itself and related production code.
+ *
+ * @author Eser Ozvataf <eser@sent.com>
  */
 abstract class UnitTestFixture
 {
@@ -152,7 +155,7 @@ abstract class UnitTestFixture
      *
      * This method is being executed when the test is started.
      */
-    public function setUp()
+    protected function setUp()
     {
 
     }
@@ -162,7 +165,7 @@ abstract class UnitTestFixture
      *
      * This method is being executed when the test is finished.
      */
-    public function tearDown()
+    protected function tearDown()
     {
 
     }
@@ -209,6 +212,59 @@ abstract class UnitTestFixture
     public function assertNotNull($uVariable, $uMessage = null)
     {
         $this->testAddReport("assertNotNull", $uVariable !== null, $uMessage);
+    }
+
+    /**
+     * Tests if given variable derived from given class.
+     *
+     * @param $uVariable    mixed   The variable
+     * @param $uClassName   mixed   Class name
+     * @param $uMessage     mixed   Message (optional)
+     */
+    public function assertInstanceOf($uVariable, $uClassName, $uMessage = null)
+    {
+        $this->testAddReport("assertInstanceOf", $uVariable instanceof $uClassName, $uMessage);
+    }
+
+    /**
+     * Tests if given variables have the same type and value.
+     *
+     * @param $uVariable1   mixed   First variable
+     * @param $uVariable2   mixed   Second variable
+     * @param $uMessage     mixed   Message (optional)
+     */
+    public function assertSame($uVariable1, $uVariable2, $uMessage = null)
+    {
+        $this->testAddReport("assertSame", $uVariable1 !== $uVariable2, $uMessage);
+    }
+
+    /**
+     * Tests if given variables have the same value.
+     *
+     * @param $uVariable1   mixed   First variable
+     * @param $uVariable2   mixed   Second variable
+     * @param $uMessage     mixed   Message (optional)
+     */
+    public function assertEquals($uVariable1, $uVariable2, $uMessage = null)
+    {
+        $this->testAddReport("assertEquals", $uVariable1 != $uVariable2, $uMessage);
+    }
+
+    /**
+     * Tests if given variable is a substring of another given variable.
+     *
+     * @param $uVariable1   mixed   First variable
+     * @param $uVariable2   mixed   Second variable
+     * @param $uMessage     mixed   Message (optional)
+     */
+    public function assertContains($uVariable1, $uVariable2, $uMessage = null)
+    {
+        if (is_scalar($uVariable2)) {
+            $this->testAddReport("assertContains", strpos($uVariable1, $uVariable2) === false, $uMessage);
+            return;
+        }
+
+        $this->testAddReport("assertContains", !in_array($uVariable1, $uVariable2, true), $uMessage);
     }
 
     /**

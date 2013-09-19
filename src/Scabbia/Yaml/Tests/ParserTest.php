@@ -7,15 +7,15 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
- * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
- * Many portions of this file is part of the Symfony package.
+ * Portions of this code are from Symfony YAML Component under the MIT license.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE-MIT
  * file that was distributed with this source code.
  *
  * Modifications made:
@@ -35,22 +35,41 @@ use Scabbia\Yaml\Tests\DummyClass;
 
 /**
  * Tests of Parser class
+ *
+ * @package     Scabbia\Yaml\Tests
+ * @since       2.0.0
  */
 class ParserTest extends UnitTestFixture
 {
+    /** @type Scabbia\Yaml\Parser $parser */
     protected $parser;
 
 
+    /**
+     * Test fixture setup method
+     *
+     * @return void
+     */
     protected function setUp()
     {
         $this->parser = new Parser();
     }
 
+    /**
+     * Test fixture teardown method
+     *
+     * @return void
+     */
     protected function tearDown()
     {
         $this->parser = null;
     }
 
+    /**
+     * Gets data form specifications
+     *
+     * @return array
+     */
     public function getDataFormSpecifications()
     {
         $parser = new Parser();
@@ -81,6 +100,11 @@ class ParserTest extends UnitTestFixture
         return $tests;
     }
 
+    /**
+     * Tests tabs in yaml
+     *
+     * @return void
+     */
     public function testTabsInYaml()
     {
         // test tabs in YAML
@@ -107,6 +131,11 @@ class ParserTest extends UnitTestFixture
         }
     }
 
+    /**
+     * Tests end of the document marker
+     *
+     * @return void
+     */
     public function testEndOfTheDocumentMarker()
     {
         $yaml = <<<EOF
@@ -118,6 +147,11 @@ EOF;
         $this->assertEquals("foo", $this->parser->parse($yaml));
     }
 
+    /**
+     * Gets block chomping tests
+     *
+     * @return array
+     */
     public function getBlockChompingTests()
     {
         $tests = [];
@@ -402,9 +436,12 @@ EOF;
     }
 
     /**
+     * Tests block literal with leading new lines
      * Regression test for issue #7989.
      *
      * @see https://github.com/symfony/symfony/issues/7989
+     *
+     * @return void
      */
     public function testBlockLiteralWithLeadingNewlines()
     {
@@ -422,6 +459,11 @@ EOF;
         $this->assertSame($expected, $this->parser->parse($yaml));
     }
 
+    /**
+     * Tests object support
+     *
+     * @return void
+     */
     public function testObjectSupportEnabled()
     {
         $input = <<<EOF
@@ -435,6 +477,11 @@ EOF;
         );
     }
 
+    /**
+     * Tests unindented collection exceptions
+     *
+     * @return void
+     */
     public function testUnindentedCollectionException()
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
@@ -451,6 +498,11 @@ EOF;
         $this->parser->parse($yaml);
     }
 
+    /**
+     * Tests sequence in a mapping
+     *
+     * @return void
+     */
     public function testSequenceInAMapping()
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
@@ -464,6 +516,11 @@ EOF;
         $this->parser->parse($yaml);
     }
 
+    /**
+     * Tests mapping in a sequence
+     *
+     * @return void
+     */
     public function testMappingInASequence()
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
@@ -477,6 +534,11 @@ EOF;
         $this->parser->parse($yaml);
     }
 
+    /**
+     * Tests empty value
+     *
+     * @return void
+     */
     public function testEmptyValue()
     {
         $input = <<<EOF
@@ -486,6 +548,11 @@ EOF;
         $this->assertEquals(["hash" => null], $this->parser->parse($input));
     }
 
+    /**
+     * Tests string block with comments
+     *
+     * @return void
+     */
     public function testStringBlockWithComments()
     {
         $yaml1 = <<<EOT
@@ -516,6 +583,11 @@ EOF;
         $this->assertEquals(["content" => $yaml1], $this->parser->parse($yaml2));
     }
 
+    /**
+     * Tests nested string block with comments
+     *
+     * @return void
+     */
     public function testNestedStringBlockWithComments()
     {
         $yaml1 = <<<EOT

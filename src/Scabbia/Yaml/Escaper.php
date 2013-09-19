@@ -7,15 +7,15 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
- * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
- * Many portions of this file is part of the Symfony package.
+ * Portions of this code are from Symfony YAML Component under the MIT license.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE-MIT
  * file that was distributed with this source code.
  *
  * Modifications made:
@@ -33,29 +33,38 @@ namespace Scabbia\Yaml;
  * Escaper encapsulates escaping rules for single and double-quoted
  * YAML strings.
  *
- * @author Matthew Lewinski <matthew@lewinski.org>
+ * @package     Scabbia\Yaml
+ * @author      Matthew Lewinski <matthew@lewinski.org>
+ * @since       2.0.0
  */
 class Escaper
 {
-    // Characters that would cause a dumped string to require double quoting.
+    /** @type string REGEX_CHARACTER_TO_ESCAPE Characters that would cause a dumped string to require double quoting */
     const REGEX_CHARACTER_TO_ESCAPE = "[\\x00-\\x1f]|\xc2\x85|\xc2\xa0|\xe2\x80\xa8|\xe2\x80\xa9";
 
-    // Regex fragment that matches an escaped character in a double quoted
-    // string.
+    /**
+     * @type string REGEX_ESCAPED_CHARACTER Regex fragment that matches an escaped character in a double quoted string.
+     */
     const REGEX_ESCAPED_CHARACTER =
         "\\\\([0abt\tnvfre \\\"\\/\\\\N_LP]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})";
 
 
-    // Mapping arrays for escaping a double quoted string. The backslash is
-    // first to ensure proper escaping because str_replace operates iteratively
-    // on the input arrays. This ordering of the characters avoids the use of strtr,
-    // which performs more slowly.
+    /**
+     * @type array $escapees Mapping arrays for escaping a double quoted string. The backslash is first to ensure
+     * proper escaping because str_replace operates iteratively on the input arrays. This ordering of the characters
+     * avoids the use of strtr, which performs more slowly.
+     */
     private static $escapees = ["\\\\", "\\\"", "\"",
                                 "\x00",  "\x01",  "\x02",  "\x03",  "\x04",  "\x05",  "\x06",  "\x07",
                                 "\x08",  "\x09",  "\x0a",  "\x0b",  "\x0c",  "\x0d",  "\x0e",  "\x0f",
                                 "\x10",  "\x11",  "\x12",  "\x13",  "\x14",  "\x15",  "\x16",  "\x17",
                                 "\x18",  "\x19",  "\x1a",  "\x1b",  "\x1c",  "\x1d",  "\x1e",  "\x1f",
                                 "\xc2\x85", "\xc2\xa0", "\xe2\x80\xa8", "\xe2\x80\xa9"];
+    /**
+     * @type array $escaped  Mapping arrays for escaping a double quoted string. The backslash is first to ensure
+     * proper escaping because str_replace operates iteratively on the input arrays. This ordering of the characters
+     * avoids the use of strtr, which performs more slowly.
+     */
     private static $escaped  = ["\\\"", "\\\\", "\\\"",
                                 "\\0",   "\\x01", "\\x02", "\\x03", "\\x04", "\\x05", "\\x06", "\\a",
                                 "\\b",   "\\t",   "\\n",   "\\v",   "\\f",   "\\r",   "\\x0e", "\\x0f",
@@ -69,7 +78,7 @@ class Escaper
      *
      * @param string $value A PHP value
      *
-     * @return Boolean True if the value would require double quotes.
+     * @return bool True if the value would require double quotes.
      */
     public static function requiresDoubleQuoting($value)
     {
@@ -93,7 +102,7 @@ class Escaper
      *
      * @param string $value A PHP value
      *
-     * @return Boolean True if the value would require single quotes.
+     * @return bool True if the value would require single quotes.
      */
     public static function requiresSingleQuoting($value)
     {

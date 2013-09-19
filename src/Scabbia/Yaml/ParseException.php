@@ -7,15 +7,15 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
- * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
- * Many portions of this file is part of the Symfony package.
+ * Portions of this code are from Symfony YAML Component under the MIT license.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE-MIT
  * file that was distributed with this source code.
  *
  * Modifications made:
@@ -32,13 +32,19 @@ namespace Scabbia\Yaml;
 /**
  * Exception class thrown when an error occurs during parsing.
  *
- * @author Fabien Potencier <fabien@symfony.com>
+ * @package     Scabbia\Yaml
+ * @author      Fabien Potencier <fabien@symfony.com>
+ * @since       2.0.0
  */
 class ParseException extends \RuntimeException
 {
+    /** @type null|string   $parsedFile     The file name where the error occurred */
     private $parsedFile;
+    /** @type int           $parsedLine     The line where the error occurred */
     private $parsedLine;
+    /** @type int|null      $snippet        The snippet of code near the problem */
     private $snippet;
+    /** @type string        $rawMessage     The error message */
     private $rawMessage;
 
 
@@ -46,8 +52,8 @@ class ParseException extends \RuntimeException
      * Constructor.
      *
      * @param string     $message    The error message
-     * @param integer    $parsedLine The line where the error occurred
-     * @param integer    $snippet    The snippet of code near the problem
+     * @param int        $parsedLine The line where the error occurred
+     * @param int        $snippet    The snippet of code near the problem
      * @param string     $parsedFile The file name where the error occurred
      * @param \Exception $previous   The previous exception
      */
@@ -82,6 +88,8 @@ class ParseException extends \RuntimeException
      * Sets the snippet of code near the error.
      *
      * @param string $snippet The code snippet
+     *
+     * @return void
      */
     public function setSnippet($snippet)
     {
@@ -106,6 +114,8 @@ class ParseException extends \RuntimeException
      * Sets the filename where the error occurred.
      *
      * @param string $parsedFile The filename
+     *
+     * @return void
      */
     public function setParsedFile($parsedFile)
     {
@@ -117,7 +127,7 @@ class ParseException extends \RuntimeException
     /**
      * Gets the line where the error occurred.
      *
-     * @return integer The file line
+     * @return int The file line
      */
     public function getParsedLine()
     {
@@ -127,7 +137,7 @@ class ParseException extends \RuntimeException
     /**
      * Sets the line where the error occurred.
      *
-     * @param integer $parsedLine The file line
+     * @param int $parsedLine The file line
      */
     public function setParsedLine($parsedLine)
     {
@@ -136,6 +146,11 @@ class ParseException extends \RuntimeException
         $this->updateRepr();
     }
 
+    /**
+     * Updates the generated message
+     *
+     * @return void
+     */
     private function updateRepr()
     {
         $this->message = $this->rawMessage;

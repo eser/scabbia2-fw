@@ -7,15 +7,15 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
- * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
- * Many portions of this file is part of the Symfony package.
+ * Portions of this code are from Symfony YAML Component under the MIT license.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE-MIT
  * file that was distributed with this source code.
  *
  * Modifications made:
@@ -35,10 +35,13 @@ use Scabbia\Yaml\ParseException;
 /**
  * Inline implements a YAML parser for the YAML inline syntax.
  *
- * @author Fabien Potencier <fabien@symfony.com>
+ * @package     Scabbia\Yaml
+ * @author      Fabien Potencier <fabien@symfony.com>
+ * @since       2.0.0
  */
 class Inline
 {
+    /** @type string REGEX_QUOTED_STRING a regular expression pattern to match quoted strings */
     const REGEX_QUOTED_STRING = "(?:\"([^\"\\\\]*(?:\\\\.[^\"\\\\]*)*)\"|'([^']*(?:''[^']*)*)')";
 
 
@@ -49,7 +52,7 @@ class Inline
      *
      * @return array A PHP array representing the YAML string
      *
-     * @throws ParseException
+     * @throws ParseException If the YAML is not valid
      */
     public static function parse($value)
     {
@@ -84,8 +87,8 @@ class Inline
      * @param scalar $scalar
      * @param string $delimiters
      * @param array  $stringDelimiters
-     * @param integer &$i
-     * @param Boolean $evaluate
+     * @param int    &$i
+     * @param bool   $evaluate
      *
      * @return string A YAML string
      *
@@ -139,7 +142,7 @@ class Inline
      * Parses a quoted scalar to YAML.
      *
      * @param string $scalar
-     * @param integer &$i
+     * @param int    &$i
      *
      * @return string A YAML string
      *
@@ -169,7 +172,7 @@ class Inline
      * Parses a sequence to a YAML string.
      *
      * @param string $sequence
-     * @param integer &$i
+     * @param int    &$i
      *
      * @return string A YAML string
      *
@@ -218,7 +221,7 @@ class Inline
      * Parses a mapping to a YAML string.
      *
      * @param string $mapping
-     * @param integer &$i
+     * @param int    &$i
      *
      * @return string A YAML string
      *

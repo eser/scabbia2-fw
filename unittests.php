@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
- * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
@@ -29,6 +29,7 @@ $tIsEverFailed = false;
 
 $tOutput->writeHeader(1, "Unit Tests");
 
+/** @type string $tTestClass */
 foreach ($tTests as $tTestClass) {
     $tOutput->writeHeader(2, $tTestClass);
 

@@ -7,15 +7,15 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
- * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
- * Many portions of this file is part of the Symfony package.
+ * Portions of this code are from Symfony YAML Component under the MIT license.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE-MIT
  * file that was distributed with this source code.
  *
  * Modifications made:
@@ -35,9 +35,17 @@ use Scabbia\Yaml\Inline;
 
 /**
  * Tests of Inline class
+ *
+ * @package     Scabbia\Yaml\Tests
+ * @since       2.0.0
  */
 class InlineTest extends UnitTestFixture
 {
+    /**
+     * Test method for Inline::parse
+     *
+     * @return void
+     */
     public function testParse()
     {
         foreach ($this->getTestsForParse() as $yaml => $value) {
@@ -49,6 +57,11 @@ class InlineTest extends UnitTestFixture
         }
     }
 
+    /**
+     * Test method for Dumper::dumpInline
+     *
+     * @return void
+     */
     public function testDump()
     {
         $testsForDump = $this->getTestsForDump();
@@ -70,6 +83,11 @@ class InlineTest extends UnitTestFixture
         }
     }
 
+    /**
+     * Test method for dump of numeric values w/ locale
+     *
+     * @return void
+     */
     public function testDumpNumericValueWithLocale()
     {
         $locale = setlocale(LC_NUMERIC, 0);
@@ -88,6 +106,11 @@ class InlineTest extends UnitTestFixture
         setlocale(LC_ALL, $locale);
     }
 
+    /**
+     * Test method for dump of exponential numerics
+     *
+     * @return void
+     */
     public function testHashStringsResemblingExponentialNumericsShouldNotBeChangedToINF()
     {
         $value = "686e444";
@@ -95,6 +118,11 @@ class InlineTest extends UnitTestFixture
         $this->assertSame($value, Inline::parse(Dumper::dumpInline($value)));
     }
 
+    /**
+     * Test method for incorrect quoted strings
+     *
+     * @return void
+     */
     public function testParseScalarWithIncorrectlyQuotedStringShouldThrowException()
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
@@ -103,6 +131,11 @@ class InlineTest extends UnitTestFixture
         Inline::parse($value);
     }
 
+    /**
+     * Test method for incorrect double quoted string
+     *
+     * @return void
+     */
     public function testParseScalarWithIncorrectlyDoubleQuotedStringShouldThrowException()
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
@@ -111,6 +144,11 @@ class InlineTest extends UnitTestFixture
         Inline::parse($value);
     }
 
+    /**
+     * Test method for invalid mapping key
+     *
+     * @return void
+     */
     public function testParseInvalidMappingKeyShouldThrowException()
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
@@ -119,6 +157,11 @@ class InlineTest extends UnitTestFixture
         Inline::parse($value);
     }
 
+    /**
+     * Test method for invalid mapping
+     *
+     * @return void
+     */
     public function testParseInvalidMappingShouldThrowException()
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
@@ -126,6 +169,11 @@ class InlineTest extends UnitTestFixture
         Inline::parse("[foo] bar");
     }
 
+    /**
+     * Test method for invalid sequence
+     *
+     * @return void
+     */
     public function testParseInvalidSequenceShouldThrowException()
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
@@ -133,6 +181,11 @@ class InlineTest extends UnitTestFixture
         Inline::parse("{ foo: bar } bar");
     }
 
+    /**
+     * Test method for scalar with correct quoted string
+     *
+     * @return void
+     */
     public function testParseScalarWithCorrectlyQuotedStringShouldReturnString()
     {
         $value = "'don''t do somthin'' like that'";
@@ -141,6 +194,11 @@ class InlineTest extends UnitTestFixture
         $this->assertSame($expect, Inline::parseScalar($value));
     }
 
+    /**
+     * Set of test cases for parser
+     *
+     * @return array
+     */
     protected function getTestsForParse()
     {
         return [
@@ -237,6 +295,11 @@ class InlineTest extends UnitTestFixture
         ];
     }
 
+    /**
+     * Set of test cases for dumper
+     *
+     * @return array
+     */
     protected function getTestsForDump()
     {
         return [

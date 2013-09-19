@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
- * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
@@ -17,30 +17,34 @@ namespace Scabbia\Tests;
  * A small unit test implementation which helps us during the development of
  * Scabbia2 PHP Framework's itself and related production code.
  *
- * @author Eser Ozvataf <eser@sent.com>
+ * @package     Scabbia\Tests
+ * @author      Eser Ozvataf <eser@sent.com>
+ * @since       2.0.0
  */
 abstract class UnitTestFixture
 {
     /**
-     * @var bool Indicates test fixture is failed or not.
+     * @type bool @isFailed Indicates test fixture is failed or not.
      */
     public $isFailed = false;
     /**
-     * @var array Track of the unit which is currently testing.
+     * @type array @testStack Track of the unit which is currently testing.
      */
     public $testStack = [];
     /**
-     * @var array Output of test results.
+     * @type array @testReport Output of test results.
      */
     public $testReport = [];
     /**
-     * @var mixed The set of outcomes which is going to be tested.
+     * @type null|array $testExpectations The set of outcomes which is going to be tested.
      */
-    public $testExpectations;
+    public $testExpectations = null;
 
 
     /**
      * Begin testing all methods of the fixture.
+     *
+     * @return void
      */
     public function test()
     {
@@ -49,6 +53,7 @@ abstract class UnitTestFixture
 
         $tReservedMethods = ["setUp", "tearDown"];
 
+        /** @type \ReflectionMethod $tMethod */
         foreach ($tMethods as $tMethod) {
             if ($tMethod->class !== $tMe->name || in_array($tMethod->name, $tReservedMethods)) {
                 continue;
@@ -63,6 +68,8 @@ abstract class UnitTestFixture
      *
      * @param $uName        string      Name of the method
      * @param $uCallback    callable    Target method
+     *
+     * @return void
      */
     public function testUnit($uName, callable $uCallback)
     {
@@ -85,6 +92,7 @@ abstract class UnitTestFixture
         $this->tearDown();
 
         if ($tException !== null) {
+            /** @type string $tExpectation */
             foreach ($this->testExpectations["ignoreException"] as $tExpectation) {
                 if (!is_a($tException, $tExpectation)) {
                     continue;
@@ -101,6 +109,8 @@ abstract class UnitTestFixture
         }
 
         $tExpectations = $this->testExpectations["expectException"];
+        /** @type string $tExpectationKey */
+        /** @type string $tExpectation */
         foreach ($tExpectations as $tExpectationKey => $tExpectation) {
             if ($tException !== null && is_a($tException, $tExpectation)) {
                 unset($tExpectations[$tExpectationKey]);
@@ -113,6 +123,7 @@ abstract class UnitTestFixture
             }
         }
 
+        /** @type string $tExpectation */
         foreach ($tExpectations as $tExpectation) {
             $this->testAddReport("expectException", true, $tExpectation);
         }
@@ -140,6 +151,8 @@ abstract class UnitTestFixture
      * @param $uOperation   string      Name of the operation
      * @param $uIsFailed    bool        Is test failed or not?
      * @param $uMessage     mixed       Message (optional)
+     *
+     * @return void
      */
     public function testAddReport($uOperation, $uIsFailed, $uMessage = null)
     {
@@ -164,6 +177,8 @@ abstract class UnitTestFixture
      * SetUp method of the fixture.
      *
      * This method is being executed when the test is started.
+     *
+     * @return void
      */
     protected function setUp()
     {
@@ -174,6 +189,8 @@ abstract class UnitTestFixture
      * TearDown method of the fixture.
      *
      * This method is being executed when the test is finished.
+     *
+     * @return void
      */
     protected function tearDown()
     {
@@ -185,6 +202,8 @@ abstract class UnitTestFixture
      *
      * @param $uCondition   bool    The condition
      * @param $uMessage     mixed   Message (optional)
+     *
+     * @return void
      */
     public function assertTrue($uCondition, $uMessage = null)
     {
@@ -196,6 +215,8 @@ abstract class UnitTestFixture
      *
      * @param $uCondition   bool    The condition
      * @param $uMessage     mixed   Message (optional)
+     *
+     * @return void
      */
     public function assertFalse($uCondition, $uMessage = null)
     {
@@ -207,6 +228,8 @@ abstract class UnitTestFixture
      *
      * @param $uVariable    bool    The condition
      * @param $uMessage     mixed   Message (optional)
+     *
+     * @return void
      */
     public function assertNull($uVariable, $uMessage = null)
     {
@@ -218,6 +241,8 @@ abstract class UnitTestFixture
      *
      * @param $uVariable    bool    The condition
      * @param $uMessage     mixed   Message (optional)
+     *
+     * @return void
      */
     public function assertNotNull($uVariable, $uMessage = null)
     {
@@ -230,6 +255,8 @@ abstract class UnitTestFixture
      * @param $uVariable    mixed   The variable
      * @param $uClassName   mixed   Class name
      * @param $uMessage     mixed   Message (optional)
+     *
+     * @return void
      */
     public function assertInstanceOf($uVariable, $uClassName, $uMessage = null)
     {
@@ -242,6 +269,8 @@ abstract class UnitTestFixture
      * @param $uVariable1   mixed   First variable
      * @param $uVariable2   mixed   Second variable
      * @param $uMessage     mixed   Message (optional)
+     *
+     * @return void
      */
     public function assertSame($uVariable1, $uVariable2, $uMessage = null)
     {
@@ -254,6 +283,8 @@ abstract class UnitTestFixture
      * @param $uVariable1   mixed   First variable
      * @param $uVariable2   mixed   Second variable
      * @param $uMessage     mixed   Message (optional)
+     *
+     * @return void
      */
     public function assertEquals($uVariable1, $uVariable2, $uMessage = null)
     {
@@ -266,6 +297,8 @@ abstract class UnitTestFixture
      * @param $uVariable1   mixed   First variable
      * @param $uVariable2   mixed   Second variable
      * @param $uMessage     mixed   Message (optional)
+     *
+     * @return void
      */
     public function assertContains($uVariable1, $uVariable2, $uMessage = null)
     {
@@ -281,6 +314,8 @@ abstract class UnitTestFixture
      * Tests if will testing unit throw specified exception or not.
      *
      * @param $uExceptionType    string     Name of the exception type
+     *
+     * @return void
      */
     public function expectException($uExceptionType)
     {
@@ -291,6 +326,8 @@ abstract class UnitTestFixture
      * Ignores if testing unit throws specified exception during test.
      *
      * @param $uExceptionType    string     Name of the exception type
+     *
+     * @return void
      */
     public function ignoreException($uExceptionType)
     {
@@ -301,6 +338,8 @@ abstract class UnitTestFixture
      * Marks current unit test as skipped.
      *
      * @param $uMessage     mixed   Message (optional)
+     *
+     * @return void
      */
     public function markTestSkipped($uMessage = null)
     {
@@ -311,6 +350,8 @@ abstract class UnitTestFixture
      * Marks current unit test as failed.
      *
      * @param $uMessage     mixed   Message (optional)
+     *
+     * @return void
      */
     public function fail($uMessage = null)
     {

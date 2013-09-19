@@ -7,15 +7,15 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
- * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
- * Many portions of this file is part of the Symfony package.
+ * Portions of this code are from Symfony YAML Component under the MIT license.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE-MIT
  * file that was distributed with this source code.
  *
  * Modifications made:
@@ -34,7 +34,9 @@ use Scabbia\Yaml\Inline;
 /**
  * Dumper dumps PHP variables to YAML strings.
  *
- * @author Fabien Potencier <fabien@symfony.com>
+ * @package     Scabbia\Yaml
+ * @author      Fabien Potencier <fabien@symfony.com>
+ * @since       2.0.0
  */
 class Dumper
 {
@@ -42,8 +44,8 @@ class Dumper
      * Dumps a PHP value to YAML.
      *
      * @param mixed   $input                  The PHP value
-     * @param integer $inline                 The level where you switch to inline YAML
-     * @param integer $indentation            The level of indentation (used internally)
+     * @param int     $inline                 The level where you switch to inline YAML
+     * @param int     $indentation            The level of indentation (used internally)
      *
      * @return string  The YAML representation of the PHP value
      */

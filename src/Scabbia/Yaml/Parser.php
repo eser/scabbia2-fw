@@ -7,15 +7,15 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2 for the canonical source repository
- * @copyright   Copyright (c) 2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2013 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
- * Many portions of this file is part of the Symfony package.
+ * Portions of this code are from Symfony YAML Component under the MIT license.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE-MIT
  * file that was distributed with this source code.
  *
  * Modifications made:
@@ -35,21 +35,28 @@ use Scabbia\Yaml\ParseException;
 /**
  * Parser parses YAML strings to convert them to PHP arrays.
  *
- * @author Fabien Potencier <fabien@symfony.com>
+ * @package     Scabbia\Yaml
+ * @author      Fabien Potencier <fabien@symfony.com>
+ * @since       2.0.0
  */
 class Parser
 {
+    /** @type int $offset */
     private $offset         = 0;
+    /** @type array $lines */
     private $lines          = [];
+    /** @type int $currentLineNb */
     private $currentLineNb  = -1;
+    /** @type string $currentLine */
     private $currentLine    = "";
+    /** @type array $refs */
     private $refs           = [];
 
 
     /**
      * Constructor
      *
-     * @param integer $offset The offset of YAML document (used for line numbers in error messages)
+     * @param int $offset The offset of YAML document (used for line numbers in error messages)
      */
     public function __construct($offset = 0)
     {
@@ -302,7 +309,7 @@ class Parser
     /**
      * Returns the current line number (takes the offset into account).
      *
-     * @return integer The current line number
+     * @return int The current line number
      */
     private function getRealCurrentLineNb()
     {
@@ -312,7 +319,7 @@ class Parser
     /**
      * Returns the current line indentation.
      *
-     * @return integer The current line indentation
+     * @return int The current line indentation
      */
     private function getCurrentLineIndentation()
     {
@@ -322,7 +329,7 @@ class Parser
     /**
      * Returns the next embed block of YAML.
      *
-     * @param integer $indentation The indent level at which the block is to be read, or null for default
+     * @param int $indentation The indent level at which the block is to be read, or null for default
      *
      * @return string A YAML string
      *
@@ -387,7 +394,7 @@ class Parser
     /**
      * Moves the parser to the next line.
      *
-     * @return Boolean
+     * @return bool
      */
     private function moveToNextLine()
     {
@@ -402,6 +409,8 @@ class Parser
 
     /**
      * Moves the parser to the previous line.
+     *
+     * @return void
      */
     private function moveToPreviousLine()
     {
@@ -462,7 +471,7 @@ class Parser
      *
      * @param string  $separator   The separator that was used to begin this folded scalar (| or >)
      * @param string  $indicator   The indicator that was used to begin this folded scalar (+ or -)
-     * @param integer $indentation The indentation that was used to begin this folded scalar
+     * @param int     $indentation The indentation that was used to begin this folded scalar
      *
      * @return string  The text value
      */
@@ -536,7 +545,7 @@ class Parser
     /**
      * Returns true if the next line is indented.
      *
-     * @return Boolean Returns true if the next line is indented, false otherwise
+     * @return bool Returns true if the next line is indented, false otherwise
      */
     private function isNextLineIndented()
     {
@@ -564,7 +573,7 @@ class Parser
     /**
      * Returns true if the current line is blank or if it is a comment line.
      *
-     * @return Boolean Returns true if the current line is empty or if it is a comment line, false otherwise
+     * @return bool Returns true if the current line is empty or if it is a comment line, false otherwise
      */
     private function isCurrentLineEmpty()
     {
@@ -574,7 +583,7 @@ class Parser
     /**
      * Returns true if the current line is blank.
      *
-     * @return Boolean Returns true if the current line is blank, false otherwise
+     * @return bool Returns true if the current line is blank, false otherwise
      */
     private function isCurrentLineBlank()
     {
@@ -584,7 +593,7 @@ class Parser
     /**
      * Returns true if the current line is a comment line.
      *
-     * @return Boolean Returns true if the current line is a comment line, false otherwise
+     * @return bool Returns true if the current line is a comment line, false otherwise
      */
     private function isCurrentLineComment()
     {
@@ -635,7 +644,7 @@ class Parser
     /**
      * Returns true if the next line starts unindented collection
      *
-     * @return Boolean Returns true if the next line starts unindented collection, false otherwise
+     * @return bool Returns true if the next line starts unindented collection, false otherwise
      */
     private function isNextLineUnIndentedCollection()
     {
@@ -664,7 +673,7 @@ class Parser
     /**
      * Returns true if the string is un-indented collection item
      *
-     * @return Boolean Returns true if the string is un-indented collection item, false otherwise
+     * @return bool Returns true if the string is un-indented collection item, false otherwise
      */
     private function isStringUnIndentedCollectionItem()
     {

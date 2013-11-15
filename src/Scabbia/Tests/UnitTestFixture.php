@@ -14,8 +14,8 @@
 namespace Scabbia\Tests;
 
 /**
- * A small unit test implementation which helps us during the development of
- * Scabbia2 PHP Framework's itself and related production code.
+ * Base class for fixtures which is going to be constructed to host unit testing
+ * methods inside.
  *
  * @package     Scabbia\Tests
  * @author      Eser Ozvataf <eser@sent.com>

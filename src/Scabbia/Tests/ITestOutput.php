@@ -13,16 +13,14 @@
 
 namespace Scabbia\Tests;
 
-use Scabbia\Tests\IOutput;
-
 /**
- * Implementation of test output to console.
+ * Default methods needed for implementation of output in various interfaces.
  *
  * @package     Scabbia\Tests
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-class ConsoleOutput implements IOutput
+interface ITestOutput
 {
     /**
      * Writes given message.
@@ -32,30 +30,14 @@ class ConsoleOutput implements IOutput
      *
      * @return void
      */
-    public function writeHeader($uHeading, $uMessage)
-    {
-        if ($uHeading === 1) {
-            $tChar = "=";
-        } else {
-            $tChar = "-";
-        }
-
-        echo "$uMessage\r\n", str_repeat($tChar, strlen($uMessage)), "\r\n";
-
-        if ($uHeading === 1) {
-            echo "\r\n";
-        }
-    }
+    public function writeHeader($uHeading, $uMessage);
 
     /**
-     * Outputs the report to console.
+     * Outputs the test report in specified representation.
      *
-     * @param array $uReport Target report will be printed
+     * @param array $uArray Target array will be printed
      *
      * @return void
      */
-    public function export(array $uReport)
-    {
-        print_r($uReport);
-    }
+    public function writeTestReport(array $uArray);
 }

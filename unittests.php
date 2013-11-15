@@ -14,35 +14,11 @@
 require __DIR__ . "/psr0autoloader.php";
 spl_autoload_register('autoload');
 
-$tTests = [
+$tTestClasses = [
     "Scabbia\\Yaml\\Tests\\ParserTest",
     "Scabbia\\Yaml\\Tests\\InlineTest"
 ];
 
-if (PHP_SAPI === "cli") {
-    $tOutput = new Scabbia\Tests\ConsoleOutput();
-} else {
-    $tOutput = new Scabbia\Tests\HtmlOutput();
-}
+$tExitCode = Scabbia\Tests\Tests::runUnitTests($tTestClasses);
 
-$tIsEverFailed = false;
-
-$tOutput->writeHeader(1, "Unit Tests");
-
-/** @type string $tTestClass */
-foreach ($tTests as $tTestClass) {
-    $tOutput->writeHeader(2, $tTestClass);
-
-    include __DIR__ . "/src/". strtr($tTestClass, ["\\" => "/"]) . ".php";
-
-    $instance = new $tTestClass ();
-    $instance->test();
-
-    if ($instance->isFailed) {
-        $tIsEverFailed = true;
-    }
-
-    $tOutput->export($instance->testReport);
-}
-
-exit($tIsEverFailed ? 1 : 0);
+exit($tExitCode);

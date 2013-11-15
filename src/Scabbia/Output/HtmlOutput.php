@@ -11,14 +11,14 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Tests;
+namespace Scabbia\Output;
 
-use Scabbia\Tests\IOutput;
+use Scabbia\Output\IOutput;
 
 /**
- * Implementation of test output in Html format.
+ * Implementation of output in Html format.
  *
- * @package     Scabbia\Tests
+ * @package     Scabbia\Output
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
@@ -38,17 +38,17 @@ class HtmlOutput implements IOutput
     }
 
     /**
-     * Outputs the report in HTML representation.
+     * Outputs the array in HTML representation.
      *
-     * @param array $uReport Target report will be printed
+     * @param array $uArray Target array will be printed
      *
      * @return void
      */
-    public function export(array $uReport)
+    public function writeArray(array $uArray)
     {
         /** @type string $tEntryKey */
         /** @type array $tEntry */
-        foreach ($uReport as $tEntryKey => $tEntry) {
+        foreach ($uArray as $tEntryKey => $tEntry) {
             echo "<p>";
             echo "<strong>{$tEntryKey}:</strong><br />";
             echo "<ul>";

@@ -11,12 +11,12 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Tests;
+namespace Scabbia\Output;
 
 /**
- * Default methods needed for implementation of test output in various interfaces.
+ * Default methods needed for implementation of output in various interfaces.
  *
- * @package     Scabbia\Tests
+ * @package     Scabbia\Output
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
@@ -33,11 +33,11 @@ interface IOutput
     public function writeHeader($uHeading, $uMessage);
 
     /**
-     * Outputs the report in specified representation.
+     * Outputs the array in specified representation.
      *
-     * @param array $uReport Target report will be printed
+     * @param array $uArray Target array will be printed
      *
      * @return void
      */
-    public function export(array $uReport);
+    public function writeArray(array $uArray);
 }

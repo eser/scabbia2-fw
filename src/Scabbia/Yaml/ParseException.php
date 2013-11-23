@@ -38,13 +38,21 @@ namespace Scabbia\Yaml;
  */
 class ParseException extends \RuntimeException
 {
-    /** @type null|string   $parsedFile     The file name where the error occurred */
+    /**
+     * @type null|string   $parsedFile     The file name where the error occurred
+     */
     private $parsedFile;
-    /** @type int           $parsedLine     The line where the error occurred */
+    /**
+     * @type int           $parsedLine     The line where the error occurred
+     */
     private $parsedLine;
-    /** @type int|null      $snippet        The snippet of code near the problem */
+    /**
+     * @type int|null      $snippet        The snippet of code near the problem
+     */
     private $snippet;
-    /** @type string        $rawMessage     The error message */
+    /**
+     * @type string        $rawMessage     The error message
+     */
     private $rawMessage;
 
 

@@ -11,7 +11,7 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Date;
+namespace Scabbia\Helpers;
 
 /**
  * A bunch of utility methods for date and time operations.
@@ -29,7 +29,7 @@ class Date
      *
      * @var array of default variables
      */
-    public static $constants = [
+    public static $defaults = [
         "short_date" => "d.m.Y",
         "short_time" => "H:i",
         "short_time_with_seconds" => "H:i:s",
@@ -47,9 +47,19 @@ class Date
         "today" => "Today",
         "tomorrow" => "Tomorrow",
 
-        "now" => "Now",
+        "now" => "Now"
     ];
 
+
+    /**
+     * Sets the default variables.
+     *
+     * @param array $uDefaults variables to be set
+     */
+    public static function setDefaults($uDefaults)
+    {
+        self::$defaults = $uDefaults + self::$defaults;
+    }
 
     /**
      * Timestamp of beginning of the day.
@@ -126,37 +136,37 @@ class Date
 
         if ($tDifference >= 86400) {
             if ($uShowHours) {
-                return self::$constants["yesterday"] . ", " . date(self::$constants["short_time"], $uTimestamp);
+                return self::$defaults["yesterday"] . ", " . date(self::$defaults["short_time"], $uTimestamp);
             }
 
-            return self::$constants["yesterday"];
+            return self::$defaults["yesterday"];
         }
 
         if ($tDifference > 0) {
             if ($uShowHours) {
-                return self::$constants["today"] . ", " . date(self::$constants["short_time"], $uTimestamp);
+                return self::$defaults["today"] . ", " . date(self::$defaults["short_time"], $uTimestamp);
             }
 
-            return self::$constants["today"];
+            return self::$defaults["today"];
         }
 
         if ($tDifference === 0) {
-            return self::$constants["now"];
+            return self::$defaults["now"];
         }
 
         if ($tDifference >= -86400) {
             if ($uShowHours) {
-                return self::$constants["tomorrow"] . ", " . date(self::$constants["short_time"], $uTimestamp);
+                return self::$defaults["tomorrow"] . ", " . date(self::$defaults["short_time"], $uTimestamp);
             }
 
-            return self::$constants["tomorrow"];
+            return self::$defaults["tomorrow"];
         }
 
         if ($uShowHours) {
-            return date(self::$constants["short_datetime"], $uTimestamp);
+            return date(self::$defaults["short_datetime"], $uTimestamp);
         }
 
-        return date(self::$constants["short_date"], $uTimestamp);
+        return date(self::$defaults["short_date"], $uTimestamp);
     }
 
     /**

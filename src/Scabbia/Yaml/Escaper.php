@@ -39,7 +39,9 @@ namespace Scabbia\Yaml;
  */
 class Escaper
 {
-    /** @type string REGEX_CHARACTER_TO_ESCAPE Characters that would cause a dumped string to require double quoting */
+    /**
+     * @type string REGEX_CHARACTER_TO_ESCAPE Characters that would cause a dumped string to require double quoting
+     */
     const REGEX_CHARACTER_TO_ESCAPE = "[\\x00-\\x1f]|\xc2\x85|\xc2\xa0|\xe2\x80\xa8|\xe2\x80\xa9";
 
     /**

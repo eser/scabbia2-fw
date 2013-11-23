@@ -41,15 +41,25 @@ use Scabbia\Yaml\ParseException;
  */
 class Parser
 {
-    /** @type int $offset */
+    /**
+     * @type int $offset
+     */
     private $offset         = 0;
-    /** @type array $lines */
+    /**
+     * @type array $lines
+     */
     private $lines          = [];
-    /** @type int $currentLineNb */
+    /**
+     * @type int $currentLineNb
+     */
     private $currentLineNb  = -1;
-    /** @type string $currentLine */
+    /**
+     * @type string $currentLine
+     */
     private $currentLine    = "";
-    /** @type array $refs */
+    /**
+     * @type array $refs
+     */
     private $refs           = [];
 
 

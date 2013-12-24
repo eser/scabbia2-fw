@@ -138,7 +138,7 @@ class Dumper
      *
      * @return string The YAML string representing the PHP array
      */
-    private static function dumpInlineArray(array $value)
+    protected static function dumpInlineArray(array $value)
     {
         // array
         $keys = array_keys($value);

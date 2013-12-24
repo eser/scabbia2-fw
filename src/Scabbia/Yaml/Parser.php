@@ -44,23 +44,23 @@ class Parser
     /**
      * @type int $offset
      */
-    private $offset         = 0;
+    protected $offset         = 0;
     /**
      * @type array $lines
      */
-    private $lines          = [];
+    protected $lines          = [];
     /**
      * @type int $currentLineNb
      */
-    private $currentLineNb  = -1;
+    protected $currentLineNb  = -1;
     /**
      * @type string $currentLine
      */
-    private $currentLine    = "";
+    protected $currentLine    = "";
     /**
      * @type array $refs
      */
-    private $refs           = [];
+    protected $refs           = [];
 
 
     /**
@@ -321,7 +321,7 @@ class Parser
      *
      * @return int The current line number
      */
-    private function getRealCurrentLineNb()
+    protected function getRealCurrentLineNb()
     {
         return $this->currentLineNb + $this->offset;
     }
@@ -331,7 +331,7 @@ class Parser
      *
      * @return int The current line indentation
      */
-    private function getCurrentLineIndentation()
+    protected function getCurrentLineIndentation()
     {
         return strlen($this->currentLine) - strlen(ltrim($this->currentLine, " "));
     }
@@ -345,7 +345,7 @@ class Parser
      *
      * @throws ParseException When indentation problem are detected
      */
-    private function getNextEmbedBlock($indentation = null)
+    protected function getNextEmbedBlock($indentation = null)
     {
         $this->moveToNextLine();
 
@@ -406,7 +406,7 @@ class Parser
      *
      * @return bool
      */
-    private function moveToNextLine()
+    protected function moveToNextLine()
     {
         if ($this->currentLineNb >= count($this->lines) - 1) {
             return false;
@@ -422,7 +422,7 @@ class Parser
      *
      * @return void
      */
-    private function moveToPreviousLine()
+    protected function moveToPreviousLine()
     {
         $this->currentLine = $this->lines[--$this->currentLineNb];
     }
@@ -436,7 +436,7 @@ class Parser
      *
      * @throws ParseException When reference does not exist
      */
-    private function parseValue($value)
+    protected function parseValue($value)
     {
         if (strpos($value, "*") === 0) {
             if (($pos = strpos($value, "#")) !== false) {
@@ -485,7 +485,7 @@ class Parser
      *
      * @return string  The text value
      */
-    private function parseFoldedScalar($separator, $indicator = "", $indentation = 0)
+    protected function parseFoldedScalar($separator, $indicator = "", $indentation = 0)
     {
         $notEOF = $this->moveToNextLine();
         if (!$notEOF) {
@@ -557,7 +557,7 @@ class Parser
      *
      * @return bool Returns true if the next line is indented, false otherwise
      */
-    private function isNextLineIndented()
+    protected function isNextLineIndented()
     {
         $currentIndentation = $this->getCurrentLineIndentation();
         $EOF = !$this->moveToNextLine();
@@ -585,7 +585,7 @@ class Parser
      *
      * @return bool Returns true if the current line is empty or if it is a comment line, false otherwise
      */
-    private function isCurrentLineEmpty()
+    protected function isCurrentLineEmpty()
     {
         return $this->isCurrentLineBlank() || $this->isCurrentLineComment();
     }
@@ -595,7 +595,7 @@ class Parser
      *
      * @return bool Returns true if the current line is blank, false otherwise
      */
-    private function isCurrentLineBlank()
+    protected function isCurrentLineBlank()
     {
         return trim($this->currentLine, " ") === "";
     }
@@ -605,7 +605,7 @@ class Parser
      *
      * @return bool Returns true if the current line is a comment line, false otherwise
      */
-    private function isCurrentLineComment()
+    protected function isCurrentLineComment()
     {
         //checking explicitly the first char of the trim is faster than loops or strpos
         $ltrimmedLine = ltrim($this->currentLine, " ");
@@ -620,7 +620,7 @@ class Parser
      *
      * @return string A cleaned up YAML string
      */
-    private function cleanup($value)
+    protected function cleanup($value)
     {
         $value = str_replace(["\r\n", "\r"], "\n", $value);
 
@@ -656,7 +656,7 @@ class Parser
      *
      * @return bool Returns true if the next line starts unindented collection, false otherwise
      */
-    private function isNextLineUnIndentedCollection()
+    protected function isNextLineUnIndentedCollection()
     {
         $currentIndentation = $this->getCurrentLineIndentation();
         $notEOF = $this->moveToNextLine();
@@ -685,7 +685,7 @@ class Parser
      *
      * @return bool Returns true if the string is un-indented collection item, false otherwise
      */
-    private function isStringUnIndentedCollectionItem()
+    protected function isStringUnIndentedCollectionItem()
     {
         return (strpos($this->currentLine, "- ") === 0);
     }

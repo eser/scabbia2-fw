@@ -41,19 +41,19 @@ class ParseException extends \RuntimeException
     /**
      * @type null|string   $parsedFile     The file name where the error occurred
      */
-    private $parsedFile;
+    protected $parsedFile;
     /**
      * @type int           $parsedLine     The line where the error occurred
      */
-    private $parsedLine;
+    protected $parsedLine;
     /**
      * @type int|null      $snippet        The snippet of code near the problem
      */
-    private $snippet;
+    protected $snippet;
     /**
      * @type string        $rawMessage     The error message
      */
-    private $rawMessage;
+    protected $rawMessage;
 
 
     /**
@@ -159,7 +159,7 @@ class ParseException extends \RuntimeException
      *
      * @return void
      */
-    private function updateRepr()
+    protected function updateRepr()
     {
         $this->message = $this->rawMessage;
 

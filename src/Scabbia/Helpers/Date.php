@@ -27,7 +27,7 @@ class Date
     /**
      * Default variables for Date utility set.
      *
-     * @var array of default variables
+     * @type array $defaults array of default variables
      */
     public static $defaults = [
         "short_date" => "d.m.Y",

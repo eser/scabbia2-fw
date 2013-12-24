@@ -35,7 +35,7 @@ class Html
     /**
      * Default variables for Html utility set.
      *
-     * @var array of default variables
+     * @type array $defaults array of default variables
      */
     public static $defaults = [
         "pager_pagesize" => 10,
@@ -58,7 +58,7 @@ class Html
     /**
      * Set of attribute placement order.
      *
-     * @var array of attribute orders
+     * @type array $attributeOrder array of attribute orders
      */
     public static $attributeOrder = [
         "action", "method", "type", "id", "name", "value",

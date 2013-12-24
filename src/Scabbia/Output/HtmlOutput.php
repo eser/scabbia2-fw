@@ -56,22 +56,19 @@ class HtmlOutput implements IOutput
             $tPassed = true;
             /** @type array $tTest */
             foreach ($tEntry as $tTest) {
-                if ($tTest['failed']) {
+                if ($tTest["failed"]) {
                     $tPassed = false;
-                    echo "<li>";
-                    echo "<span style=\"color: red;\">{$tTest['operation']}</span>";
-                    if ($tTest['message'] !== null) {
-                        echo ": {$tTest['message']}";
-                    }
-                    echo "</li>";
+                    $tColor = "red";
                 } else {
-                    echo "<li>";
-                    echo "<span style=\"color: green;\">{$tTest['operation']}</span>";
-                    if ($tTest['message'] !== null) {
-                        echo ": {$tTest['message']}";
-                    }
-                    echo "</li>";
+                    $tColor = "green";
                 }
+
+                echo "<li>";
+                echo "<span style=\"color: {$tColor};\">{$tTest["operation"]}</span>";
+                if ($tTest["message"] !== null) {
+                    echo ": {$tTest["message"]}";
+                }
+                echo "</li>";
             }
 
             echo "</ul>";

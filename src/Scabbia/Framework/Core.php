@@ -64,7 +64,13 @@ class Core
     protected static function setVariables()
     {
         if (self::$basepath === null) {
-            self::$basepath = Io::combinePaths(getcwd(), pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME));
+            $tScriptDirectory = pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME);
+
+            if ($tScriptDirectory !== ".") {
+                self::$basepath = Io::combinePaths(getcwd(), $tScriptDirectory);
+            } else {
+                self::$basepath = getcwd();
+            }
         }
 
         // secure

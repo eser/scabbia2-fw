@@ -149,7 +149,7 @@ class Io
 
             if ($tCombinedPath === null) {
                 $tCombinedPath = $tPath;
-            } else if (strpos($tTrimChars, $tPath[$tPathLength - 1]) === false) {
+            } elseif (strpos($tTrimChars, $tPath[$tPathLength - 1]) === false) {
                 $tCombinedPath = $tPath . self::$defaults["pathSeparator"] . $tCombinedPath;
             } else {
                 $tCombinedPath = $tPath . $tCombinedPath;

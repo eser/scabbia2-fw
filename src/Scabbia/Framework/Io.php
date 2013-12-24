@@ -137,22 +137,29 @@ class Io
      */
     public static function combinePaths()
     {
-        $tPath = null;
-
+        $tCombinedPath = null;
         $tTrimChars = (strncasecmp(PHP_OS, "WIN", 3) === 0) ? "\\/" : "/";
 
         for ($tPaths = func_get_args(), $i = count($tPaths) - 1; $i >= 0; $i--) {
-            if ($tPath === null) {
-                $tPath = rtrim($tPaths[$i], $tTrimChars);
-            } else {
-                $tPath = rtrim($tPaths[$i], $tTrimChars) . self::$defaults["pathSeparator"] . $tPath;
+            $tPath = $tPaths[$i];
+
+            if (($tPathLength = strlen($tPath)) === 0) {
+                continue;
             }
 
-            if (self::isPathRooted($tPaths[$i])) {
-                return $tPath;
+            if ($tCombinedPath === null) {
+                $tCombinedPath = $tPath;
+            } else if (strpos($tTrimChars, $tPath[$tPathLength - 1]) === false) {
+                $tCombinedPath = $tPath . self::$defaults["pathSeparator"] . $tCombinedPath;
+            } else {
+                $tCombinedPath = $tPath . $tCombinedPath;
+            }
+
+            if (self::isPathRooted($tPath)) {
+                break;
             }
         }
 
-        return $tPath;
+        return $tCombinedPath;
     }
 }

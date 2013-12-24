@@ -58,10 +58,8 @@ class Io
         }
 
         for ($i = strlen($uPath) - 1; $i >= 0; $i--) {
-            if (
-                ord($uPath[$i]) < 32 || $uPath[$i] === "<" || $uPath[$i] === ">" || $uPath[$i] === "|" ||
-                $uPath[$i] === "\""
-            ) {
+            if (ord($uPath[$i]) < 32 || $uPath[$i] === "<" || $uPath[$i] === ">" || $uPath[$i] === "|" ||
+                $uPath[$i] === "\"") {
                 return false;
             }
         }
@@ -119,7 +117,8 @@ class Io
                 return false;
             }
 
-            if ($tLength >= 3 && ctype_alpha($uPath[0]) && $uPath[1] === ":" && ($uPath[2] === "\\" || $uPath[2] === "/")) {
+            if ($tLength >= 3 && ctype_alpha($uPath[0]) && $uPath[1] === ":" &&
+                ($uPath[2] === "\\" || $uPath[2] === "/")) {
                 return false;
             }
         } else {

@@ -68,10 +68,8 @@ class Core
         }
 
         // secure
-        if (
-            isset($_SERVER["HTTPS"]) &&
-            ((string)$_SERVER["HTTPS"] === "1" || strcasecmp($_SERVER["HTTPS"], "on") === 0)
-        ) {
+        if (isset($_SERVER["HTTPS"]) &&
+            ((string)$_SERVER["HTTPS"] === "1" || strcasecmp($_SERVER["HTTPS"], "on") === 0)) {
             self::$variables["secure"] = true;
         } elseif (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] === "https") {
             self::$variables["secure"] = true;

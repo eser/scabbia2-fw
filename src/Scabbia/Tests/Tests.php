@@ -65,4 +65,71 @@ class Tests
 
         return 0;
     }
+
+    /**
+     * Starts the code coverage.
+     */
+    public static function coverageStart()
+    {
+        xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+    }
+
+    /**
+     * Stops the code coverage.
+     *
+     * @return array results
+     */
+    public static function coverageStop()
+    {
+        $tCoverageData = xdebug_get_code_coverage();
+        xdebug_stop_code_coverage();
+
+        $tFinal = [
+            "files" => [],
+            "total" => [ "coveredLines" => 0, "totalLines" => 0 ]
+        ];
+
+        foreach ($tCoverageData as $tPath => $tLines) {
+            $tFileCoverage = [
+                "path"         => $tPath,
+                "coveredLines" => array_keys($tLines),
+                "totalLines"   => self::getFileLineCount($tPath)
+            ];
+
+            $tFinal["files"][] = $tFileCoverage;
+            $tFinal["total"]["coveredLines"] += count($tFileCoverage["coveredLines"]);
+            $tFinal["total"]["totalLines"] += $tFileCoverage["totalLines"];
+        }
+
+        $tFinal["total"]["percentage"] = ($tFinal["total"]["coveredLines"] * 100) / $tFinal["total"]["totalLines"];
+
+        return $tFinal;
+    }
+
+    /**
+     * Gets the number of lines of given file.
+     *
+     * @param string $uPath the path
+     *
+     * @return int|bool line count
+     *
+     * @see cloned from Scabbia\Framework\Io::getFileLineCount
+     */
+    protected static function getFileLineCount($uPath)
+    {
+        $tLineCount = 1;
+
+        $tFileHandle = @fopen($uPath, "r");
+        if ($tFileHandle === false) {
+            return false;
+        }
+
+        while (!feof($tFileHandle)){
+            $tLineCount += substr_count(fgets($tFileHandle, 4096), "\n");
+        }
+
+        fclose($tFileHandle);
+
+        return $tLineCount;
+    }
 }

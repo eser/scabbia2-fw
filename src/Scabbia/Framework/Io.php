@@ -28,7 +28,8 @@ class Io
      * @type array $defaults array of default variables
      */
     public static $defaults = [
-        "pathSeparator" => DIRECTORY_SEPARATOR
+        "pathSeparator" => DIRECTORY_SEPARATOR,
+        "fileReadBuffer" => 4096
     ];
 
 
@@ -161,5 +162,30 @@ class Io
         }
 
         return $tCombinedPath;
+    }
+
+    /**
+     * Gets the number of lines of given file.
+     *
+     * @param string $uPath the path
+     *
+     * @return int|bool line count
+     */
+    public static function getFileLineCount($uPath)
+    {
+        $tLineCount = 1;
+
+        $tFileHandle = @fopen($uPath, "r");
+        if ($tFileHandle === false) {
+            return false;
+        }
+
+        while (!feof($tFileHandle)){
+            $tLineCount += substr_count(fgets($tFileHandle, self::$defaults["fileReadBuffer"]), "\n");
+        }
+
+        fclose($tFileHandle);
+
+        return $tLineCount;
     }
 }

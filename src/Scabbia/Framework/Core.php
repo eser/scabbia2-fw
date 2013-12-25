@@ -36,7 +36,7 @@ class Core
     public static $variables = [];
 
     /**
-     * @type object $composerAutoloader the instance of the composer's autoloader class.
+     * @type object $composerAutoloader the instance of the composer's autoloader class
      */
     public static $composerAutoloader = null;
 
@@ -44,7 +44,7 @@ class Core
     /**
      * Initializes the framework to be ready to boot.
      *
-     * @param object $uComposerAutoloader The instance of the composer's autoloader class.
+     * @param object $uComposerAutoloader The instance of the composer's autoloader class
      */
     public static function init($uComposerAutoloader)
     {
@@ -57,22 +57,59 @@ class Core
     /**
      * Loads the project.
      *
-     * @param string $uProjectConfigPath The path of project configuration file.
+     * @param string $uProjectConfigPath The path of project configuration file
      */
     public static function loadProject($uProjectConfigPath)
     {
         // TODO load project.yml
         $tProjectYaml = file_get_contents(Io::combinePaths(self::$basepath, $uProjectConfigPath));
         $tParser = new Parser();
-        $tOutput = $tParser->parse($tProjectYaml);
+        $tProjectConfig = $tParser->parse($tProjectYaml);
 
-        var_dump($tOutput);
-        exit;
+        // TODO test cases for applications, and bind configuration to app
+        foreach ($tProjectConfig as $tApplicationKey => $tApplicationConfig) {
+            $tTargetApplication = $tApplicationKey;
 
-        // TODO test cases
+            if (isset($tApplicationConfig["tests"])) {
+                foreach ($tApplicationConfig["tests"] as $tApplicationTest) {
+                    $tSubject = self::translateVariables($tApplicationTest[0]);
+                    if (!preg_match($tApplicationTest[1], $tSubject)) {
+                        $tTargetApplication = false;
+                        break;
+                    }
+                }
+            }
+
+            if ($tTargetApplication !== false) {
+                break;
+            }
+        }
+
+        // Application::$config = $tProjectConfig[$tTargetApplication];
+
         // TODO initialize the proper environment and bind to core
         // TODO initialize application and bind to core
         // TODO load modules
+    }
+
+    /**
+     * Replaces placeholders in given string with framework-variables.
+     *
+     * @param string $uInput the string with placeholders
+     *
+     * @return string translated string
+     */
+    public static function translateVariables($uInput)
+    {
+        foreach (self::$variables as $tKey => $tValue) {
+            if (!is_scalar($tValue)) {
+                continue;
+            }
+
+            $uInput = str_replace('{' . $tKey . '}', $tValue, $uInput);
+        }
+
+        return $uInput;
     }
 
     /**

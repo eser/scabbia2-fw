@@ -14,6 +14,7 @@
 namespace Scabbia\Framework;
 
 use Scabbia\Framework\Io;
+use Scabbia\Yaml\Parser;
 
 /**
  * Core framework functionality.
@@ -34,24 +35,40 @@ class Core
      */
     public static $variables = [];
 
+    /**
+     * @type object $composerAutoloader the instance of the composer's autoloader class.
+     */
+    public static $composerAutoloader = null;
+
 
     /**
      * Initializes the framework to be ready to boot.
+     *
+     * @param object $uComposerAutoloader The instance of the composer's autoloader class.
      */
-    public static function init()
+    public static function init($uComposerAutoloader)
     {
         mb_internal_encoding("UTF-8");
 
+        self::$composerAutoloader = $uComposerAutoloader;
         self::setVariables();
-        self::loadProject();
     }
 
     /**
      * Loads the project.
+     *
+     * @param string $uProjectConfigPath The path of project configuration file.
      */
-    protected static function loadProject()
+    public static function loadProject($uProjectConfigPath)
     {
         // TODO load project.yml
+        $tProjectYaml = file_get_contents(Io::combinePaths(self::$basepath, $uProjectConfigPath));
+        $tParser = new Parser();
+        $tOutput = $tParser->parse($tProjectYaml);
+
+        var_dump($tOutput);
+        exit;
+
         // TODO test cases
         // TODO initialize the proper environment and bind to core
         // TODO initialize application and bind to core

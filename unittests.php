@@ -14,14 +14,16 @@
 require __DIR__ . "/psr0autoloader.php";
 spl_autoload_register('autoload');
 
+use Scabbia\Tests\Tests;
+
 $tTestClasses = [
     "Scabbia\\Yaml\\Tests\\ParserTest",
     "Scabbia\\Yaml\\Tests\\InlineTest"
 ];
 
-Scabbia\Tests\Tests::coverageStart();
-$tExitCode = Scabbia\Tests\Tests::runUnitTests($tTestClasses);
-$tCoverageReport = Scabbia\Tests\Tests::coverageStop();
+Tests::coverageStart();
+$tExitCode = Tests::runUnitTests($tTestClasses);
+$tCoverageReport = Tests::coverageStop();
 
 echo "Code Coverage = ", round($tCoverageReport["total"]["percentage"], 2), "%";
 

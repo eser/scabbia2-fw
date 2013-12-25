@@ -23,6 +23,6 @@ Scabbia\Tests\Tests::coverageStart();
 $tExitCode = Scabbia\Tests\Tests::runUnitTests($tTestClasses);
 $tCoverageReport = Scabbia\Tests\Tests::coverageStop();
 
-echo "Code Covered = ", round($tCoverageReport["total"]["percentage"], 2), "%";
+echo "Code Coverage = ", round($tCoverageReport["total"]["percentage"], 2), "%";
 
 exit($tExitCode);

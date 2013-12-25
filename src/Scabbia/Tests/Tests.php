@@ -124,7 +124,7 @@ class Tests
             return false;
         }
 
-        while (!feof($tFileHandle)){
+        while (!feof($tFileHandle)) {
             $tLineCount += substr_count(fgets($tFileHandle, 4096), "\n");
         }
 

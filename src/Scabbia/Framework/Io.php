@@ -180,7 +180,7 @@ class Io
             return false;
         }
 
-        while (!feof($tFileHandle)){
+        while (!feof($tFileHandle)) {
             $tLineCount += substr_count(fgets($tFileHandle, self::$defaults["fileReadBuffer"]), "\n");
         }
 

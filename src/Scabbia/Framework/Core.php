@@ -62,9 +62,17 @@ class Core
     public static function loadProject($uProjectConfigPath)
     {
         // TODO load project.yml
-        $tProjectYaml = file_get_contents(Io::combinePaths(self::$basepath, $uProjectConfigPath));
-        $tParser = new Parser();
-        $tProjectConfig = $tParser->parse($tProjectYaml);
+        $tProjectYamlPath = Io::combinePaths(self::$basepath, $uProjectConfigPath);
+        $tProjectYamlCachePath = self::$basepath . "/cache/" . crc32($tProjectYamlPath);
+
+        $tProjectConfig = Io::readFromCache(
+            $tProjectYamlCachePath,
+            function () use ($tProjectYamlPath) {
+                $tParser = new Parser();
+                return $tParser->parse(Io::read($tProjectYamlPath));
+            },
+            60*60
+        );
 
         // TODO test cases for applications, and bind configuration to app
         foreach ($tProjectConfig as $tApplicationKey => $tApplicationConfig) {
@@ -106,7 +114,7 @@ class Core
                 continue;
             }
 
-            $uInput = str_replace('{' . $tKey . '}', $tValue, $uInput);
+            $uInput = str_replace("{" . $tKey . "}", $tValue, $uInput);
         }
 
         return $uInput;
@@ -118,7 +126,7 @@ class Core
     protected static function setVariables()
     {
         if (self::$basepath === null) {
-            $tScriptDirectory = pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME);
+            $tScriptDirectory = pathinfo($_SERVER["SCRIPT_FILENAME"], PATHINFO_DIRNAME);
 
             if ($tScriptDirectory !== ".") {
                 self::$basepath = Io::combinePaths(getcwd(), $tScriptDirectory);

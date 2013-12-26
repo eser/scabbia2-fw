@@ -44,6 +44,155 @@ class Io
     }
 
     /**
+     * Encrypts the plaintext with the given key.
+     *
+     * @param string    $uString    the plaintext
+     * @param string    $uKey       the key
+     *
+     * @return string   ciphertext
+     */
+    public static function encrypt($uString, $uKey)
+    {
+        $tResult = "";
+
+        for ($i = 1, $tCount = strlen($uString); $i <= $tCount; $i++) {
+            $tChar = substr($uString, $i - 1, 1);
+            $tKeyChar = substr($uKey, ($i % strlen($uKey)) - 1, 1);
+            $tResult .= chr(ord($tChar) + ord($tKeyChar));
+        }
+
+        return $tResult;
+    }
+
+    /**
+     * Decrypts the ciphertext with the given key.
+     *
+     * @param string    $uString    the ciphertext
+     * @param string    $uKey       the key
+     *
+     * @return string   plaintext
+     */
+    public static function decrypt($uString, $uKey)
+    {
+        $tResult = "";
+
+        for ($i = 1, $tCount = strlen($uString); $i <= $tCount; $i++) {
+            $tChar = substr($uString, $i - 1, 1);
+            $tKeyChar = substr($uKey, ($i % strlen($uKey)) - 1, 1);
+            $tResult .= chr(ord($tChar) - ord($tKeyChar));
+        }
+
+        return $tResult;
+    }
+
+    /**
+     * Reads from a file.
+     *
+     * @param string    $uPath  the file path
+     * @param int       $uFlags io flags
+     *
+     * @return bool|string the file content
+     */
+    public static function read($uPath, $uFlags = LOCK_SH)
+    {
+        $tHandle = fopen($uPath, "r", false);
+        if ($tHandle === false) {
+            return false;
+        }
+
+        $tLock = flock($tHandle, $uFlags);
+        if ($tLock === false) {
+            fclose($tHandle);
+
+            return false;
+        }
+
+        $tContent = stream_get_contents($tHandle);
+        flock($tHandle, LOCK_UN);
+        fclose($tHandle);
+
+        return $tContent;
+    }
+
+    /**
+     * Writes to a file.
+     *
+     * @param string    $uPath      the file path
+     * @param string    $uContent   the file content
+     * @param int       $uFlags     io flags
+     *
+     * @return bool
+     */
+    public static function write($uPath, $uContent, $uFlags = LOCK_EX)
+    {
+        $tHandle = fopen(
+            $uPath,
+            ($uFlags & FILE_APPEND) > 0 ? "a" : "w",
+            false
+        );
+        if ($tHandle === false) {
+            return false;
+        }
+
+        if (flock($tHandle, $uFlags) === false) {
+            fclose($tHandle);
+
+            return false;
+        }
+
+        fwrite($tHandle, $uContent);
+        fflush($tHandle);
+        flock($tHandle, LOCK_UN);
+        fclose($tHandle);
+
+        return true;
+    }
+
+    /**
+     * Reads from a serialized file.
+     *
+     * @param string        $uPath      the file path
+     * @param string|null   $uKeyphase  the key
+     *
+     * @return bool|mixed   the unserialized object
+     */
+    public static function readSerialize($uPath, $uKeyphase = null)
+    {
+        $tContent = self::read($uPath);
+
+        //! ambiguous return value
+        if ($tContent === false) {
+            return false;
+        }
+
+        if ($uKeyphase !== null && strlen($uKeyphase) > 0) {
+            $tContent = self::decrypt($tContent, $uKeyphase);
+        }
+
+        return unserialize($tContent);
+    }
+
+    /**
+     * Serializes an object into a file.
+     *
+     * @param string        $uPath      the file path
+     * @param string        $uContent   the file content
+     * @param string|null   $uKeyphase  the key
+     *
+     * @return bool
+     */
+    public static function writeSerialize($uPath, $uContent, $uKeyphase = null)
+    {
+        $tContent = serialize($uContent);
+
+        if ($uKeyphase !== null && strlen($uKeyphase) > 0) {
+            $tContent = self::encrypt($tContent, $uKeyphase);
+        }
+
+        return self::write($uPath, $tContent);
+    }
+
+    /**
      * Checks the path contains invalid chars or not.
      *
      * @param string $uPath the path
@@ -187,5 +336,83 @@ class Io
         fclose($tFileHandle);
 
         return $tLineCount;
+    }
+
+    /**
+     * Determines the file is if readable and not expired.
+     *
+     * @param string    $uPath  the relative path
+     * @param int|bool  $uTtl   the time to live period in seconds
+     *
+     * @return bool the result
+     */
+    public static function isReadable($uPath, $uTtl = false)
+    {
+        if (!file_exists($uPath)) {
+            return false;
+        }
+
+        return ($uTtl === false || (time() - filemtime($uPath) <= $uTtl));
+    }
+
+    /**
+     * Determines the file is if readable and newer than given timestamp.
+     *
+     * @param string    $uPath          the relative path
+     * @param int       $uLastModified  the time to live period in seconds
+     *
+     * @return bool the result
+     */
+    public static function isReadableAndNewerThan($uPath, $uLastModified)
+    {
+        return (file_exists($uPath) && filemtime($uPath) >= $uLastModified);
+    }
+
+    /**
+     * Reads the contents from cache file as long as it is not expired.
+     * If the file is expired, invokes callback method and caches output.
+     *
+     * @param string      $uPath         the relative path
+     * @param mixed       $uDefaultValue the default value
+     * @param int|bool    $uTtl          the time to live period in seconds
+     *
+     * @return mixed the result
+     */
+    public static function readFromCache($uPath, $uDefaultValue, $uTtl = false)
+    {
+        if (self::isReadable($uPath, $uTtl)) {
+            return self::readSerialize($uPath);
+        }
+
+        if (is_a($uDefaultValue, "Closure")) {
+            $uDefaultValue = call_user_func($uDefaultValue);
+        }
+
+        self::writeSerialize($uPath, $uDefaultValue);
+        return $uDefaultValue;
+    }
+
+    /**
+     * Garbage collects the given path
+     *
+     * @param string    $uPath  path
+     * @param int       $uTtl   age
+     */
+    public static function garbageCollect($uPath, $uTtl = -1)
+    {
+        $tDirectory = new \DirectoryIterator($uPath);
+
+        clearstatcache();
+        foreach ($tDirectory as $tFile) {
+            if (!$tFile->isFile()) {
+                continue;
+            }
+
+            if ($uTtl !== -1 && (time() - $tFile->getMTime()) < $uTtl) {
+                continue;
+            }
+
+            unlink($tFile->getPathname());
+        }
     }
 }

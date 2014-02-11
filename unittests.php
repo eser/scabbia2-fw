@@ -15,7 +15,7 @@
 require __DIR__ . "/psr4autoloader.php";
 
 // instantiate the loader
-$tLoader = new \Psr4AutoloaderClass();
+$tLoader = new ScabbiaLoaders\Psr4AutoloaderClass();
 
 // register the autoloader
 $tLoader->register();

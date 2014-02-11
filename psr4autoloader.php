@@ -11,6 +11,8 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
+namespace ScabbiaLoaders;
+
 /**
  * PSR-4 Autoloader Class
  *
@@ -198,6 +200,7 @@ class Psr4AutoloaderClass
             require $file;
             return true;
         }
+
         return false;
     }
 }

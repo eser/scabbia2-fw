@@ -11,14 +11,14 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Tests;
+namespace Scabbia\Testing;
 
-use Scabbia\Tests\ITestOutput;
+use Scabbia\Testing\ITestOutput;
 
 /**
  * Implementation of output in Html format.
  *
- * @package     Scabbia\Tests
+ * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */

@@ -27,16 +27,16 @@
  * - Encoding checks removed.
  */
 
-namespace Scabbia\Yaml\Tests;
+namespace Scabbia\Tests\Yaml;
 
-use Scabbia\Tests\UnitTestFixture;
+use Scabbia\Testing\UnitTestFixture;
 use Scabbia\Yaml\Dumper;
 use Scabbia\Yaml\Inline;
 
 /**
  * Tests of Inline class
  *
- * @package     Scabbia\Yaml\Tests
+ * @package     Scabbia\Tests\Yaml
  * @since       2.0.0
  */
 class InlineTest extends UnitTestFixture

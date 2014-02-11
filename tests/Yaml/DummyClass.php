@@ -27,12 +27,12 @@
  * - Encoding checks removed.
  */
 
-namespace Scabbia\Yaml\Tests;
+namespace Scabbia\Tests\Yaml;
 
 /**
  * A dummy class for serialization tests
  *
- * @package     Scabbia\Yaml\Tests
+ * @package     Scabbia\Tests\Yaml
  * @since       2.0.0
  */
 class DummyClass

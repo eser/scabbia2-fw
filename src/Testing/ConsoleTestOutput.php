@@ -11,16 +11,18 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Tests;
+namespace Scabbia\Testing;
+
+use Scabbia\Testing\ITestOutput;
 
 /**
- * Default methods needed for implementation of output in various interfaces.
+ * Implementation of test report to console.
  *
- * @package     Scabbia\Tests
+ * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-interface ITestOutput
+class ConsoleTestOutput implements ITestOutput
 {
     /**
      * Writes given message.
@@ -30,14 +32,30 @@ interface ITestOutput
      *
      * @return void
      */
-    public function writeHeader($uHeading, $uMessage);
+    public function writeHeader($uHeading, $uMessage)
+    {
+        if ($uHeading === 1) {
+            $tChar = "=";
+        } else {
+            $tChar = "-";
+        }
+
+        echo "$uMessage\r\n", str_repeat($tChar, strlen($uMessage)), "\r\n";
+
+        if ($uHeading === 1) {
+            echo "\r\n";
+        }
+    }
 
     /**
-     * Outputs the test report in specified representation.
+     * Outputs the test report to console.
      *
      * @param array $uArray Target array will be printed
      *
      * @return void
      */
-    public function writeTestReport(array $uArray);
+    public function writeTestReport(array $uArray)
+    {
+        print_r($uArray);
+    }
 }

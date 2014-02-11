@@ -11,19 +11,29 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-require __DIR__ . "/psr0autoloader.php";
-spl_autoload_register('autoload');
+// include the loader class
+require __DIR__ . "/psr4autoloader.php";
 
-use Scabbia\Tests\Tests;
+// instantiate the loader
+$tLoader = new \Psr4AutoloaderClass();
+
+// register the autoloader
+$tLoader->register();
+
+// register the base directories for the namespace prefix
+$tLoader->addNamespace("Scabbia\\", __DIR__ . "/src/");
+$tLoader->addNamespace("Scabbia\\Tests\\", __DIR__ . "/tests/");
+
+use Scabbia\Testing\Testing;
 
 $tTestClasses = [
-    "Scabbia\\Yaml\\Tests\\ParserTest",
-    "Scabbia\\Yaml\\Tests\\InlineTest"
+    "Scabbia\\Tests\\Yaml\\ParserTest",
+    "Scabbia\\Tests\\Yaml\\InlineTest"
 ];
 
-Tests::coverageStart();
-$tExitCode = Tests::runUnitTests($tTestClasses);
-$tCoverageReport = Tests::coverageStop();
+Testing::coverageStart();
+$tExitCode = Testing::runUnitTests($tTestClasses);
+$tCoverageReport = Testing::coverageStop();
 
 echo "Code Coverage = ", round($tCoverageReport["total"]["percentage"], 2), "%";
 

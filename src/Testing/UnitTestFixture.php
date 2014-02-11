@@ -11,13 +11,13 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Tests;
+namespace Scabbia\Testing;
 
 /**
  * Base class for fixtures which is going to be constructed to host unit testing
  * methods inside.
  *
- * @package     Scabbia\Tests
+ * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */

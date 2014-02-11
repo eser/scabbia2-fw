@@ -11,20 +11,20 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Tests;
+namespace Scabbia\Testing;
 
-use Scabbia\Tests\ConsoleTestOutput;
-use Scabbia\Tests\HtmlTestOutput;
+use Scabbia\Testing\ConsoleTestOutput;
+use Scabbia\Testing\HtmlTestOutput;
 
 /**
  * A small test implementation which helps us during the development of
  * Scabbia2 PHP Framework's itself and related production code.
  *
- * @package     Scabbia\Tests
+ * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-class Tests
+class Testing
 {
     /**
      * Runs given unit tests.

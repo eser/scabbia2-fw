@@ -27,8 +27,9 @@
         "ext-tokenizer": "ext/tokenizer for lexical analysis"
     },
     "autoload": {
-        "psr-0": {
-            "Scabbia": "src"
+        "psr-4": {
+            "Scabbia\\": [ "src/" ],
+            "Scabbia\\Tests\\": [ "tests/" ]
         }
     },
     "scripts": {

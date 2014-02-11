@@ -27,16 +27,16 @@
  * - Encoding checks removed.
  */
 
-namespace Scabbia\Yaml\Tests;
+namespace Scabbia\Tests\Yaml;
 
-use Scabbia\Tests\UnitTestFixture;
+use Scabbia\Testing\UnitTestFixture;
 use Scabbia\Yaml\Parser;
-use Scabbia\Yaml\Tests\DummyClass;
+use Scabbia\Tests\Yaml\DummyClass;
 
 /**
  * Tests of Parser class
  *
- * @package     Scabbia\Yaml\Tests
+ * @package     Scabbia\Tests\Yaml
  * @since       2.0.0
  */
 class ParserTest extends UnitTestFixture
@@ -467,7 +467,7 @@ EOF;
     public function testObjectSupportEnabled()
     {
         $input = <<<EOF
-foo: !!php/object:O:29:"Scabbia\Yaml\Tests\DummyClass":1:{s:1:"b";s:3:"foo";}
+foo: !!php/object:O:29:"Scabbia\Tests\Yaml\DummyClass":1:{s:1:"b";s:3:"foo";}
 bar: 1
 EOF;
         $this->assertEquals(

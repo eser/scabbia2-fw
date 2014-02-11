@@ -67,7 +67,7 @@ class Psr4AutoloaderClass
      *
      * @var array
      */
-    protected $prefixes = array();
+    protected $prefixes = [];
 
     /**
      * Register loader with SPL autoloader stack.
@@ -76,7 +76,7 @@ class Psr4AutoloaderClass
      */
     public function register()
     {
-        spl_autoload_register(array($this, 'loadClass'));
+        spl_autoload_register([$this, "loadClass"]);
     }
 
     /**
@@ -93,15 +93,15 @@ class Psr4AutoloaderClass
     public function addNamespace($prefix, $base_dir, $prepend = false)
     {
         // normalize namespace prefix
-        $prefix = trim($prefix, '\\') . '\\';
+        $prefix = trim($prefix, "\\") . "\\";
 
         // normalize the base directory with a trailing separator
-        $base_dir = rtrim($base_dir, '/') . DIRECTORY_SEPARATOR;
-        $base_dir = rtrim($base_dir, DIRECTORY_SEPARATOR) . '/';
+        $base_dir = rtrim($base_dir, "/") . DIRECTORY_SEPARATOR;
+        $base_dir = rtrim($base_dir, DIRECTORY_SEPARATOR) . "/";
 
         // initialize the namespace prefix array
         if (isset($this->prefixes[$prefix]) === false) {
-            $this->prefixes[$prefix] = array();
+            $this->prefixes[$prefix] = [];
         }
 
         // retain the base directory for the namespace prefix
@@ -126,7 +126,7 @@ class Psr4AutoloaderClass
 
         // work backwards through the namespace names of the fully-qualified
         // class name to find a mapped file name
-        while (false !== $pos = strrpos($prefix, '\\')) {
+        while (($pos = strrpos($prefix, "\\")) !== false) {
 
             // retain the trailing namespace separator in the prefix
             $prefix = substr($class, 0, $pos + 1);
@@ -142,7 +142,7 @@ class Psr4AutoloaderClass
 
             // remove the trailing namespace separator for the next iteration
             // of strrpos()
-            $prefix = rtrim($prefix, '\\');
+            $prefix = rtrim($prefix, "\\");
         }
 
         // never found a mapped file
@@ -171,11 +171,11 @@ class Psr4AutoloaderClass
             // replace namespace separators with directory separators
             // in the relative class name, append with .php
             $file = $base_dir
-                . str_replace('\\', DIRECTORY_SEPARATOR, $relative_class)
-                . '.php';
+                . str_replace("\\", DIRECTORY_SEPARATOR, $relative_class)
+                . ".php";
             $file = $base_dir
-                . str_replace('\\', '/', $relative_class)
-                . '.php';
+                . str_replace("\\", "/", $relative_class)
+                . ".php";
 
             // if the mapped file exists, require it
             if ($this->requireFile($file)) {

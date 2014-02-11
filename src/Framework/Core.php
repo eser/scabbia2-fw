@@ -71,7 +71,7 @@ class Core
                 $tParser = new Parser();
                 return $tParser->parse(Io::read($tProjectYamlPath));
             },
-            60*60
+            60 * 60
         );
 
         // TODO test cases for applications, and bind configuration to app
@@ -89,15 +89,26 @@ class Core
             }
 
             if ($tTargetApplication !== false) {
-                break;
+                self::runApplication($tApplicationConfig);
             }
         }
+    }
 
-        // Application::$config = $tProjectConfig[$tTargetApplication];
+    /**
+     * Runs an application
+     *
+     * @param mixed $uApplicationConfig The application configuration
+     */
+    public static function runApplication($uApplicationConfig)
+    {
+        // var_dump($uApplicationConfig);
 
-        // TODO initialize the proper environment and bind to core
-        // TODO initialize application and bind to core
+        // TODO set variables (development, disableCaches)
+        // TODO set namespaces
+        // TODO initialize the proper environment
+        // TODO initialize application with passing environment
         // TODO load modules
+        // TODO execute autoexecs
     }
 
     /**

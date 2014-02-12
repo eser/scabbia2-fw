@@ -61,7 +61,7 @@ class Core
      */
     public static function loadProject($uProjectConfigPath)
     {
-        // TODO load project.yml
+        // load project.yml
         $tProjectYamlPath = Io::combinePaths(self::$basepath, $uProjectConfigPath);
         $tProjectYamlCachePath = self::$basepath . "/cache/" . crc32($tProjectYamlPath);
 
@@ -74,7 +74,7 @@ class Core
             60 * 60
         );
 
-        // TODO test cases for applications, and bind configuration to app
+        // test cases for applications, and bind configuration to app
         foreach ($tProjectConfig as $tApplicationKey => $tApplicationConfig) {
             $tTargetApplication = $tApplicationKey;
 
@@ -101,7 +101,13 @@ class Core
      */
     public static function runApplication($uApplicationConfig)
     {
-        // var_dump($uApplicationConfig);
+        // register psr-0 source paths to composer.
+        $tPaths = [];
+        foreach ($uApplicationConfig["sources"] as $tPath) {
+            $tPaths[] = self::translateVariables($tPath);
+        }
+
+        self::$composerAutoloader->set(false, $tPaths);
 
         // TODO set variables (development, disableCaches)
         // TODO set namespaces
@@ -144,6 +150,8 @@ class Core
             } else {
                 self::$basepath = getcwd();
             }
+
+            self::$variables["basepath"] = &self::$basepath;
         }
 
         // secure

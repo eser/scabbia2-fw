@@ -754,7 +754,7 @@ class String
 
             if ($tChar === $uSpace) {
                 $tCapital = true;
-            } else if ($tCapital) {
+            } elseif ($tCapital) {
                 $tOutput .= self::toUpper($tChar);
                 $tCapital = false;
                 continue;

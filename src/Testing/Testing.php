@@ -107,6 +107,25 @@ class Testing
     }
 
     /**
+     * The entry point for `scabbia tests` command.
+     */
+    public static function testCommand()
+    {
+        $tTestClasses = [
+            "Scabbia\\Tests\\Yaml\\ParserTest",
+            "Scabbia\\Tests\\Yaml\\InlineTest"
+        ];
+
+        self::coverageStart();
+        $tExitCode = self::runUnitTests($tTestClasses);
+        $tCoverageReport = self::coverageStop();
+
+        echo "Code Coverage = ", round($tCoverageReport["total"]["percentage"], 2), "%";
+
+        exit($tExitCode);
+    }
+
+    /**
      * Gets the number of lines of given file.
      *
      * @param string $uPath the path

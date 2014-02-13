@@ -26,15 +26,4 @@ $tLoader->addNamespace("Scabbia\\Tests\\", __DIR__ . "/tests/");
 
 use Scabbia\Testing\Testing;
 
-$tTestClasses = [
-    "Scabbia\\Tests\\Yaml\\ParserTest",
-    "Scabbia\\Tests\\Yaml\\InlineTest"
-];
-
-Testing::coverageStart();
-$tExitCode = Testing::runUnitTests($tTestClasses);
-$tCoverageReport = Testing::coverageStop();
-
-echo "Code Coverage = ", round($tCoverageReport["total"]["percentage"], 2), "%";
-
-exit($tExitCode);
+Testing::testCommand();

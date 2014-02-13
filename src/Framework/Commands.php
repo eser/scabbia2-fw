@@ -29,7 +29,9 @@ class Commands
     /**
      * @type object $commands the commands read from commands file
      */
-    public static $commands = null;
+    public static $commands = [
+        "tests" => ["Scabbia\\Testing\\Testing::testCommand"]
+    ];
 
 
     /**
@@ -43,7 +45,7 @@ class Commands
         $tCommandsYamlPath = Io::combinePaths(Core::$basepath, $uCommandsConfigPath);
         $tCommandsYamlCachePath = Core::$basepath . "/cache/" . crc32($tCommandsYamlPath);
 
-        self::$commands = Io::readFromCache(
+        $tCommandsConfig = Io::readFromCache(
             $tCommandsYamlCachePath,
             function () use ($tCommandsYamlPath) {
                 $tParser = new Parser();
@@ -54,11 +56,16 @@ class Commands
 
         // register psr-0 source paths to composer.
         $tPaths = [];
-        foreach (self::$commands["sources"] as $tPath) {
+        foreach ($tCommandsConfig["sources"] as $tPath) {
             $tPaths[] = Core::translateVariables($tPath);
         }
 
         Core::$composerAutoloader->set(false, $tPaths);
+
+        // register commands
+        foreach ($tCommandsConfig["commands"] as $tCommandKey => $tCommand) {
+            self::$commands[$tCommandKey] = (array)$tCommand;
+        }
     }
 
     /**
@@ -72,8 +79,8 @@ class Commands
     {
         $tCommand = trim($uCommands[0]);
 
-        if (isset(self::$commands["commands"][$tCommand])) {
-            $tCallbacks = (array)self::$commands["commands"][$tCommand];
+        if (isset(self::$commands[$tCommand])) {
+            $tCallbacks = self::$commands[$tCommand];
         } elseif (is_callable($tCommand)) {
             $tCallbacks = [$tCommand];
         }

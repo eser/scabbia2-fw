@@ -55,7 +55,7 @@ class Core
     }
 
     /**
-     * Loads the project.
+     * Loads the project file.
      *
      * @param string $uProjectConfigPath The path of project configuration file
      */

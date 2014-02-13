@@ -740,10 +740,11 @@ class String
      * Capitalizes all first characters of the words in the given string.
      *
      * @param string $uString original string
+     * @param string $uSpace  the space character
      *
      * @return string the string with the first characters of the words capitalized
      */
-    public static function capitalizeWords($uString)
+    public static function capitalizeWords($uString, $uSpace = " ")
     {
         $tOutput = "";
         $tCapital = true;
@@ -751,12 +752,9 @@ class String
         for ($tPos = 0, $tLen = self::length($uString); $tPos < $tLen; $tPos++) {
             $tChar = self::substr($uString, $tPos, 1);
 
-            if ($tChar === " ") {
+            if ($tChar === $uSpace) {
                 $tCapital = true;
-                continue;
-            }
-
-            if ($tCapital) {
+            } else if ($tCapital) {
                 $tOutput .= self::toUpper($tChar);
                 $tCapital = false;
                 continue;

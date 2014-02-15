@@ -77,7 +77,7 @@ class Commands
      */
     public static function execute(array $uCommands)
     {
-        $tCommand = trim($uCommands[0]);
+        $tCommand = trim(array_shift($uCommands));
 
         if (isset(self::$commands[$tCommand])) {
             $tCallbacks = self::$commands[$tCommand];
@@ -90,7 +90,7 @@ class Commands
         }
 
         foreach ($tCallbacks as $tCallback) {
-            call_user_func($tCallback);
+            call_user_func($tCallback, $uCommands);
         }
     }
 }

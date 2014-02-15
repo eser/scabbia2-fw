@@ -415,4 +415,79 @@ class Io
             unlink($tFile->getPathname());
         }
     }
+
+    /**
+     * Gets the list of files matching the given pattern
+     *
+     * @param string        $uPath       path to be searched
+     * @param string|null   $uPattern    pattern of files will be in the list
+     * @param bool          $uRecursive  recursive search
+     * @param bool          $uBasenames  use basenames only
+     *
+     * @return array the list of files
+     */
+    public static function getFiles($uPath, $uPattern = null, $uRecursive = true, $uBasenames = false)
+    {
+        $tArray = ["." => []];
+        $tDir = new \DirectoryIterator($uPath);
+
+        foreach ($tDir as $tFile) {
+            $tFileName = $tFile->getFilename();
+
+            if ($tFileName[0] === ".") { // $tFile->isDot()
+                continue;
+            }
+
+            if ($tFile->isDir()) {
+                if ($uRecursive) {
+                    $tArray[$tFileName] = self::getFiles("{$uPath}/{$tFileName}", $uPattern, true, $uBasenames);
+                    continue;
+                }
+
+                $tArray[$tFileName] = null;
+                continue;
+            }
+
+            if ($tFile->isFile() && ($uPattern === null || fnmatch($uPattern, $tFileName))) {
+                if ($uBasenames) {
+                    $tArray["."][] = pathinfo($tFileName, PATHINFO_FILENAME);
+                } else {
+                    $tArray["."][] = $tFileName;
+                }
+            }
+        }
+
+        return $tArray;
+    }
+
+
+    /**
+     * Apply a function/method to every file matching the given pattern
+     *
+     * @param string        $uPath       path to be searched
+     * @param string|null   $uPattern    pattern of files will be in the list
+     * @param bool          $uRecursive  recursive search
+     * @param callable      $uCallback   callback function/method
+     */
+    public static function getFilesWalk($uPath, $uPattern, $uRecursive, /* callable */ $uCallback)
+    {
+        $tDir = new \DirectoryIterator($uPath);
+
+        foreach ($tDir as $tFile) {
+            $tFileName = $tFile->getFilename();
+
+            if ($tFileName[0] === ".") { // $tFile->isDot()
+                continue;
+            }
+
+            if ($uRecursive && $tFile->isDir()) {
+                self::getFilesWalk("{$uPath}/{$tFileName}", $uPattern, true, $uCallback);
+                continue;
+            }
+
+            if ($tFile->isFile() && ($uPattern === null || fnmatch($uPattern, $tFileName))) {
+                call_user_func($uCallback, "{$uPath}/{$tFileName}");
+            }
+        }
+    }
 }

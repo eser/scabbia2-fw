@@ -71,7 +71,7 @@ abstract class UnitTestFixture
      *
      * @return void
      */
-    public function testUnit($uName, callable $uCallback)
+    public function testUnit($uName, /* callable */ $uCallback)
     {
         $this->testStack[] = ["name" => $uName, "callback" => $uCallback];
 

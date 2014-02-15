@@ -55,17 +55,19 @@ class Core
     }
 
     /**
-     * Loads the project file.
+     * Reads the project file.
      *
      * @param string $uProjectConfigPath The path of project configuration file
+     *
+     * @return array project file read
      */
-    public static function loadProject($uProjectConfigPath)
+    public static function readProjectFile($uProjectConfigPath)
     {
         // load project.yml
         $tProjectYamlPath = Io::combinePaths(self::$basepath, $uProjectConfigPath);
         $tProjectYamlCachePath = self::$basepath . "/cache/" . crc32($tProjectYamlPath);
 
-        $tProjectConfig = Io::readFromCache(
+        return Io::readFromCache(
             $tProjectYamlCachePath,
             function () use ($tProjectYamlPath) {
                 $tParser = new Parser();
@@ -73,6 +75,16 @@ class Core
             },
             60 * 60
         );
+    }
+
+    /**
+     * Loads the project file.
+     *
+     * @param string $uProjectConfigPath The path of project configuration file
+     */
+    public static function loadProject($uProjectConfigPath)
+    {
+        $tProjectConfig = self::readProjectFile($uProjectConfigPath);
 
         // test cases for applications, and bind configuration to app
         foreach ($tProjectConfig as $tApplicationKey => $tApplicationConfig) {
@@ -109,10 +121,8 @@ class Core
 
         self::$composerAutoloader->set(false, $tPaths);
 
-        // TODO set variables (development, disableCaches)
-        // TODO set namespaces
         // TODO initialize the proper environment
-        // TODO initialize application with passing environment
+        // TODO instantiate application with variables (environment, application config [development, disableCaches])
         // TODO load modules
         // TODO execute autoexecs
     }

@@ -1688,7 +1688,7 @@ class String
      *
      * @return string updated string
      */
-    public static function convertLinks($uString, callable $uCallback)
+    public static function convertLinks($uString, /* callable */ $uCallback)
     {
         return preg_replace_callback(
             "#((https?://)?([-\\w]+\\.[-\\w\\.]+)+\\w(:\\d+)?(/([-\\w/_\\.]*(\\?\\S+)?)?)*)#",

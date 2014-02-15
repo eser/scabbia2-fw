@@ -13,6 +13,9 @@
 
 namespace Scabbia\Mvc;
 
+use Scabbia\Framework\Core;
+use Scabbia\Framework\Io;
+
 /**
  * Generator
  *
@@ -38,12 +41,15 @@ class Generator
                 }
 
                 $tRoute = $tMethod["route"][0];
-                $tRoute["controller"] = $tClassKey;
-                $tRoute["action"] = $tMethodKey;
-                $tRoutes[] = $tRoute;
+                $tRoutes[$tRoute["path"]] = [
+                    "method"     => $tRoute["method"],
+                    "controller" => $tClassKey,
+                    "action"     => $tMethodKey
+                ];
             }
         }
 
-        print_r($tRoutes);
+        $tRoutesFilePath = Core::$basepath . "/writable/generated/routes.php";
+        Io::writePhpFile($tRoutesFilePath, $tRoutes);
     }
 }

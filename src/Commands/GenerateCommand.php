@@ -15,7 +15,6 @@ namespace Scabbia\Commands;
 
 use Scabbia\Framework\Core;
 use Scabbia\Framework\Io;
-// use Scabbia\Yaml\Parser;
 
 /**
  * Command class for "php scabbia generate"

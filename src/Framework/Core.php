@@ -65,7 +65,7 @@ class Core
     {
         // load project.yml
         $tProjectYamlPath = Io::combinePaths(self::$basepath, $uProjectConfigPath);
-        $tProjectYamlCachePath = self::$basepath . "/cache/" . crc32($tProjectYamlPath);
+        $tProjectYamlCachePath = self::$basepath . "/writable/cache/" . crc32($tProjectYamlPath);
 
         return Io::readFromCache(
             $tProjectYamlCachePath,

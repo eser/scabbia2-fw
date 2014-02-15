@@ -193,6 +193,22 @@ class Io
     }
 
     /**
+     * Exports an object into a php file
+     *
+     * @param string        $uPath      the file path
+     * @param string        $uContent   the file content
+     *
+     * @return bool
+     */
+    public static function writePhpFile($uPath, $uContent)
+    {
+        return self::write(
+            $uPath,
+            "<" . "?php return " . var_export($uContent, true) . ";\n"
+        );
+    }
+
+    /**
      * Checks the path contains invalid chars or not
      *
      * @param string $uPath the path

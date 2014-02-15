@@ -64,7 +64,7 @@ class Commands
 
         // register commands
         foreach ($tCommandsConfig["commands"] as $tCommandKey => $tCommand) {
-            self::$commands[$tCommandKey] = (array)$tCommand;
+            self::$commands[$tCommandKey] = $tCommand;
         }
     }
 
@@ -80,9 +80,16 @@ class Commands
         $tCommand = trim(array_shift($uCommands));
 
         if (isset(self::$commands[$tCommand])) {
-            $tCallbacks = self::$commands[$tCommand];
+            $tCallbacks = (array)self::$commands[$tCommand]["callback"];
+
+            if (isset(self::$commands[$tCommand]["config"])) {
+                $tConfig = self::$commands[$tCommand]["config"];
+            } else {
+                $tConfig = null;
+            }
         } elseif (is_callable($tCommand)) {
             $tCallbacks = [$tCommand];
+            $tConfig = null;
         }
 
         if (!isset($tCallbacks)) {
@@ -90,7 +97,7 @@ class Commands
         }
 
         foreach ($tCallbacks as $tCallback) {
-            call_user_func($tCallback, $uCommands);
+            call_user_func($tCallback, $uCommands, $tConfig);
         }
     }
 }

@@ -153,6 +153,8 @@ class GenerateCommand
     public static function processClass($uClass)
     {
         $tClassAnnotations = [
+            // "class" => [],
+
             "methods" => [],
             "properties" => [],
 
@@ -162,6 +164,12 @@ class GenerateCommand
         $tCount = 0;
 
         $tReflection = new \ReflectionClass($uClass);
+
+        $tDocComment = $tReflection->getDocComment();
+        if (strlen($tDocComment) > 0) {
+            $tClassAnnotations["class"] = self::parseAnnotations($tDocComment);
+            $tCount++;
+        }
 
         // methods
         foreach ($tReflection->getMethods() as $tMethodReflection) {

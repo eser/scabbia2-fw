@@ -18,7 +18,7 @@ use Scabbia\Framework\Io;
 use Scabbia\Yaml\Parser;
 
 /**
- * Commands functionality for framework.
+ * Commands functionality for framework
  *
  * @package     Scabbia\Framework
  * @author      Eser Ozvataf <eser@sent.com>
@@ -71,7 +71,7 @@ class Commands
     /**
      * Executes given command.
      *
-     * @param array $uCommands The set of command line arguments.
+     * @param array $uCommands The set of command line arguments
      *
      * @throws \RuntimeException if command is not found
      */

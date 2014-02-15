@@ -16,7 +16,7 @@ namespace Scabbia\Output;
 use Scabbia\Output\IOutput;
 
 /**
- * Implementation of output in Html format.
+ * Implementation of output in Html format
  *
  * @package     Scabbia\Output
  * @author      Eser Ozvataf <eser@sent.com>
@@ -25,7 +25,7 @@ use Scabbia\Output\IOutput;
 class HtmlOutput implements IOutput
 {
     /**
-     * Writes given message.
+     * Writes given message
      *
      * @param int    $uHeading size
      * @param string $uMessage message
@@ -38,7 +38,7 @@ class HtmlOutput implements IOutput
     }
 
     /**
-     * Outputs the array in HTML representation.
+     * Outputs the array in HTML representation
      *
      * @param array $uArray Target array will be printed
      *

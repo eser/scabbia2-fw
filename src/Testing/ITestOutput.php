@@ -14,7 +14,7 @@
 namespace Scabbia\Testing;
 
 /**
- * Default methods needed for implementation of output in various interfaces.
+ * Default methods needed for implementation of output in various interfaces
  *
  * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
@@ -23,7 +23,7 @@ namespace Scabbia\Testing;
 interface ITestOutput
 {
     /**
-     * Writes given message.
+     * Writes given message
      *
      * @param int    $uHeading size
      * @param string $uMessage message
@@ -33,7 +33,7 @@ interface ITestOutput
     public function writeHeader($uHeading, $uMessage);
 
     /**
-     * Outputs the test report in specified representation.
+     * Outputs the test report in specified representation
      *
      * @param array $uArray Target array will be printed
      *

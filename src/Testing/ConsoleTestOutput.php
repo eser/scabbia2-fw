@@ -16,7 +16,7 @@ namespace Scabbia\Testing;
 use Scabbia\Testing\ITestOutput;
 
 /**
- * Implementation of test report to console.
+ * Implementation of test report to console
  *
  * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
@@ -25,7 +25,7 @@ use Scabbia\Testing\ITestOutput;
 class ConsoleTestOutput implements ITestOutput
 {
     /**
-     * Writes given message.
+     * Writes given message
      *
      * @param int    $uHeading size
      * @param string $uMessage message
@@ -48,7 +48,7 @@ class ConsoleTestOutput implements ITestOutput
     }
 
     /**
-     * Outputs the test report to console.
+     * Outputs the test report to console
      *
      * @param array $uArray Target array will be printed
      *

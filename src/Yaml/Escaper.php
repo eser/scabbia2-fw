@@ -31,7 +31,7 @@ namespace Scabbia\Yaml;
 
 /**
  * Escaper encapsulates escaping rules for single and double-quoted
- * YAML strings.
+ * YAML strings
  *
  * @package     Scabbia\Yaml
  * @author      Matthew Lewinski <matthew@lewinski.org>
@@ -45,7 +45,7 @@ class Escaper
     const REGEX_CHARACTER_TO_ESCAPE = "[\\x00-\\x1f]|\xc2\x85|\xc2\xa0|\xe2\x80\xa8|\xe2\x80\xa9";
 
     /**
-     * @type string REGEX_ESCAPED_CHARACTER Regex fragment that matches an escaped character in a double quoted string.
+     * @type string REGEX_ESCAPED_CHARACTER Regex fragment that matches an escaped character in a double quoted string
      */
     const REGEX_ESCAPED_CHARACTER =
         "\\\\([0abt\tnvfre \\\"\\/\\\\N_LP]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})";
@@ -54,7 +54,7 @@ class Escaper
     /**
      * @type array $escapees Mapping arrays for escaping a double quoted string. The backslash is first to ensure
      * proper escaping because str_replace operates iteratively on the input arrays. This ordering of the characters
-     * avoids the use of strtr, which performs more slowly.
+     * avoids the use of strtr, which performs more slowly
      */
     protected static $escapees = ["\\\\", "\\\"", "\"",
                                 "\x00",  "\x01",  "\x02",  "\x03",  "\x04",  "\x05",  "\x06",  "\x07",
@@ -65,7 +65,7 @@ class Escaper
     /**
      * @type array $escaped  Mapping arrays for escaping a double quoted string. The backslash is first to ensure
      * proper escaping because str_replace operates iteratively on the input arrays. This ordering of the characters
-     * avoids the use of strtr, which performs more slowly.
+     * avoids the use of strtr, which performs more slowly
      */
     protected static $escaped  = ["\\\"", "\\\\", "\\\"",
                                 "\\0",   "\\x01", "\\x02", "\\x03", "\\x04", "\\x05", "\\x06", "\\a",
@@ -76,7 +76,7 @@ class Escaper
 
 
     /**
-     * Determines if a PHP value would require double quoting in YAML.
+     * Determines if a PHP value would require double quoting in YAML
      *
      * @param string $value A PHP value
      *
@@ -88,7 +88,7 @@ class Escaper
     }
 
     /**
-     * Escapes and surrounds a PHP value with double quotes.
+     * Escapes and surrounds a PHP value with double quotes
      *
      * @param string $value A PHP value
      *
@@ -100,7 +100,7 @@ class Escaper
     }
 
     /**
-     * Determines if a PHP value would require single quoting in YAML.
+     * Determines if a PHP value would require single quoting in YAML
      *
      * @param string $value A PHP value
      *
@@ -112,7 +112,7 @@ class Escaper
     }
 
     /**
-     * Escapes and surrounds a PHP value with single quotes.
+     * Escapes and surrounds a PHP value with single quotes
      *
      * @param string $value A PHP value
      *
@@ -124,11 +124,11 @@ class Escaper
     }
 
     /**
-     * Unescapes a single quoted string.
+     * Unescapes a single quoted string
      *
-     * @param string $value A single quoted string.
+     * @param string $value A single quoted string
      *
-     * @return string The unescaped string.
+     * @return string The unescaped string
      */
     public function unescapeSingleQuotedString($value)
     {
@@ -136,11 +136,11 @@ class Escaper
     }
 
     /**
-     * Unescapes a double quoted string.
+     * Unescapes a double quoted string
      *
-     * @param string $value A double quoted string.
+     * @param string $value A double quoted string
      *
-     * @return string The unescaped string.
+     * @return string The unescaped string
      */
     public function unescapeDoubleQuotedString($value)
     {

@@ -33,7 +33,7 @@ use Scabbia\Yaml\Escaper;
 use Scabbia\Yaml\ParseException;
 
 /**
- * Inline implements a YAML parser for the YAML inline syntax.
+ * Inline implements a YAML parser for the YAML inline syntax
  *
  * @package     Scabbia\Yaml
  * @author      Fabien Potencier <fabien@symfony.com>
@@ -48,7 +48,7 @@ class Inline
 
 
     /**
-     * Converts a YAML string to a PHP array.
+     * Converts a YAML string to a PHP array
      *
      * @param string  $value                  A YAML string
      *
@@ -84,7 +84,7 @@ class Inline
     }
 
     /**
-     * Parses a scalar to a YAML string.
+     * Parses a scalar to a YAML string
      *
      * @param scalar $scalar
      * @param string $delimiters
@@ -141,7 +141,7 @@ class Inline
     }
 
     /**
-     * Parses a quoted scalar to YAML.
+     * Parses a quoted scalar to YAML
      *
      * @param string $scalar
      * @param int    &$i
@@ -171,7 +171,7 @@ class Inline
     }
 
     /**
-     * Parses a sequence to a YAML string.
+     * Parses a sequence to a YAML string
      *
      * @param string $sequence
      * @param int    &$i
@@ -220,7 +220,7 @@ class Inline
     }
 
     /**
-     * Parses a mapping to a YAML string.
+     * Parses a mapping to a YAML string
      *
      * @param string $mapping
      * @param int    &$i
@@ -276,7 +276,7 @@ class Inline
     }
 
     /**
-     * Evaluates scalars and replaces magic values.
+     * Evaluates scalars and replaces magic values
      *
      * @param string $scalar
      *
@@ -344,7 +344,7 @@ class Inline
     }
 
     /**
-     * Gets a regex that matches a YAML date.
+     * Gets a regex that matches a YAML date
      *
      * @return string The regular expression
      *

@@ -33,7 +33,7 @@ use Scabbia\Yaml\Inline;
 use Scabbia\Yaml\ParseException;
 
 /**
- * Parser parses YAML strings to convert them to PHP arrays.
+ * Parser parses YAML strings to convert them to PHP arrays
  *
  * @package     Scabbia\Yaml
  * @author      Fabien Potencier <fabien@symfony.com>
@@ -74,7 +74,7 @@ class Parser
     }
 
     /**
-     * Parses a YAML string to a PHP value.
+     * Parses a YAML string to a PHP value
      *
      * @param string  $value                  A YAML string
      *
@@ -317,7 +317,7 @@ class Parser
     }
 
     /**
-     * Returns the current line number (takes the offset into account).
+     * Returns the current line number (takes the offset into account)
      *
      * @return int The current line number
      */
@@ -327,7 +327,7 @@ class Parser
     }
 
     /**
-     * Returns the current line indentation.
+     * Returns the current line indentation
      *
      * @return int The current line indentation
      */
@@ -337,7 +337,7 @@ class Parser
     }
 
     /**
-     * Returns the next embed block of YAML.
+     * Returns the next embed block of YAML
      *
      * @param int $indentation The indent level at which the block is to be read, or null for default
      *
@@ -402,7 +402,7 @@ class Parser
     }
 
     /**
-     * Moves the parser to the next line.
+     * Moves the parser to the next line
      *
      * @return bool
      */
@@ -418,7 +418,7 @@ class Parser
     }
 
     /**
-     * Moves the parser to the previous line.
+     * Moves the parser to the previous line
      *
      * @return void
      */
@@ -428,7 +428,7 @@ class Parser
     }
 
     /**
-     * Parses a YAML value.
+     * Parses a YAML value
      *
      * @param string  $value                  A YAML value
      *
@@ -477,7 +477,7 @@ class Parser
     }
 
     /**
-     * Parses a folded scalar.
+     * Parses a folded scalar
      *
      * @param string  $separator   The separator that was used to begin this folded scalar (| or >)
      * @param string  $indicator   The indicator that was used to begin this folded scalar (+ or -)
@@ -553,7 +553,7 @@ class Parser
     }
 
     /**
-     * Returns true if the next line is indented.
+     * Returns true if the next line is indented
      *
      * @return bool Returns true if the next line is indented, false otherwise
      */
@@ -581,7 +581,7 @@ class Parser
     }
 
     /**
-     * Returns true if the current line is blank or if it is a comment line.
+     * Returns true if the current line is blank or if it is a comment line
      *
      * @return bool Returns true if the current line is empty or if it is a comment line, false otherwise
      */
@@ -591,7 +591,7 @@ class Parser
     }
 
     /**
-     * Returns true if the current line is blank.
+     * Returns true if the current line is blank
      *
      * @return bool Returns true if the current line is blank, false otherwise
      */
@@ -601,7 +601,7 @@ class Parser
     }
 
     /**
-     * Returns true if the current line is a comment line.
+     * Returns true if the current line is a comment line
      *
      * @return bool Returns true if the current line is a comment line, false otherwise
      */
@@ -614,7 +614,7 @@ class Parser
     }
 
     /**
-     * Cleanups a YAML string to be parsed.
+     * Cleanups a YAML string to be parsed
      *
      * @param string $value The input YAML string
      *

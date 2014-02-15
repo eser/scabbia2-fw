@@ -18,7 +18,7 @@ use Scabbia\Testing\HtmlTestOutput;
 
 /**
  * A small test implementation which helps us during the development of
- * Scabbia2 PHP Framework's itself and related production code.
+ * Scabbia2 PHP Framework's itself and related production code
  *
  * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
@@ -27,7 +27,7 @@ use Scabbia\Testing\HtmlTestOutput;
 class Testing
 {
     /**
-     * Runs given unit tests.
+     * Runs given unit tests
      *
      * @param $uTestClasses array   Set of unit test classes.
      *
@@ -67,7 +67,7 @@ class Testing
     }
 
     /**
-     * Starts the code coverage.
+     * Starts the code coverage
      */
     public static function coverageStart()
     {
@@ -75,7 +75,7 @@ class Testing
     }
 
     /**
-     * Stops the code coverage.
+     * Stops the code coverage
      *
      * @return array results
      */
@@ -107,7 +107,7 @@ class Testing
     }
 
     /**
-     * The entry point for `scabbia tests` command.
+     * The entry point for `scabbia tests` command
      */
     public static function testCommand()
     {
@@ -126,7 +126,7 @@ class Testing
     }
 
     /**
-     * Gets the number of lines of given file.
+     * Gets the number of lines of given file
      *
      * @param string $uPath the path
      *

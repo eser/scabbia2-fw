@@ -16,7 +16,7 @@ namespace Scabbia\Output;
 use Scabbia\Output\IOutput;
 
 /**
- * Implementation of output to console.
+ * Implementation of output to console
  *
  * @package     Scabbia\Output
  * @author      Eser Ozvataf <eser@sent.com>
@@ -25,7 +25,7 @@ use Scabbia\Output\IOutput;
 class ConsoleOutput implements IOutput
 {
     /**
-     * Writes given message.
+     * Writes given message
      *
      * @param int    $uHeading size
      * @param string $uMessage message
@@ -48,7 +48,7 @@ class ConsoleOutput implements IOutput
     }
 
     /**
-     * Outputs the array to console.
+     * Outputs the array to console
      *
      * @param array $uArray Target array will be printed
      *

@@ -14,7 +14,7 @@
 namespace Scabbia\Helpers;
 
 /**
- * A bunch of utility methods for array operations.
+ * A bunch of utility methods for array operations
  *
  * @package     Scabbia\Helpers
  * @author      Eser Ozvataf <eser@sent.com>
@@ -23,7 +23,7 @@ namespace Scabbia\Helpers;
 class Arrays
 {
     /**
-     * Flattens given parameters into an array.
+     * Flattens given parameters into an array
      *
      * @return array flatten array
      */
@@ -47,7 +47,7 @@ class Arrays
     }
 
     /**
-     * Gets the first element in array, otherwise returns default value.
+     * Gets the first element in array, otherwise returns default value
      *
      * @param array         $uArray     array
      * @param mixed|null    $uDefault   default value
@@ -65,7 +65,7 @@ class Arrays
     }
 
     /**
-     * Gets the specified element in array, otherwise returns default value.
+     * Gets the specified element in array, otherwise returns default value
      *
      * @param array $uArray     array
      * @param mixed $uElement   key
@@ -83,7 +83,7 @@ class Arrays
     }
 
     /**
-     * Gets the specified elements in array.
+     * Gets the specified elements in array
      *
      * @param array $uArray array
      *
@@ -101,7 +101,7 @@ class Arrays
     }
 
     /**
-     * Accesses child element by path notation, otherwise returns default value.
+     * Accesses child element by path notation, otherwise returns default value
      *
      * @param array     $uArray     array
      * @param mixed     $uElement   key
@@ -126,7 +126,7 @@ class Arrays
     }
 
     /**
-     * Accesses child elements by path notation.
+     * Accesses child elements by path notation
      *
      * @param array $uArray array
      *
@@ -155,7 +155,7 @@ class Arrays
     }
 
     /**
-     * Gets a random element in array.
+     * Gets a random element in array
      *
      * @param array $uArray array
      *
@@ -174,7 +174,7 @@ class Arrays
     }
 
     /**
-     * Returns an array filled with the elements in specified range.
+     * Returns an array filled with the elements in specified range
      *
      * @param int|float   $uMinimum     minimum number
      * @param int|float   $uMaximum     maximum number
@@ -200,7 +200,7 @@ class Arrays
     }
 
     /**
-     * Sorts an array by key.
+     * Sorts an array by key
      *
      * @param array     $uArray array
      * @param mixed     $uField field
@@ -234,7 +234,7 @@ class Arrays
     }
 
     /**
-     * Categorizes an array by key.
+     * Categorizes an array by key
      *
      * @param array $uArray        array
      * @param mixed $uKey          key
@@ -272,7 +272,7 @@ class Arrays
     }
 
     /**
-     * Assigns keys by key.
+     * Assigns keys by key
      *
      * @param array $uArray array
      * @param mixed $uKey   key
@@ -291,7 +291,7 @@ class Arrays
     }
 
     /**
-     * Extracts specified column from the array.
+     * Extracts specified column from the array
      *
      * @param array $uArray         array
      * @param mixed $uKey           key
@@ -320,7 +320,7 @@ class Arrays
     }
 
     /**
-     * Extracts specified columns from the array.
+     * Extracts specified columns from the array
      *
      * @param array $uArray         array
      *
@@ -347,7 +347,7 @@ class Arrays
     }
 
     /**
-     * Gets the first matching row from a multi-dimensional array.
+     * Gets the first matching row from a multi-dimensional array
      *
      * @param array $uArray array
      * @param mixed $uKey   key
@@ -367,7 +367,7 @@ class Arrays
     }
 
     /**
-     * Gets the first matching row's key.
+     * Gets the first matching row's key
      *
      * @param array $uArray array
      * @param mixed $uKey   key
@@ -387,7 +387,7 @@ class Arrays
     }
 
     /**
-     * Gets the matching rows.
+     * Gets the matching rows
      *
      * @param array $uArray array
      * @param mixed $uKey   key
@@ -409,7 +409,7 @@ class Arrays
     }
 
     /**
-     * Gets the not matching rows.
+     * Gets the not matching rows
      *
      * @param array $uArray array
      * @param mixed $uKey   key
@@ -431,7 +431,7 @@ class Arrays
     }
 
     /**
-     * Combines two arrays properly.
+     * Combines two arrays properly
      *
      * @param array $uArray1    first array
      * @param array $uArray2    second array
@@ -455,7 +455,7 @@ class Arrays
     }
 
     /**
-     * Combines two or more arrays.
+     * Combines two or more arrays
      *
      * @return array combined array
      */
@@ -489,7 +489,7 @@ class Arrays
     }
 
     /**
-     * Sorts an array by priority list.
+     * Sorts an array by priority list
      *
      * @param array $uArray         array
      * @param array $uPriorities    list of priorities

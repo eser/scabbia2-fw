@@ -16,7 +16,7 @@ namespace Scabbia\Testing;
 use Scabbia\Testing\ITestOutput;
 
 /**
- * Implementation of output in Html format.
+ * Implementation of output in Html format
  *
  * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
@@ -25,7 +25,7 @@ use Scabbia\Testing\ITestOutput;
 class HtmlTestOutput implements ITestOutput
 {
     /**
-     * Writes given message.
+     * Writes given message
      *
      * @param int    $uHeading size
      * @param string $uMessage message
@@ -38,7 +38,7 @@ class HtmlTestOutput implements ITestOutput
     }
 
     /**
-     * Outputs the test report in HTML representation.
+     * Outputs the test report in HTML representation
      *
      * @param array $uArray Target array will be printed
      *

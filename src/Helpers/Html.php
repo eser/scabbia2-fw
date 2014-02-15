@@ -17,7 +17,7 @@ use Scabbia\Helpers\Arrays;
 use Scabbia\Helpers\String;
 
 /**
- * A bunch of utility methods for creating html elements.
+ * A bunch of utility methods for creating html elements
  *
  * @package     Scabbia\Helpers
  * @author      Eser Ozvataf <eser@sent.com>
@@ -33,7 +33,7 @@ use Scabbia\Helpers\String;
 class Html
 {
     /**
-     * Default variables for Html utility set.
+     * Default variables for Html utility set
      *
      * @type array $defaults array of default variables
      */
@@ -56,7 +56,7 @@ class Html
     ];
 
     /**
-     * Set of attribute placement order.
+     * Set of attribute placement order
      *
      * @type array $attributeOrder array of attribute orders
      */
@@ -70,7 +70,7 @@ class Html
 
 
     /**
-     * Sets the default variables.
+     * Sets the default variables
      *
      * @param array $uDefaults variables to be set
      */
@@ -80,7 +80,7 @@ class Html
     }
 
     /**
-     * Creates an Html tag.
+     * Creates an Html tag
      *
      * @param string      $uName       name of the element
      * @param array       $uAttributes set of the tag attributes
@@ -105,7 +105,7 @@ class Html
     }
 
     /**
-     * Creates attributes array.
+     * Creates attributes array
      *
      * @param array $uAttributes set of the tag attributes
      *
@@ -129,7 +129,7 @@ class Html
     }
 
     /**
-     * Creates options array for select element.
+     * Creates options array for select element
      *
      * @param array  $uOptions set of values
      * @param mixed  $uDefault default selected value
@@ -155,7 +155,7 @@ class Html
     }
 
     /**
-     * Creates options array for select element and returns it in array.
+     * Creates options array for select element and returns it in array
      *
      * @param array  $uOptions set of values
      * @param mixed  $uDefault default selected value
@@ -182,7 +182,7 @@ class Html
     }
 
     /**
-     * Creates options array for input type="radio" element.
+     * Creates options array for input type="radio" element
      *
      * @param string $uName    name of the element
      * @param array  $uOptions set of values
@@ -222,7 +222,7 @@ class Html
     }
 
     /**
-     * Creates options array for input type="radio" element and returns it in array.
+     * Creates options array for input type="radio" element and returns it in array
      *
      * @param string $uName    name of the element
      * @param array  $uOptions set of values
@@ -263,9 +263,9 @@ class Html
     }
 
     /**
-     * Creates a textbox element.
+     * Creates a textbox element
      *
-     * @param string $uName       name of the element.
+     * @param string $uName       name of the element
      * @param mixed  $uValue      default value
      * @param array  $uAttributes set of the tag attributes
      *
@@ -282,9 +282,9 @@ class Html
     }
 
     /**
-     * Creates a checkbox element.
+     * Creates a checkbox element
      *
-     * @param string $uName         name of the element.
+     * @param string $uName         name of the element
      * @param mixed  $uValue        value
      * @param mixed  $uCurrentValue default value
      * @param string $uText         caption
@@ -313,7 +313,7 @@ class Html
     }
 
     /**
-     * Returns doctype header to be printed out.
+     * Returns doctype header to be printed out
      *
      * @param string $uType the type of the document
      *
@@ -364,7 +364,7 @@ class Html
     }
 
     /**
-     * Creates a pager widget.
+     * Creates a pager widget
      *
      * @param int   $uCurrent   current page
      * @param int   $uTotal     total number of pages
@@ -529,7 +529,7 @@ class Html
     }
 
     /**
-     * Creates a table widget.
+     * Creates a table widget
      *
      * @param array    $uHeaders   table headers
      * @param iterable $uData      table data

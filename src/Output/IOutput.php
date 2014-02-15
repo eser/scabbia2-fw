@@ -14,7 +14,7 @@
 namespace Scabbia\Output;
 
 /**
- * Default methods needed for implementation of output in various interfaces.
+ * Default methods needed for implementation of output in various interfaces
  *
  * @package     Scabbia\Output
  * @author      Eser Ozvataf <eser@sent.com>
@@ -23,7 +23,7 @@ namespace Scabbia\Output;
 interface IOutput
 {
     /**
-     * Writes given message.
+     * Writes given message
      *
      * @param int    $uHeading size
      * @param string $uMessage message
@@ -33,7 +33,7 @@ interface IOutput
     public function writeHeader($uHeading, $uMessage);
 
     /**
-     * Outputs the array in specified representation.
+     * Outputs the array in specified representation
      *
      * @param array $uArray Target array will be printed
      *

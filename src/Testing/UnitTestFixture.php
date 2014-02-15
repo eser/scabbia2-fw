@@ -15,7 +15,7 @@ namespace Scabbia\Testing;
 
 /**
  * Base class for fixtures which is going to be constructed to host unit testing
- * methods inside.
+ * methods inside
  *
  * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
@@ -24,25 +24,25 @@ namespace Scabbia\Testing;
 abstract class UnitTestFixture
 {
     /**
-     * @type bool @isFailed Indicates test fixture is failed or not.
+     * @type bool @isFailed Indicates test fixture is failed or not
      */
     public $isFailed = false;
     /**
-     * @type array @testStack Track of the unit which is currently testing.
+     * @type array @testStack Track of the unit which is currently testing
      */
     public $testStack = [];
     /**
-     * @type array @testReport Output of test results.
+     * @type array @testReport Output of test results
      */
     public $testReport = [];
     /**
-     * @type null|array $testExpectations The set of outcomes which is going to be tested.
+     * @type null|array $testExpectations The set of outcomes which is going to be tested
      */
     public $testExpectations = null;
 
 
     /**
-     * Begin testing all methods of the fixture.
+     * Begin testing all methods of the fixture
      *
      * @return void
      */
@@ -64,7 +64,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Tests the specified method of the fixture.
+     * Tests the specified method of the fixture
      *
      * @param $uName        string      Name of the method
      * @param $uCallback    callable    Target method
@@ -146,7 +146,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Adds test output to the final report.
+     * Adds test output to the final report
      *
      * @param $uOperation   string      Name of the operation
      * @param $uIsFailed    bool        Is test failed or not?
@@ -174,7 +174,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * SetUp method of the fixture.
+     * SetUp method of the fixture
      *
      * This method is being executed when the test is started.
      *
@@ -186,7 +186,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * TearDown method of the fixture.
+     * TearDown method of the fixture
      *
      * This method is being executed when the test is finished.
      *
@@ -198,7 +198,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Tests if given condition is **not** true.
+     * Tests if given condition is **not** true
      *
      * @param $uCondition   bool    The condition
      * @param $uMessage     mixed   Message (optional)
@@ -211,7 +211,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Tests if given condition is **not** false.
+     * Tests if given condition is **not** false
      *
      * @param $uCondition   bool    The condition
      * @param $uMessage     mixed   Message (optional)
@@ -224,7 +224,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Tests if given condition is **not** null.
+     * Tests if given condition is **not** null
      *
      * @param $uVariable    bool    The condition
      * @param $uMessage     mixed   Message (optional)
@@ -237,7 +237,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Tests if given condition is null.
+     * Tests if given condition is null
      *
      * @param $uVariable    bool    The condition
      * @param $uMessage     mixed   Message (optional)
@@ -250,7 +250,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Tests if given variable derived from given class.
+     * Tests if given variable derived from given class
      *
      * @param $uVariable    mixed   The variable
      * @param $uClassName   mixed   Class name
@@ -264,7 +264,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Tests if given variables have the same type and value.
+     * Tests if given variables have the same type and value
      *
      * @param $uVariable1   mixed   First variable
      * @param $uVariable2   mixed   Second variable
@@ -278,7 +278,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Tests if given variables have the same value.
+     * Tests if given variables have the same value
      *
      * @param $uVariable1   mixed   First variable
      * @param $uVariable2   mixed   Second variable
@@ -292,7 +292,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Tests if given variable is a substring of another given variable.
+     * Tests if given variable is a substring of another given variable
      *
      * @param $uVariable1   mixed   First variable
      * @param $uVariable2   mixed   Second variable
@@ -311,7 +311,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Tests if will testing unit throw specified exception or not.
+     * Tests if will testing unit throw specified exception or not
      *
      * @param $uExceptionType    string     Name of the exception type
      *
@@ -323,7 +323,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Ignores if testing unit throws specified exception during test.
+     * Ignores if testing unit throws specified exception during test
      *
      * @param $uExceptionType    string     Name of the exception type
      *
@@ -335,7 +335,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Marks current unit test as skipped.
+     * Marks current unit test as skipped
      *
      * @param $uMessage     mixed   Message (optional)
      *
@@ -347,7 +347,7 @@ abstract class UnitTestFixture
     }
 
     /**
-     * Marks current unit test as failed.
+     * Marks current unit test as failed
      *
      * @param $uMessage     mixed   Message (optional)
      *

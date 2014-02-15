@@ -14,7 +14,7 @@
 namespace Scabbia\Helpers;
 
 /**
- * A bunch of utility methods for date and time operations.
+ * A bunch of utility methods for date and time operations
  *
  * @package     Scabbia\Helpers
  * @author      Eser Ozvataf <eser@sent.com>
@@ -25,7 +25,7 @@ namespace Scabbia\Helpers;
 class Date
 {
     /**
-     * Default variables for Date utility set.
+     * Default variables for Date utility set
      *
      * @type array $defaults array of default variables
      */
@@ -52,7 +52,7 @@ class Date
 
 
     /**
-     * Sets the default variables.
+     * Sets the default variables
      *
      * @param array $uDefaults variables to be set
      */
@@ -62,7 +62,7 @@ class Date
     }
 
     /**
-     * Timestamp of beginning of the day.
+     * Timestamp of beginning of the day
      *
      * @param int $uTimestamp timestamp
      *
@@ -74,7 +74,7 @@ class Date
     }
 
     /**
-     * Transforms given period into a time span.
+     * Transforms given period into a time span
      *
      * @param int  $uPeriod period
      * @param bool $uNoDays return null if it passed a day

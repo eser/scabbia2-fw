@@ -14,7 +14,7 @@
 namespace Scabbia\Helpers;
 
 /**
- * A bunch of utility methods for string manipulation.
+ * A bunch of utility methods for string manipulation
  *
  * @package     Scabbia\Helpers
  * @author      Eser Ozvataf <eser@sent.com>
@@ -41,7 +41,7 @@ class String
 
 
     /**
-     * Default variables for Html utility set.
+     * Default variables for Html utility set
      *
      * @type array $defaults array of default variables
      */
@@ -58,7 +58,7 @@ class String
 
 
     /**
-     * Sets the default variables.
+     * Sets the default variables
      *
      * @param array $uDefaults variables to be set
      */
@@ -78,7 +78,7 @@ class String
     }
 
     /**
-     * Checks arguments in order and returns the value of the first expression that is not-null.
+     * Checks arguments in order and returns the value of the first expression that is not-null
      *
      * @return mixed first non-null expression in parameter list.
      */
@@ -102,7 +102,7 @@ class String
     }
 
     /**
-     * Prefixes all lines in the given string with the dashes or specified string.
+     * Prefixes all lines in the given string with the dashes or specified string
      *
      * @param string $uInput  original string
      * @param string $uPrefix the string will be added to beginning of all lines
@@ -127,7 +127,7 @@ class String
     }
 
     /**
-     * Filters or sanitizes given value according to filter options.
+     * Filters or sanitizes given value according to filter options
      *
      * @param mixed $uValue  original value
      * @param mixed $uFilter filter
@@ -170,7 +170,7 @@ class String
     }
 
     /**
-     * Replaces placeholders given in string and formats them.
+     * Replaces placeholders given in string and formats them
      *
      * @param string $uString original string with placeholders
      *
@@ -287,7 +287,7 @@ class String
     }
 
     /**
-     * Displays structured information of given parameter in a fancy way.
+     * Displays structured information of given parameter in a fancy way
      *
      * @param mixed $uVariable variable
      * @param bool  $uOutput   whether return output as a function output or not
@@ -348,9 +348,9 @@ class String
     }
 
     /**
-     * A basic hash method.
+     * A basic hash method
      *
-     * @param mixed $uValue value is going to be hashed.
+     * @param mixed $uValue value is going to be hashed
      *
      * @return int hash in decimal representation
      */
@@ -360,7 +360,7 @@ class String
     }
 
     /**
-     * Generates a random password in given length.
+     * Generates a random password in given length
      *
      * @param int $uLength password length
      *
@@ -417,7 +417,7 @@ class String
     }
 
     /**
-     * Generates an unique-identifier and ensures it is in uuid format.
+     * Generates an unique-identifier and ensures it is in uuid format
      *
      * @return string generated uuid
      */
@@ -450,7 +450,7 @@ class String
     }
 
     /**
-     * Generates a random string in given length.
+     * Generates a random string in given length
      *
      * @param int    $uLength  string length
      * @param string $uCharset set of chars are going to be used in generated string
@@ -470,7 +470,7 @@ class String
     }
 
     /**
-     * Filters the chars that occur XSS attacks.
+     * Filters the chars that occur XSS attacks
      *
      * @param string $uValue original value
      *
@@ -510,7 +510,7 @@ class String
     }
 
     /**
-     * Strips given string and leaves only chars specified.
+     * Strips given string and leaves only chars specified
      *
      * @param string $uString     original string
      * @param string $uValidChars set of chars are going to be allowed
@@ -534,7 +534,7 @@ class String
     }
 
     /**
-     * Escapes single quotes in a string.
+     * Escapes single quotes in a string
      *
      * @param string $uString original string
      * @param bool   $uCover  whether cover output with single quotes or not
@@ -555,7 +555,7 @@ class String
     }
 
     /**
-     * Escapes double quotes in a string.
+     * Escapes double quotes in a string
      *
      * @param string $uString original string
      * @param bool   $uCover  whether cover output with double quotes or not
@@ -576,7 +576,7 @@ class String
     }
 
     /**
-     * Escapes single quotes in a set of strings.
+     * Escapes single quotes in a set of strings
      *
      * @param string $uArray set of original strings
      * @param bool   $uCover whether cover output with single quotes or not
@@ -599,7 +599,7 @@ class String
     }
 
     /**
-     * Escapes double quotes in a set of strings.
+     * Escapes double quotes in a set of strings
      *
      * @param string $uArray set of original strings
      * @param bool   $uCover whether cover output with double quotes or not
@@ -622,7 +622,7 @@ class String
     }
 
     /**
-     * Replaces CRLF characters with given string.
+     * Replaces CRLF characters with given string
      *
      * @param string $uString original string
      * @param string $uBreaks string that breaks are replaced with.
@@ -635,7 +635,7 @@ class String
     }
 
     /**
-     * Cuts a string if it exceeds given length.
+     * Cuts a string if it exceeds given length
      *
      * @param string $uString original string
      * @param int    $uLength maximum length
@@ -653,7 +653,7 @@ class String
     }
 
     /**
-     * Encodes html characters.
+     * Encodes html characters
      *
      * @param string $uString original string that is going to be encoded
      *
@@ -665,7 +665,7 @@ class String
     }
 
     /**
-     * Decodes encoded html characters.
+     * Decodes encoded html characters
      *
      * @param string $uString original string that has encoded characters
      *
@@ -677,7 +677,7 @@ class String
     }
 
     /**
-     * Escapes special html characters.
+     * Escapes special html characters
      *
      * @param string $uString original string that is going to be escaped
      *
@@ -689,7 +689,7 @@ class String
     }
 
     /**
-     * Unescapes escaped html characters.
+     * Unescapes escaped html characters
      *
      * @param string $uString original string that has escaped characters
      *
@@ -701,7 +701,7 @@ class String
     }
 
     /**
-     * Transforms the string to lowercase.
+     * Transforms the string to lowercase
      *
      * @param string $uString original string
      *
@@ -713,7 +713,7 @@ class String
     }
 
     /**
-     * Transforms the string to uppercase.
+     * Transforms the string to uppercase
      *
      * @param string $uString original string
      *
@@ -725,7 +725,7 @@ class String
     }
 
     /**
-     * Capitalizes the first character of the given string.
+     * Capitalizes the first character of the given string
      *
      * @param string $uString original string
      *
@@ -737,7 +737,7 @@ class String
     }
 
     /**
-     * Capitalizes all first characters of the words in the given string.
+     * Capitalizes all first characters of the words in the given string
      *
      * @param string $uString original string
      * @param string $uSpace  the space character
@@ -767,7 +767,7 @@ class String
     }
 
     /**
-     * Returns the length of the string.
+     * Returns the length of the string
      *
      * @param string $uString the input string
      *
@@ -799,7 +799,7 @@ class String
     }
 
     /**
-     * Checks the string if it ends with another string.
+     * Checks the string if it ends with another string
      *
      * @param string $uString the input string
      * @param string $uNeedle another string
@@ -864,7 +864,7 @@ class String
     }
 
     /**
-     * Returns the given bytes in short representation.
+     * Returns the given bytes in short representation
      *
      * @param int $uSize      size
      * @param int $uPrecision precision
@@ -882,7 +882,7 @@ class String
     }
 
     /**
-     * Returns the given number in short representation.
+     * Returns the given number in short representation
      *
      * @param int $uSize      size
      * @param int $uPrecision precision
@@ -900,7 +900,7 @@ class String
     }
 
     /**
-     * Returns the given period in short representation.
+     * Returns the given period in short representation
      *
      * @param int $uTime time period
      *
@@ -920,7 +920,7 @@ class String
     }
 
     /**
-     * Removes accented characters in a string.
+     * Removes accented characters in a string
      *
      * @param string $uString the input string
      *
@@ -1365,7 +1365,7 @@ class String
     }
 
     /**
-     * Removes invisible characters in a string.
+     * Removes invisible characters in a string
      *
      * @param string $uString the input string
      *
@@ -1421,7 +1421,7 @@ class String
     }
 
     /**
-     * Returns a transformed string that can be used as unixname and url portion.
+     * Returns a transformed string that can be used as unixname and url portion
      *
      * @param string $uString    the input string
      * @param string $uSpaceChar char that is used for spacing
@@ -1440,7 +1440,7 @@ class String
     }
 
     /**
-     * Converts a number to specified base.
+     * Converts a number to specified base
      *
      * @param int    $uNumber    the input number
      * @param string $uBaseChars charset available for target base
@@ -1466,7 +1466,7 @@ class String
     }
 
     /**
-     * Converts a number from specified base.
+     * Converts a number from specified base
      *
      * @param int    $uNumber    the input number
      * @param string $uBaseChars charset available for source base
@@ -1486,7 +1486,7 @@ class String
     }
 
     /**
-     * Converts a number to base62.
+     * Converts a number to base62
      *
      * @param int $uNumber the input number
      *
@@ -1498,7 +1498,7 @@ class String
     }
 
     /**
-     * Converts a number from base62.
+     * Converts a number from base62
      *
      * @param int $uNumber the input number
      *
@@ -1510,7 +1510,7 @@ class String
     }
 
     /**
-     * Converts a number to url base.
+     * Converts a number to url base
      *
      * @param int $uNumber the input number
      *
@@ -1522,7 +1522,7 @@ class String
     }
 
     /**
-     * Converts a number from url base.
+     * Converts a number from url base
      *
      * @param int $uNumber the input number
      *
@@ -1534,7 +1534,7 @@ class String
     }
 
     /**
-     * Shortens a uuid to use it in compact format.
+     * Shortens a uuid to use it in compact format
      *
      * @param string $uString the input string
      *
@@ -1561,7 +1561,7 @@ class String
     }
 
     /**
-     * Unshortens a uuid to restore it in compact format.
+     * Unshortens a uuid to restore it in compact format
      *
      * @param string $uString the input string
      *
@@ -1592,7 +1592,7 @@ class String
     }
 
     /**
-     * Returns the ordinal pronounce of a number.
+     * Returns the ordinal pronounce of a number
      *
      * @param int $uNumber the input number
      *
@@ -1617,7 +1617,7 @@ class String
     }
 
     /**
-     * Swaps two variables in memory.
+     * Swaps two variables in memory
      *
      * @param mixed $uVariable1 first variable
      * @param mixed $uVariable2 second variable
@@ -1630,7 +1630,7 @@ class String
     }
 
     /**
-     * Sanitize a filename to prevent filesystem vulnerabilities.
+     * Sanitize a filename to prevent filesystem vulnerabilities
      *
      * @param string $uFilename     the input filename
      * @param bool   $uRemoveAccent whether accented characters are going to be removed or not
@@ -1681,7 +1681,7 @@ class String
     }
 
     /**
-     * Captures and replaces http links in a string.
+     * Captures and replaces http links in a string
      *
      * @param string   $uString   the input string
      * @param callable $uCallback closure that gets each url address as a parameter and outputs replaced string

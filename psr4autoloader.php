@@ -18,7 +18,7 @@ namespace ScabbiaLoaders;
  *
  * An example of a general-purpose implementation that includes the optional
  * functionality of allowing multiple base directories for a single namespace
- * prefix.
+ * prefix
  *
  * Given a foo-bar package of classes in the file system at the following
  * paths ...
@@ -62,15 +62,15 @@ namespace ScabbiaLoaders;
 class Psr4AutoloaderClass
 {
     /**
-     * An associative array where the key is a namespace prefix and the value
-     * is an array of base directories for classes in that namespace.
+     * An associative array where the key is a namespace prefix and the value is an array of base directories
+     * for classes in that namespace
      *
-     * @var array
+     * @type array
      */
     protected $prefixes = [];
 
     /**
-     * Register loader with SPL autoloader stack.
+     * Register loader with SPL autoloader stack
      *
      * @return void
      */
@@ -80,14 +80,13 @@ class Psr4AutoloaderClass
     }
 
     /**
-     * Adds a base directory for a namespace prefix.
+     * Adds a base directory for a namespace prefix
      *
-     * @param string $prefix The namespace prefix.
-     * @param string $base_dir A base directory for class files in the
-     * namespace.
-     * @param bool $prepend If true, prepend the base directory to the stack
-     * instead of appending it; this causes it to be searched first rather
-     * than last.
+     * @param string $prefix The namespace prefix
+     * @param string $base_dir A base directory for class files in the namespace
+     * @param bool $prepend If true, prepend the base directory to the stack instead of appending it; this causes it
+     * to be searched first rather than last
+     *
      * @return void
      */
     public function addNamespace($prefix, $base_dir, $prepend = false)
@@ -113,11 +112,11 @@ class Psr4AutoloaderClass
     }
 
     /**
-     * Loads the class file for a given class name.
+     * Loads the class file for a given class name
      *
-     * @param string $class The fully-qualified class name.
-     * @return mixed The mapped file name on success, or boolean false on
-     * failure.
+     * @param string $class The fully-qualified class name
+     *
+     * @return mixed The mapped file name on success, or boolean false on failure
      */
     public function loadClass($class)
     {
@@ -150,12 +149,12 @@ class Psr4AutoloaderClass
     }
 
     /**
-     * Load the mapped file for a namespace prefix and relative class.
+     * Load the mapped file for a namespace prefix and relative class
      *
-     * @param string $prefix The namespace prefix.
-     * @param string $relative_class The relative class name.
-     * @return mixed Boolean false if no mapped file can be loaded, or the
-     * name of the mapped file that was loaded.
+     * @param string $prefix The namespace prefix
+     * @param string $relative_class The relative class name
+     *
+     * @return mixed Boolean false if no mapped file can be loaded, or the name of the mapped file that was loaded
      */
     protected function loadMappedFile($prefix, $relative_class)
     {
@@ -189,10 +188,11 @@ class Psr4AutoloaderClass
     }
 
     /**
-     * If a file exists, require it from the file system.
+     * If a file exists, require it from the file system
      *
-     * @param string $file The file to require.
-     * @return bool True if the file exists, false if not.
+     * @param string $file The file to require
+     *
+     * @return bool True if the file exists, false if not
      */
     protected function requireFile($file)
     {

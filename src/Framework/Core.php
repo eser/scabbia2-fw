@@ -17,7 +17,7 @@ use Scabbia\Framework\Io;
 use Scabbia\Yaml\Parser;
 
 /**
- * Core framework functionality.
+ * Core framework functionality
  *
  * @package     Scabbia\Framework
  * @author      Eser Ozvataf <eser@sent.com>
@@ -42,7 +42,7 @@ class Core
 
 
     /**
-     * Initializes the framework to be ready to boot.
+     * Initializes the framework to be ready to boot
      *
      * @param object $uComposerAutoloader The instance of the composer's autoloader class
      */
@@ -55,7 +55,7 @@ class Core
     }
 
     /**
-     * Reads the project file.
+     * Reads the project file
      *
      * @param string $uProjectConfigPath The path of project configuration file
      *
@@ -78,7 +78,7 @@ class Core
     }
 
     /**
-     * Loads the project file.
+     * Loads the project file
      *
      * @param string $uProjectConfigPath The path of project configuration file
      */
@@ -128,7 +128,7 @@ class Core
     }
 
     /**
-     * Replaces placeholders in given string with framework-variables.
+     * Replaces placeholders in given string with framework-variables
      *
      * @param string $uInput the string with placeholders
      *
@@ -148,7 +148,7 @@ class Core
     }
 
     /**
-     * Sets the variables.
+     * Sets the variables
      */
     protected static function setVariables()
     {

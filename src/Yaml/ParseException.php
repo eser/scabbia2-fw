@@ -30,7 +30,7 @@
 namespace Scabbia\Yaml;
 
 /**
- * Exception class thrown when an error occurs during parsing.
+ * Exception class thrown when an error occurs during parsing
  *
  * @package     Scabbia\Yaml
  * @author      Fabien Potencier <fabien@symfony.com>
@@ -57,7 +57,7 @@ class ParseException extends \RuntimeException
 
 
     /**
-     * Constructor.
+     * Constructor
      *
      * @param string     $message    The error message
      * @param int        $parsedLine The line where the error occurred
@@ -83,7 +83,7 @@ class ParseException extends \RuntimeException
     }
 
     /**
-     * Gets the snippet of code near the error.
+     * Gets the snippet of code near the error
      *
      * @return string The snippet of code
      */
@@ -93,7 +93,7 @@ class ParseException extends \RuntimeException
     }
 
     /**
-     * Sets the snippet of code near the error.
+     * Sets the snippet of code near the error
      *
      * @param string $snippet The code snippet
      *
@@ -107,7 +107,7 @@ class ParseException extends \RuntimeException
     }
 
     /**
-     * Gets the filename where the error occurred.
+     * Gets the filename where the error occurred
      *
      * This method returns null if a string is parsed.
      *
@@ -119,7 +119,7 @@ class ParseException extends \RuntimeException
     }
 
     /**
-     * Sets the filename where the error occurred.
+     * Sets the filename where the error occurred
      *
      * @param string $parsedFile The filename
      *
@@ -133,7 +133,7 @@ class ParseException extends \RuntimeException
     }
 
     /**
-     * Gets the line where the error occurred.
+     * Gets the line where the error occurred
      *
      * @return int The file line
      */
@@ -143,7 +143,7 @@ class ParseException extends \RuntimeException
     }
 
     /**
-     * Sets the line where the error occurred.
+     * Sets the line where the error occurred
      *
      * @param int $parsedLine The file line
      */

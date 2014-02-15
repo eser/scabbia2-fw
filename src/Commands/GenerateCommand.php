@@ -17,6 +17,13 @@ use Scabbia\Framework\Core;
 use Scabbia\Framework\Io;
 // use Scabbia\Yaml\Parser;
 
+/**
+ * Command class for "php scabbia generate"
+ *
+ * @package     Scabbia\Commands
+ * @author      Eser Ozvataf <eser@sent.com>
+ * @since       2.0.0
+ */
 class GenerateCommand
 {
     /**
@@ -36,7 +43,7 @@ class GenerateCommand
 
 
     /**
-     * Entry point for "generate" command
+     * Entry point for the command
      *
      * @param array $uParameters command parameters
      * @param mixed $uConfig     command configuration
@@ -140,7 +147,7 @@ class GenerateCommand
     }
 
     /**
-     * Processes classes using reflection to scan annotations.
+     * Processes classes using reflection to scan annotations
      *
      * @param string $uClass class name
      */

@@ -14,7 +14,7 @@
 namespace Scabbia\Framework;
 
 /**
- * Io functionality for framework.
+ * Io functionality for framework
  *
  * @package     Scabbia\Framework
  * @author      Eser Ozvataf <eser@sent.com>
@@ -23,7 +23,7 @@ namespace Scabbia\Framework;
 class Io
 {
     /**
-     * Default variables for Io functionality.
+     * Default variables for Io functionality
      *
      * @type array $defaults array of default variables
      */
@@ -34,7 +34,7 @@ class Io
 
 
     /**
-     * Sets the default variables.
+     * Sets the default variables
      *
      * @param array $uDefaults variables to be set
      */
@@ -44,7 +44,7 @@ class Io
     }
 
     /**
-     * Encrypts the plaintext with the given key.
+     * Encrypts the plaintext with the given key
      *
      * @param string    $uString    the plaintext
      * @param string    $uKey       the key
@@ -65,7 +65,7 @@ class Io
     }
 
     /**
-     * Decrypts the ciphertext with the given key.
+     * Decrypts the ciphertext with the given key
      *
      * @param string    $uString    the ciphertext
      * @param string    $uKey       the key
@@ -86,7 +86,7 @@ class Io
     }
 
     /**
-     * Reads from a file.
+     * Reads from a file
      *
      * @param string    $uPath  the file path
      * @param int       $uFlags io flags
@@ -115,7 +115,7 @@ class Io
     }
 
     /**
-     * Writes to a file.
+     * Writes to a file
      *
      * @param string    $uPath      the file path
      * @param string    $uContent   the file content
@@ -149,7 +149,7 @@ class Io
     }
 
     /**
-     * Reads from a serialized file.
+     * Reads from a serialized file
      *
      * @param string        $uPath      the file path
      * @param string|null   $uKeyphase  the key
@@ -173,7 +173,7 @@ class Io
     }
 
     /**
-     * Serializes an object into a file.
+     * Serializes an object into a file
      *
      * @param string        $uPath      the file path
      * @param string        $uContent   the file content
@@ -193,7 +193,7 @@ class Io
     }
 
     /**
-     * Checks the path contains invalid chars or not.
+     * Checks the path contains invalid chars or not
      *
      * @param string $uPath the path
      *
@@ -218,7 +218,7 @@ class Io
     }
 
     /**
-     * Checks the path is path rooted or not.
+     * Checks the path is path rooted or not
      *
      * @param string $uPath the path
      *
@@ -247,7 +247,7 @@ class Io
     }
 
     /**
-     * Checks the path is path relative or not.
+     * Checks the path is path relative or not
      *
      * @param string $uPath the path
      *
@@ -281,7 +281,7 @@ class Io
     }
 
     /**
-     * Combines given paths into a single path string.
+     * Combines given paths into a single path string
      *
      * @return null|string combined path
      */
@@ -314,7 +314,7 @@ class Io
     }
 
     /**
-     * Gets the number of lines of given file.
+     * Gets the number of lines of given file
      *
      * @param string $uPath the path
      *
@@ -339,7 +339,7 @@ class Io
     }
 
     /**
-     * Determines the file is if readable and not expired.
+     * Determines the file is if readable and not expired
      *
      * @param string    $uPath  the relative path
      * @param int|bool  $uTtl   the time to live period in seconds
@@ -356,7 +356,7 @@ class Io
     }
 
     /**
-     * Determines the file is if readable and newer than given timestamp.
+     * Determines the file is if readable and newer than given timestamp
      *
      * @param string    $uPath          the relative path
      * @param int       $uLastModified  the time to live period in seconds
@@ -369,8 +369,8 @@ class Io
     }
 
     /**
-     * Reads the contents from cache file as long as it is not expired.
-     * If the file is expired, invokes callback method and caches output.
+     * Reads the contents from cache file as long as it is not expired
+     * If the file is expired, invokes callback method and caches output
      *
      * @param string      $uPath         the relative path
      * @param mixed       $uDefaultValue the default value
@@ -459,7 +459,6 @@ class Io
 
         return $tArray;
     }
-
 
     /**
      * Apply a function/method to every file matching the given pattern

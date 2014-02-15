@@ -32,7 +32,7 @@ namespace Scabbia\Yaml;
 use Scabbia\Yaml\Inline;
 
 /**
- * Dumper dumps PHP variables to YAML strings.
+ * Dumper dumps PHP variables to YAML strings
  *
  * @package     Scabbia\Yaml
  * @author      Fabien Potencier <fabien@symfony.com>
@@ -41,7 +41,7 @@ use Scabbia\Yaml\Inline;
 class Dumper
 {
     /**
-     * Dumps a PHP value to YAML.
+     * Dumps a PHP value to YAML
      *
      * @param mixed   $input                  The PHP value
      * @param int     $inline                 The level where you switch to inline YAML
@@ -76,7 +76,7 @@ class Dumper
     }
 
     /**
-     * Dumps a given PHP variable to a YAML string.
+     * Dumps a given PHP variable to a YAML string
      *
      * @param mixed   $value                  The PHP variable to convert
      *
@@ -132,7 +132,7 @@ class Dumper
     }
 
     /**
-     * Dumps a PHP array to a YAML string.
+     * Dumps a PHP array to a YAML string
      *
      * @param array   $value                  The PHP array to dump
      *

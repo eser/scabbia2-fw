@@ -96,8 +96,10 @@ class Commands
             throw new \RuntimeException("Command not found - " . $tCommand . ".");
         }
 
+        $tOutput = new \Scabbia\Output\ConsoleOutput();
+
         foreach ($tCallbacks as $tCallback) {
-            call_user_func($tCallback, $uCommands, $tConfig);
+            call_user_func($tCallback, $uCommands, $tConfig, $tOutput);
         }
     }
 }

@@ -41,7 +41,8 @@ class Generator
                 }
 
                 $tRoute = $tMethod["route"][0];
-                $tRoutes[$tRoute["path"]] = [
+                $tRoutes[] = [
+                    "path"       => $tRoute["path"],
                     "method"     => $tRoute["method"],
                     "controller" => $tClassKey,
                     "action"     => $tMethodKey

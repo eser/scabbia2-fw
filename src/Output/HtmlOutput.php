@@ -25,7 +25,7 @@ use Scabbia\Output\IOutput;
 class HtmlOutput implements IOutput
 {
     /**
-     * Writes given message
+     * Writes given message in header format
      *
      * @param int    $uHeading size
      * @param string $uMessage message
@@ -34,7 +34,32 @@ class HtmlOutput implements IOutput
      */
     public function writeHeader($uHeading, $uMessage)
     {
-        echo "<h{$uHeading}>$uMessage</h{$uHeading}>";
+        echo "<h{$uHeading}>{$uMessage}</h{$uHeading}>";
+    }
+
+    /**
+     * Writes given message in specified color
+     *
+     * @param string $uColor   color
+     * @param string $uMessage message
+     *
+     * @return void
+     */
+    public function writeColor($uColor, $uMessage)
+    {
+        echo "<div style=\"color: {$uColor};\">{$uMessage}</div>";
+    }
+
+    /**
+     * Writes given message
+     *
+     * @param string $uMessage message
+     *
+     * @return void
+     */
+    public function write($uMessage)
+    {
+        echo "<div>{$uMessage}</div>";
     }
 
     /**

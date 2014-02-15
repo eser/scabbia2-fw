@@ -15,6 +15,7 @@ namespace Scabbia\Commands;
 
 use Scabbia\Framework\Core;
 use Scabbia\Framework\Io;
+use Scabbia\Output\IOutput;
 
 /**
  * Command class for "php scabbia generate"
@@ -44,12 +45,13 @@ class GenerateCommand
     /**
      * Entry point for the command
      *
-     * @param array $uParameters command parameters
-     * @param mixed $uConfig     command configuration
+     * @param array   $uParameters command parameters
+     * @param mixed   $uConfig     command configuration
+     * @param IOutput $uOutput     output
      *
      * @throws \RuntimeException if configuration is invalid
      */
-    public static function generate(array $uParameters, $uConfig)
+    public static function generate(array $uParameters, $uConfig, IOutput $uOutput)
     {
         self::$config = $uConfig;
 
@@ -91,7 +93,7 @@ class GenerateCommand
             }
         }
 
-        echo "done.\n";
+        $uOutput->writeColor("yellow", "done.");
     }
 
     /**

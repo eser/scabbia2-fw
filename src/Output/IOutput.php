@@ -23,7 +23,7 @@ namespace Scabbia\Output;
 interface IOutput
 {
     /**
-     * Writes given message
+     * Writes given message in header format
      *
      * @param int    $uHeading size
      * @param string $uMessage message
@@ -31,6 +31,25 @@ interface IOutput
      * @return void
      */
     public function writeHeader($uHeading, $uMessage);
+
+    /**
+     * Writes given message in specified color
+     *
+     * @param string $uColor   color
+     * @param string $uMessage message
+     *
+     * @return void
+     */
+    public function writeColor($uColor, $uMessage);
+
+    /**
+     * Writes given message
+     *
+     * @param string $uMessage message
+     *
+     * @return void
+     */
+    public function write($uMessage);
 
     /**
      * Outputs the array in specified representation

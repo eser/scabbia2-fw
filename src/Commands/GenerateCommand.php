@@ -15,6 +15,7 @@ namespace Scabbia\Commands;
 
 use Scabbia\Framework\Core;
 use Scabbia\Framework\Io;
+use Scabbia\Yaml\Parser;
 use Scabbia\Output\IOutput;
 
 /**
@@ -259,7 +260,7 @@ class GenerateCommand
                 if (isset($tDocCommentLine[2])) {
                     if ($tRegistryItem["format"] === "yaml") {
                         if (self::$parser === null) {
-                            self::$parser = new \Scabbia\Yaml\Parser();
+                            self::$parser = new Parser();
                         }
 
                         $tLine = self::$parser->parse($tDocCommentLine[2]);

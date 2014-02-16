@@ -64,33 +64,33 @@ class ConsoleOutput implements IOutput
 
         if ($uColor === "black") {
             $tColor = "[0;30m";
-        } else if ($uColor === "darkgray") {
+        } elseif ($uColor === "darkgray") {
             $tColor = "[1;30m";
-        } else if ($uColor === "blue") {
+        } elseif ($uColor === "blue") {
             $tColor = "[0;34m";
-        } else if ($uColor === "lightblue") {
+        } elseif ($uColor === "lightblue") {
             $tColor = "[1;34m";
-        } else if ($uColor === "green") {
+        } elseif ($uColor === "green") {
             $tColor = "[0;32m";
-        } else if ($uColor === "lightgreen") {
+        } elseif ($uColor === "lightgreen") {
             $tColor = "[1;32m";
-        } else if ($uColor === "cyan") {
+        } elseif ($uColor === "cyan") {
             $tColor = "[0;36m";
-        } else if ($uColor === "lightcyan") {
+        } elseif ($uColor === "lightcyan") {
             $tColor = "[1;36m";
-        } else if ($uColor === "red") {
+        } elseif ($uColor === "red") {
             $tColor = "[0;31m";
-        } else if ($uColor === "lightred") {
+        } elseif ($uColor === "lightred") {
             $tColor = "[1;31m";
-        } else if ($uColor === "purple") {
+        } elseif ($uColor === "purple") {
             $tColor = "[0;35m";
-        } else if ($uColor === "lightpurple") {
+        } elseif ($uColor === "lightpurple") {
             $tColor = "[1;35m";
-        } else if ($uColor === "brown") {
+        } elseif ($uColor === "brown") {
             $tColor = "[0;33m";
-        } else if ($uColor === "yellow") {
+        } elseif ($uColor === "yellow") {
             $tColor = "[1;33m";
-        } else if ($uColor === "white") {
+        } elseif ($uColor === "white") {
             $tColor = "[1;37m";
         } else /* if ($uColor === "lightgray") */ {
             $tColor = "[0;37m";

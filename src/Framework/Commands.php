@@ -15,6 +15,7 @@ namespace Scabbia\Framework;
 
 use Scabbia\Framework\Core;
 use Scabbia\Framework\Io;
+use Scabbia\Output\ConsoleOutput;
 use Scabbia\Yaml\Parser;
 
 /**
@@ -96,7 +97,7 @@ class Commands
             throw new \RuntimeException("Command not found - " . $tCommand . ".");
         }
 
-        $tOutput = new \Scabbia\Output\ConsoleOutput();
+        $tOutput = new ConsoleOutput();
 
         foreach ($tCallbacks as $tCallback) {
             call_user_func($tCallback, $uCommands, $tConfig, $tOutput);

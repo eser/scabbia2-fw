@@ -13,8 +13,9 @@
 
 namespace Scabbia\Testing;
 
-use Scabbia\Testing\ConsoleTestOutput;
-use Scabbia\Testing\HtmlTestOutput;
+use Scabbia\Output\ConsoleOutput;
+use Scabbia\Output\HtmlOutput;
+use Scabbia\Output\IOutput;
 
 /**
  * A small test implementation which helps us during the development of
@@ -29,25 +30,28 @@ class Testing
     /**
      * Runs given unit tests
      *
-     * @param $uTestClasses array   Set of unit test classes.
+     * @param array   $uTestClasses set of unit test classes
+     * @param IOutput $uOutput      output
      *
      * @return int exit code
      */
-    public static function runUnitTests(array $uTestClasses)
+    public static function runUnitTests(array $uTestClasses, $uOutput = null)
     {
-        if (PHP_SAPI === "cli") {
-            $tOutput = new ConsoleTestOutput();
-        } else {
-            $tOutput = new HtmlTestOutput();
+        if ($uOutput === null) {
+            if (PHP_SAPI === "cli") {
+                $uOutput = new ConsoleOutput();
+            } else {
+                $uOutput = new HtmlOutput();
+            }
         }
 
         $tIsEverFailed = false;
 
-        $tOutput->writeHeader(1, "Unit Tests");
+        $uOutput->writeHeader(1, "Unit Tests");
 
         /** @type string $tTestClass */
         foreach ($uTestClasses as $tTestClass) {
-            $tOutput->writeHeader(2, $tTestClass);
+            $uOutput->writeHeader(2, $tTestClass);
 
             $tInstance = new $tTestClass ();
             $tInstance->test();
@@ -56,7 +60,7 @@ class Testing
                 $tIsEverFailed = true;
             }
 
-            $tOutput->writeTestReport($tInstance->testReport);
+            $uOutput->writeArray($tInstance->testReport);
         }
 
         if ($tIsEverFailed) {
@@ -104,25 +108,6 @@ class Testing
         $tFinal["total"]["percentage"] = ($tFinal["total"]["coveredLines"] * 100) / $tFinal["total"]["totalLines"];
 
         return $tFinal;
-    }
-
-    /**
-     * The entry point for `scabbia tests` command
-     */
-    public static function testCommand()
-    {
-        $tTestClasses = [
-            "Scabbia\\Tests\\Yaml\\ParserTest",
-            "Scabbia\\Tests\\Yaml\\InlineTest"
-        ];
-
-        self::coverageStart();
-        $tExitCode = self::runUnitTests($tTestClasses);
-        $tCoverageReport = self::coverageStop();
-
-        echo "Code Coverage = ", round($tCoverageReport["total"]["percentage"], 2), "%";
-
-        exit($tExitCode);
     }
 
     /**

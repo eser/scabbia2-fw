@@ -1,21 +1,12 @@
-#############
 ## PHPStorm
-#############
+.idea/
 
-.idea
-
-
-############
 ## Windows
-############
-
-# Windows image file caches
-Thumbs.db 
-
-# Folder config file
+Thumbs.db
 Desktop.ini
 
-############
-## Scabbia
-############
-index.php
+## Mac OS X
+.DS_Store
+
+## Vim
+.*.sw?

@@ -20,7 +20,7 @@ namespace Scabbia\Framework;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-interface IApplication
+abstract class ApplicationBase
 {
     /**
      * Generates request
@@ -32,19 +32,22 @@ interface IApplication
      *
      * @return void
      */
-    public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters, array $uPostParameters);
+    abstract public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters, array $uPostParameters);
 
     /**
      * Generates request from globals
      *
      * @return void
      */
-    public function generateRequestFromGlobals();
+    abstract public function generateRequestFromGlobals();
 
     /**
      * Runs the application
      *
      * @return void
      */
-    public function run();
+    public function run()
+    {
+
+    }
 }

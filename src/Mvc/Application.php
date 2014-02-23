@@ -13,7 +13,7 @@
 
 namespace Scabbia\Mvc;
 
-use Scabbia\Framework\IApplication;
+use Scabbia\Framework\ApplicationBase;
 
 /**
  * Application Implementation for MVC layered architecture
@@ -22,7 +22,7 @@ use Scabbia\Framework\IApplication;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-class Application implements IApplication
+class Application extends ApplicationBase
 {
     /**
      * Generates request
@@ -56,6 +56,6 @@ class Application implements IApplication
      */
     public function run()
     {
-
+        parent::run();
     }
 }

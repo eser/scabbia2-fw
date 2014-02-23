@@ -5,6 +5,8 @@ Scabbia2 PHP Framework
 
 [![Build Status](https://travis-ci.org/scabbiafw/scabbia2.png?branch=master)](https://travis-ci.org/scabbiafw/scabbia2)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/scabbiafw/scabbia2/badges/quality-score.png?s=ea455753b50c686880c35dce99fd5058a28da810)](https://scrutinizer-ci.com/g/scabbiafw/scabbia2/)
+[![Total Downloads](https://poser.pugx.org/scabbiafw/scabbia2/downloads.png)](https://packagist.org/packages/scabbiafw/scabbia2)
+[![License](https://poser.pugx.org/scabbiafw/scabbia2/license.png)](https://packagist.org/packages/scabbiafw/scabbia2)
 
 History
 -------
@@ -27,5 +29,7 @@ See [LICENSE](LICENSE)
 
 Contributing
 ------------
+All contributions should be filed on the [scabbiafw/scabbia2](http://github.com/scabbiafw/scabbia2) repository.
+
 * Fork the repo, push your changes to your fork, and submit a pull request.
 * If something does not work, please report it using GitHub issues.

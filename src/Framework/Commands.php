@@ -30,9 +30,7 @@ class Commands
     /**
      * @type object $commands the commands read from commands file
      */
-    public static $commands = [
-        "tests" => ["Scabbia\\Testing\\Testing::testCommand"]
-    ];
+    public static $commands = [];
 
 
     /**

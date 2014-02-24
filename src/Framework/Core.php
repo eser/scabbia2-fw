@@ -45,6 +45,8 @@ class Core
      * Initializes the framework to be ready to boot
      *
      * @param object $uComposerAutoloader The instance of the composer's autoloader class
+     *
+     * @return void
      */
     public static function init($uComposerAutoloader)
     {
@@ -81,6 +83,8 @@ class Core
      * Loads the project file
      *
      * @param string $uProjectConfigPath The path of project configuration file
+     *
+     * @return void
      */
     public static function loadProject($uProjectConfigPath)
     {
@@ -110,6 +114,8 @@ class Core
      * Runs an application
      *
      * @param mixed $uApplicationConfig The application configuration
+     *
+     * @return void
      */
     public static function runApplication($uApplicationConfig)
     {
@@ -121,10 +127,11 @@ class Core
 
         self::$composerAutoloader->set(false, $tPaths);
 
-        // TODO initialize the proper environment
-        // TODO instantiate application with variables (environment, application config [development, disableCaches])
-        // TODO load modules
-        // TODO execute autoexecs
+        $tApplicationType = $uApplicationConfig["type"];
+        $tApplication = new $tApplicationType ($uApplicationConfig);
+
+        $tApplication->generateRequestFromGlobals();
+        $tApplication->run();
     }
 
     /**
@@ -149,6 +156,8 @@ class Core
 
     /**
      * Sets the variables
+     *
+     * @return void
      */
     protected static function setVariables()
     {

@@ -55,6 +55,8 @@ class Date
      * Sets the default variables
      *
      * @param array $uDefaults variables to be set
+     *
+     * @return void
      */
     public static function setDefaults($uDefaults)
     {

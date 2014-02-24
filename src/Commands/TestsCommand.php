@@ -31,6 +31,8 @@ class TestsCommand
      * @param array   $uParameters command parameters
      * @param mixed   $uConfig     command configuration
      * @param IOutput $uOutput     output
+     *
+     * @return int exit code
      */
     public static function tests(array $uParameters, $uConfig, IOutput $uOutput)
     {
@@ -42,6 +44,6 @@ class TestsCommand
         $uOutput->writeColor("green", "Code Coverage = {$tCoverage}%");
         $uOutput->writeColor("yellow", "done.");
 
-        exit($tExitCode);
+        return $tExitCode;
     }
 }

@@ -29,6 +29,8 @@ class Generator
      * Entry point for processor
      *
      * @param array $uAnnotations annotations
+     *
+     * @return void
      */
     public static function generate(array $uAnnotations)
     {

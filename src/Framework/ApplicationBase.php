@@ -23,6 +23,35 @@ namespace Scabbia\Framework;
 abstract class ApplicationBase
 {
     /**
+     * @type ApplicationBase $current current application instance
+     */
+    public static $current;
+
+    /**
+     * @type bool $development the development flag of application is on or off
+     */
+    public $development;
+
+    /**
+     * @type bool $disableCaches the disable caches flag of application is on or off
+     */
+    public $disableCaches;
+
+
+    /**
+     * Initializes an application
+     *
+     * @param mixed  $uOptions       options
+     */
+    public function __construct($uOptions)
+    {
+        $this->development = $uOptions["development"];
+        $this->disableCaches = $uOptions["disableCaches"];
+
+        static::$current = $this;
+    }
+
+    /**
      * Generates request
      *
      * @param string $uMethod          method
@@ -48,6 +77,9 @@ abstract class ApplicationBase
      */
     public function run()
     {
-
+        // TODO initialize the proper environment
+        // TODO instantiate application with variables (environment, application config [development, disableCaches])
+        // TODO load modules
+        // TODO execute autoexecs
     }
 }

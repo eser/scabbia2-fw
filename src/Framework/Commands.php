@@ -37,6 +37,8 @@ class Commands
      * Loads the commands file.
      *
      * @param string $uCommandsConfigPath The path of commands configuration file
+     *
+     * @return void
      */
     public static function load($uCommandsConfigPath)
     {
@@ -73,6 +75,7 @@ class Commands
      * @param array $uCommands The set of command line arguments
      *
      * @throws \RuntimeException if command is not found
+     * @return int exit code
      */
     public static function execute(array $uCommands)
     {
@@ -100,5 +103,7 @@ class Commands
         foreach ($tCallbacks as $tCallback) {
             call_user_func($tCallback, $uCommands, $tConfig, $tOutput);
         }
+
+        return 0;
     }
 }

@@ -61,6 +61,8 @@ class String
      * Sets the default variables
      *
      * @param array $uDefaults variables to be set
+     *
+     * @return void
      */
     public static function setDefaults($uDefaults)
     {
@@ -1621,6 +1623,8 @@ class String
      *
      * @param mixed $uVariable1 first variable
      * @param mixed $uVariable2 second variable
+     *
+     * @return void
      */
     public static function swap(&$uVariable1, &$uVariable2)
     {

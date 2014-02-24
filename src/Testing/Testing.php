@@ -72,6 +72,8 @@ class Testing
 
     /**
      * Starts the code coverage
+     *
+     * @return void
      */
     public static function coverageStart()
     {

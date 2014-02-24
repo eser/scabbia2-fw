@@ -51,6 +51,7 @@ class GenerateCommand
      * @param IOutput $uOutput     output
      *
      * @throws \RuntimeException if configuration is invalid
+     * @return int exit code
      */
     public static function generate(array $uParameters, $uConfig, IOutput $uOutput)
     {
@@ -95,12 +96,16 @@ class GenerateCommand
         }
 
         $uOutput->writeColor("yellow", "done.");
+
+        return 0;
     }
 
     /**
      * Processes given file to search for classes
      *
      * @param string $uFile file
+     *
+     * @return void
      */
     public static function processFile($uFile)
     {
@@ -152,6 +157,8 @@ class GenerateCommand
      * Processes classes using reflection to scan annotations
      *
      * @param string $uClass class name
+     *
+     * @return void
      */
     public static function processClass($uClass)
     {
@@ -230,7 +237,7 @@ class GenerateCommand
      *
      * @param string $uDocComment docblock which contains annotations
      *
-     * @returns array set of annotations
+     * @return array set of annotations
      */
     public static function parseAnnotations($uDocComment)
     {

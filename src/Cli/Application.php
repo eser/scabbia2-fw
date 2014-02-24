@@ -25,6 +25,16 @@ use Scabbia\Framework\ApplicationBase;
 class Application extends ApplicationBase
 {
     /**
+     * Initializes an application
+     *
+     * @param mixed  $uOptions       options
+     */
+    public function __construct($uOptions)
+    {
+        parent::__construct($uOptions);
+    }
+
+    /**
      * Generates request
      *
      * @param string $uMethod          method
@@ -36,7 +46,7 @@ class Application extends ApplicationBase
      */
     public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters, array $uPostParameters)
     {
-
+        //
     }
 
     /**

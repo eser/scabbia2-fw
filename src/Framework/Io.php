@@ -37,6 +37,8 @@ class Io
      * Sets the default variables
      *
      * @param array $uDefaults variables to be set
+     *
+     * @return void
      */
     public static function setDefaults($uDefaults)
     {
@@ -413,6 +415,8 @@ class Io
      *
      * @param string    $uPath  path
      * @param int       $uTtl   age
+     *
+     * @return void
      */
     public static function garbageCollect($uPath, $uTtl = -1)
     {
@@ -483,6 +487,8 @@ class Io
      * @param string|null   $uPattern    pattern of files will be in the list
      * @param bool          $uRecursive  recursive search
      * @param callable      $uCallback   callback function/method
+     *
+     * @return void
      */
     public static function getFilesWalk($uPath, $uPattern, $uRecursive, /* callable */ $uCallback)
     {

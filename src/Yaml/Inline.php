@@ -52,9 +52,8 @@ class Inline
      *
      * @param string  $value                  A YAML string
      *
-     * @return array A PHP array representing the YAML string
-     *
      * @throws ParseException If the YAML is not valid
+     * @return array A PHP array representing the YAML string
      */
     public static function parse($value)
     {
@@ -92,9 +91,8 @@ class Inline
      * @param int    &$i
      * @param bool   $evaluate
      *
-     * @return string A YAML string
-     *
      * @throws ParseException When malformed inline YAML string is parsed
+     * @return string A YAML string
      */
     public static function parseScalar(
         $scalar,
@@ -146,9 +144,8 @@ class Inline
      * @param string $scalar
      * @param int    &$i
      *
-     * @return string A YAML string
-     *
      * @throws ParseException When malformed inline YAML string is parsed
+     * @return string A YAML string
      */
     protected static function parseQuotedScalar($scalar, &$i)
     {
@@ -176,9 +173,8 @@ class Inline
      * @param string $sequence
      * @param int    &$i
      *
-     * @return string A YAML string
-     *
      * @throws ParseException When malformed inline YAML string is parsed
+     * @return string A YAML string
      */
     protected static function parseSequence($sequence, &$i = 0)
     {
@@ -225,9 +221,8 @@ class Inline
      * @param string $mapping
      * @param int    &$i
      *
-     * @return string A YAML string
-     *
      * @throws ParseException When malformed inline YAML string is parsed
+     * @return string A YAML string
      */
     protected static function parseMapping($mapping, &$i = 0)
     {

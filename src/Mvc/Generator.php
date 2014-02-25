@@ -48,7 +48,8 @@ class Generator
      *
      * @return void
      */
-    public static function addRoute($uMethod, $uRoute, $uCallback) {
+    public static function addRoute($uMethod, $uRoute, $uCallback)
+    {
         $tRouteData = Router::parse($uRoute);
 
         if (count($tRouteData) === 1 && is_string($tRouteData[0])) {
@@ -68,7 +69,8 @@ class Generator
      * @throws \Exception if an routing problem occurs
      * @return void
      */
-    public static function addStaticRoute($uMethod, $uRouteData, $uCallback) {
+    public static function addStaticRoute($uMethod, $uRouteData, $uCallback)
+    {
         $tRouteStr = $uRouteData[0];
 
         if (isset(self::$staticRoutes[$tRouteStr][$uMethod])) {
@@ -85,8 +87,8 @@ class Generator
             $tRoute = $tRoutes[$uMethod];
             if (preg_match("~^{$tRoute["regex"]}$~", $tRouteStr) === 1) {
                 throw new \Exception(
-                    "Static route \"{$tRouteStr}\" is shadowed by previously defined variable route \"{$tRoute["regex"]}\"
-                    for method \"{$uMethod}\""
+                    "Static route \"{$tRouteStr}\" is shadowed by previously defined variable route
+                    \"{$tRoute["regex"]}\" for method \"{$uMethod}\""
                 );
             }
         }
@@ -104,7 +106,8 @@ class Generator
      * @throws \Exception if an routing problem occurs
      * @return void
      */
-    public static function addVariableRoute($uMethod, $uRouteData, $uCallback) {
+    public static function addVariableRoute($uMethod, $uRouteData, $uCallback)
+    {
         $tRegex = "";
         $tVariables = [];
 
@@ -143,7 +146,8 @@ class Generator
      *
      * @return array data
      */
-    public static function getData() {
+    public static function getData()
+    {
         $tRegexToRoutesMapCount = count(self::$regexToRoutesMap);
 
         if ($tRegexToRoutesMapCount === 0) {
@@ -169,7 +173,8 @@ class Generator
      *
      * @return array chunked
      */
-    public function processChunk(array $uRegexToRoutesMap) {
+    public function processChunk(array $uRegexToRoutesMap)
+    {
         $tRouteMap = [];
         $tRegexes = [];
         $tNumGroups = 0;

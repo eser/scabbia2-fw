@@ -115,7 +115,8 @@ REGEX;
      *
      * @return array
      */
-    public static function parse($uRoute) {
+    public static function parse($uRoute)
+    {
         if (!preg_match_all(self::VARIABLE_REGEX, $uRoute, $tMatches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
             return [$uRoute];
         }

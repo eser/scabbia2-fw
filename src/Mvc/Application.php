@@ -14,6 +14,8 @@
 namespace Scabbia\Mvc;
 
 use Scabbia\Framework\ApplicationBase;
+use Scabbia\Router\Router;
+use Scabbia\Helpers\String;
 
 /**
  * Application Implementation for MVC layered architecture
@@ -67,5 +69,11 @@ class Application extends ApplicationBase
     public function run()
     {
         parent::run();
+
+        if (isset($_GET["q"])) {
+            $tDispatch = Router::dispatch("get", $_GET["q"]);
+
+            String::vardump($tDispatch);
+        }
     }
 }

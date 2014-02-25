@@ -22,19 +22,11 @@ namespace Scabbia\Framework;
  */
 abstract class ApplicationBase
 {
-    /**
-     * @type ApplicationBase $current current application instance
-     */
+    /** @type ApplicationBase $current current application instance */
     public static $current;
-
-    /**
-     * @type bool $development the development flag of application is on or off
-     */
+    /** @type bool $development the development flag of application is on or off */
     public $development;
-
-    /**
-     * @type bool $disableCaches the disable caches flag of application is on or off
-     */
+    /** @type bool $disableCaches the disable caches flag of application is on or off */
     public $disableCaches;
 
 

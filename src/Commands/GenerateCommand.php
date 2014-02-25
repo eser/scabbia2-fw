@@ -27,19 +27,11 @@ use Scabbia\Output\IOutput;
  */
 class GenerateCommand
 {
-    /**
-     * @type Parser|null $parser yaml parser
-     */
+    /** @type Parser|null $parser yaml parser */
     public static $parser = null;
-
-    /**
-     * @type array $config configuration of generator command
-     */
+    /** @type array $config configuration of generator command */
     public static $config = null;
-
-    /**
-     * @type array $annotations result of generator command
-     */
+    /** @type array $annotations result of generator command */
     public static $result = null;
 
 

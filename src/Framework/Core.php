@@ -25,19 +25,11 @@ use Scabbia\Yaml\Parser;
  */
 class Core
 {
-    /**
-     * @type string $basepath the base directory which framework runs in
-     */
+    /** @type string $basepath the base directory which framework runs in */
     public static $basepath = null;
-
-    /**
-     * @type array $variable array of framework variables
-     */
+    /** @type array $variable array of framework variables */
     public static $variables = [];
-
-    /**
-     * @type object $composerAutoloader the instance of the composer's autoloader class
-     */
+    /** @type object $composerAutoloader the instance of the composer's autoloader class */
     public static $composerAutoloader = null;
 
 

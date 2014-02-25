@@ -37,8 +37,6 @@ namespace Scabbia\Tests\Yaml;
  */
 class DummyClass
 {
-    /**
-     * @type string $b a dummy member
-     */
+    /** @type string $b a dummy member */
     public $b = "foo";
 }

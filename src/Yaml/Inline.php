@@ -41,9 +41,7 @@ use Scabbia\Yaml\ParseException;
  */
 class Inline
 {
-    /**
-     * @type string REGEX_QUOTED_STRING a regular expression pattern to match quoted strings
-     */
+    /** @type string REGEX_QUOTED_STRING a regular expression pattern to match quoted strings */
     const REGEX_QUOTED_STRING = "(?:\"([^\"\\\\]*(?:\\\\.[^\"\\\\]*)*)\"|'([^']*(?:''[^']*)*)')";
 
 

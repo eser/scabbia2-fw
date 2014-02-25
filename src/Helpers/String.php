@@ -26,17 +26,11 @@ namespace Scabbia\Helpers;
  */
 class String
 {
-    /**
-     * @type string FILTER_VALIDATE_BOOLEAN a symbolic constant for boolean validation
-     */
+    /** @type string FILTER_VALIDATE_BOOLEAN a symbolic constant for boolean validation */
     const FILTER_VALIDATE_BOOLEAN = "scabbiaFilterValidateBoolean";
-    /**
-     * @type string FILTER_SANITIZE_BOOLEAN a symbolic constant for boolean sanitization
-     */
+    /** @type string FILTER_SANITIZE_BOOLEAN a symbolic constant for boolean sanitization */
     const FILTER_SANITIZE_BOOLEAN = "scabbiaFilterSanitizeBoolean";
-    /**
-     * @type string FILTER_SANITIZE_XSS   a symbolic constant for xss sanitization
-     */
+    /** @type string FILTER_SANITIZE_XSS   a symbolic constant for xss sanitization */
     const FILTER_SANITIZE_XSS = "scabbiaFilterSanitizeXss";
 
 

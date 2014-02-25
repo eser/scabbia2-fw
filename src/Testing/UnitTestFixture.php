@@ -23,21 +23,13 @@ namespace Scabbia\Testing;
  */
 abstract class UnitTestFixture
 {
-    /**
-     * @type bool @isFailed Indicates test fixture is failed or not
-     */
+    /** @type bool @isFailed Indicates test fixture is failed or not */
     public $isFailed = false;
-    /**
-     * @type array @testStack Track of the unit which is currently testing
-     */
+    /** @type array @testStack Track of the unit which is currently testing */
     public $testStack = [];
-    /**
-     * @type array @testReport Output of test results
-     */
+    /** @type array @testReport Output of test results */
     public $testReport = [];
-    /**
-     * @type null|array $testExpectations The set of outcomes which is going to be tested
-     */
+    /** @type null|array $testExpectations The set of outcomes which is going to be tested */
     public $testExpectations = null;
 
 

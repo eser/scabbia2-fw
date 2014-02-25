@@ -27,9 +27,7 @@ use Scabbia\Yaml\Parser;
  */
 class Commands
 {
-    /**
-     * @type object $commands the commands read from commands file
-     */
+    /** @type object $commands the commands read from commands file */
     public static $commands = [];
 
 

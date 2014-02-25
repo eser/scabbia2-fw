@@ -34,6 +34,8 @@ abstract class ApplicationBase
      * Initializes an application
      *
      * @param mixed  $uOptions       options
+     *
+     * @return ApplicationBase
      */
     public function __construct($uOptions)
     {

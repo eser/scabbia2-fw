@@ -11,7 +11,7 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Mvc;
+namespace Scabbia\Router;
 
 use Scabbia\Framework\Core;
 use Scabbia\Framework\Io;
@@ -20,7 +20,7 @@ use Scabbia\Router\Router;
 /**
  * Generator
  *
- * @package     Scabbia\Mvc
+ * @package     Scabbia\Router
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  *
@@ -214,12 +214,13 @@ class Generator
                     continue;
                 }
 
-                $tRoute = $tMethod["route"][0];
-                self::addRoute(
-                    $tRoute["method"],
-                    $tRoute["path"],
-                    [$tClassKey, $tMethodKey]
-                );
+                foreach ($tMethod["route"] as $tRoute) {
+                    self::addRoute(
+                        $tRoute["method"],
+                        $tRoute["path"],
+                        [$tClassKey, $tMethodKey]
+                    );
+                }
             }
         }
 

@@ -56,6 +56,8 @@ class ParseException extends \RuntimeException
      * @param int        $snippet    The snippet of code near the problem
      * @param string     $parsedFile The file name where the error occurred
      * @param \Exception $previous   The previous exception
+     *
+     * @return ParseException
      */
     public function __construct(
         $message,

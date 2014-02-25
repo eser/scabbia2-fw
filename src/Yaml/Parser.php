@@ -57,6 +57,8 @@ class Parser
      * Constructor
      *
      * @param int $offset The offset of YAML document (used for line numbers in error messages)
+     *
+     * @return Parser
      */
     public function __construct($offset = 0)
     {

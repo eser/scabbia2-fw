@@ -27,7 +27,9 @@ class Application extends ApplicationBase
     /**
      * Initializes an application
      *
-     * @param mixed  $uOptions       options
+     * @param mixed $uOptions options
+     *
+     * @return Application
      */
     public function __construct($uOptions)
     {

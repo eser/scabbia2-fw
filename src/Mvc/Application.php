@@ -13,6 +13,7 @@
 
 namespace Scabbia\Mvc;
 
+use Scabbia\Events\Events;
 use Scabbia\Framework\ApplicationBase;
 use Scabbia\Router\Router;
 use Scabbia\Helpers\String;
@@ -75,5 +76,7 @@ class Application extends ApplicationBase
 
             String::vardump($tDispatch);
         }
+
+        Events::invoke("load");
     }
 }

@@ -13,6 +13,7 @@
 
 namespace Scabbia\Router;
 
+use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
 
 /**
@@ -63,7 +64,7 @@ REGEX;
     public static function dispatch($uMethod, $uPathInfo)
     {
         if (self::$routes === null) {
-            $tRoutesFilePath = Core::$basepath . "/writable/generated/routes.php";
+            $tRoutesFilePath = ApplicationBase::$current->writablePath . "/routes.php";
             self::$routes = require $tRoutesFilePath;
         }
 

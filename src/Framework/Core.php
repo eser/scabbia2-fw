@@ -13,6 +13,7 @@
 
 namespace Scabbia\Framework;
 
+use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Io;
 use Scabbia\Yaml\Parser;
 
@@ -97,7 +98,9 @@ class Core
             }
 
             if ($tTargetApplication !== false) {
-                self::runApplication($tApplicationConfig);
+                $tApplicationWritablePath = self::$basepath .
+                    "/writable/generated/{$uProjectConfigPath}/{$tTargetApplication}";
+                self::runApplication($tApplicationConfig, $tApplicationWritablePath);
             }
         }
     }
@@ -106,10 +109,11 @@ class Core
      * Runs an application
      *
      * @param mixed $uApplicationConfig The application configuration
+     * @param string $uWritablePath writable output folder
      *
      * @return void
      */
-    public static function runApplication($uApplicationConfig)
+    public static function runApplication($uApplicationConfig, $uWritablePath)
     {
         // register psr-0 source paths to composer.
         $tPaths = [];
@@ -120,7 +124,8 @@ class Core
         self::$composerAutoloader->set(false, $tPaths);
 
         $tApplicationType = $uApplicationConfig["type"];
-        $tApplication = new $tApplicationType ($uApplicationConfig);
+        $tApplication = new $tApplicationType ($uApplicationConfig, $uWritablePath);
+        ApplicationBase::$current = $tApplication;
 
         $tApplication->generateRequestFromGlobals();
         $tApplication->run();

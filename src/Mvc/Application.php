@@ -13,7 +13,6 @@
 
 namespace Scabbia\Mvc;
 
-use Scabbia\Events\Events;
 use Scabbia\Framework\ApplicationBase;
 use Scabbia\Router\Router;
 use Scabbia\Helpers\String;
@@ -31,10 +30,13 @@ class Application extends ApplicationBase
      * Initializes an application
      *
      * @param mixed  $uOptions       options
+     * @param string $uWritablePath writable output folder
+     *
+     * @return Application
      */
-    public function __construct($uOptions)
+    public function __construct($uOptions, $uWritablePath)
     {
-        parent::__construct($uOptions);
+        parent::__construct($uOptions, $uWritablePath);
     }
 
     /**
@@ -77,6 +79,6 @@ class Application extends ApplicationBase
             String::vardump($tDispatch);
         }
 
-        Events::invoke("load");
+        $this->events->invoke("load");
     }
 }

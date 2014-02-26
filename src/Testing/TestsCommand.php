@@ -11,7 +11,7 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Commands;
+namespace Scabbia\Testing;
 
 use Scabbia\Testing\Testing;
 use Scabbia\Output\IOutput;
@@ -19,7 +19,7 @@ use Scabbia\Output\IOutput;
 /**
  * Command class for "php scabbia tests"
  *
- * @package     Scabbia\Commands
+ * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */

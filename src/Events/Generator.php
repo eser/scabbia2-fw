@@ -29,15 +29,14 @@ class Generator
     /**
      * Entry point for processor
      *
-     * @param array $uAnnotations annotations
+     * @param array  $uAnnotations  annotations
+     * @param string $uWritablePath writable output folder
      *
      * @return void
      */
-    public static function generate(array $uAnnotations)
+    public static function generate(array $uAnnotations, $uWritablePath)
     {
-        // push previous events stack
-        $tOldEvents = Events::$events;
-        Events::$events = [];
+        $tEvents = new Events();
 
         foreach ($uAnnotations as $tClassKey => $tClass) {
             foreach ($tClass["staticMethods"] as $tMethodKey => $tMethod) {
@@ -46,7 +45,7 @@ class Generator
                 }
 
                 foreach ($tMethod["event"] as $tEvent) {
-                    Events::register(
+                    $tEvents->register(
                         $tEvent["on"],
                         [$tClassKey, $tMethodKey],
                         null,
@@ -56,10 +55,6 @@ class Generator
             }
         }
 
-        $tEventsFilePath = Core::$basepath . "/writable/generated/events.php";
-        Io::writePhpFile($tEventsFilePath, Events::$events);
-
-        // pop pushed events stack
-        Events::$events = $tOldEvents;
+        Io::writePhpFile("{$uWritablePath}/events.php", $tEvents->events);
     }
 }

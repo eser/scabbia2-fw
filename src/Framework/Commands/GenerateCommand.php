@@ -11,7 +11,7 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Commands;
+namespace Scabbia\Framework\Commands;
 
 use Scabbia\Framework\Core;
 use Scabbia\Framework\Io;
@@ -21,7 +21,7 @@ use Scabbia\Output\IOutput;
 /**
  * Command class for "php scabbia generate"
  *
- * @package     Scabbia\Commands
+ * @package     Scabbia\Framework\Commands
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
@@ -69,6 +69,11 @@ class GenerateCommand
             throw new \RuntimeException("invalid configuration - {$tProjectFile}/{$tApplicationName}");
         }
 
+        $tApplicationWritablePath = Core::$basepath . "/writable/generated/{$tProjectFile}/{$tApplicationName}";
+        if (!file_exists($tApplicationWritablePath)) {
+            mkdir($tApplicationWritablePath, 0777, true);
+        }
+
         self::$result = [];
         foreach ($uApplicationConfig[$tApplicationName]["sources"] as $tPath) {
             Io::getFilesWalk(
@@ -83,7 +88,7 @@ class GenerateCommand
             $tCommandMethods = self::$config["methods"];
 
             foreach ($tCommandMethods as $tCommandMethod) {
-                call_user_func($tCommandMethod, self::$result);
+                call_user_func($tCommandMethod, self::$result, $tApplicationWritablePath);
             }
         }
 

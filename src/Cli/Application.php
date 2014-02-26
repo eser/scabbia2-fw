@@ -28,12 +28,13 @@ class Application extends ApplicationBase
      * Initializes an application
      *
      * @param mixed $uOptions options
+     * @param string $uWritablePath writable output folder
      *
      * @return Application
      */
-    public function __construct($uOptions)
+    public function __construct($uOptions, $uWritablePath)
     {
-        parent::__construct($uOptions);
+        parent::__construct($uOptions, $uWritablePath);
     }
 
     /**

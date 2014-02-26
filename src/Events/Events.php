@@ -13,7 +13,6 @@
 
 namespace Scabbia\Events;
 
-use Scabbia\Framework\Core;
 use Scabbia\Events\Delegate;
 
 /**
@@ -26,11 +25,11 @@ use Scabbia\Events\Delegate;
 class Events
 {
     /** @type null|array event subscribers */
-    public static $events = null;
+    public $events = [];
     /** @type array      event depth */
-    public static $eventDepth = array();
+    public $eventDepth = array();
     /** @type bool       indicates the event manager is currently disabled or not */
-    public static $disabled = false;
+    public $disabled = false;
 
 
     /**
@@ -41,24 +40,19 @@ class Events
      *
      * @return bool whether the event is invoked or not
      */
-    public static function invoke($uEvent, $uEventArgs = null)
+    public function invoke($uEvent, $uEventArgs = null)
     {
-        if (self::$events === null) {
-            $tEventsFilePath = Core::$basepath . "/writable/generated/events.php";
-            self::$events = require $tEventsFilePath;
-        }
-
-        if (self::$disabled) {
+        if ($this->disabled) {
             return null;
         }
 
-        if (!isset(self::$events[$uEvent])) {
+        if (!isset($this->events[$uEvent])) {
             return null;
         }
 
-        self::$eventDepth[] = [$uEvent, $uEventArgs];
-        $tReturn = self::$events[$uEvent]->invoke($uEventArgs);
-        array_pop(self::$eventDepth);
+        $this->eventDepth[] = [$uEvent, $uEventArgs];
+        $tReturn = $this->events[$uEvent]->invoke($uEventArgs);
+        array_pop($this->eventDepth);
 
         return $tReturn;
     }
@@ -73,17 +67,12 @@ class Events
      *
      * @return void
      */
-    public static function register($uEvent, $uCallback, $uState, $uPriority = null)
+    public function register($uEvent, $uCallback, $uState, $uPriority = null)
     {
-        if (self::$events === null) {
-            $tEventsFilePath = Core::$basepath . "/writable/generated/events.php";
-            self::$events = require $tEventsFilePath;
+        if (!isset($this->events[$uEvent])) {
+            $this->events[$uEvent] = new Delegate();
         }
 
-        if (!isset(self::$events[$uEvent])) {
-            self::$events[$uEvent] = new Delegate();
-        }
-
-        self::$events[$uEvent]->add($uCallback, $uState, $uPriority);
+        $this->events[$uEvent]->add($uCallback, $uState, $uPriority);
     }
 }

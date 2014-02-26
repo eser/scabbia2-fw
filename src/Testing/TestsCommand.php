@@ -40,8 +40,13 @@ class TestsCommand
         $tExitCode = Testing::runUnitTests($uConfig["fixtures"], $uOutput);
         $tCoverageReport = Testing::coverageStop();
 
-        $tCoverage = round($tCoverageReport["total"]["percentage"], 2);
-        $uOutput->writeColor("green", "Code Coverage = {$tCoverage}%");
+        if ($tCoverageReport !== null) {
+            $tCoverage = round($tCoverageReport["total"]["percentage"], 2) . "%";
+        } else {
+            $tCoverage = "unknown";
+        }
+
+        $uOutput->writeColor("green", "Code Coverage = {$tCoverage}");
         $uOutput->writeColor("yellow", "done.");
 
         return $tExitCode;

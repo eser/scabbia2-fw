@@ -77,6 +77,10 @@ class Testing
      */
     public static function coverageStart()
     {
+        if (!extension_loaded("xdebug")) {
+            return;
+        }
+
         xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
     }
 
@@ -87,6 +91,10 @@ class Testing
      */
     public static function coverageStop()
     {
+        if (!extension_loaded("xdebug")) {
+            return null;
+        }
+
         $tCoverageData = xdebug_get_code_coverage();
         xdebug_stop_code_coverage();
 

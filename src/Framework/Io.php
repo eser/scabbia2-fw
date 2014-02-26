@@ -359,31 +359,27 @@ class Io
     /**
      * Determines the file is if readable and not expired
      *
-     * @param string    $uPath  the relative path
-     * @param int|bool  $uTtl   the time to live period in seconds
+     * @param string $uPath    the relative path
+     * @param array  $uOptions options
      *
      * @return bool the result
      */
-    public static function isReadable($uPath, $uTtl = false)
+    public static function isReadable($uPath, array $uOptions = [])
     {
         if (!file_exists($uPath)) {
             return false;
         }
 
-        return ($uTtl === false || (time() - filemtime($uPath) <= $uTtl));
-    }
+        $tLastMod = filemtime($uPath);
+        if (isset($uOptions["ttl"]) && time() - $tLastMod < $uOptions["ttl"]) {
+            return false;
+        }
 
-    /**
-     * Determines the file is if readable and newer than given timestamp
-     *
-     * @param string    $uPath          the relative path
-     * @param int       $uLastModified  the time to live period in seconds
-     *
-     * @return bool the result
-     */
-    public static function isReadableAndNewerThan($uPath, $uLastModified)
-    {
-        return (file_exists($uPath) && filemtime($uPath) >= $uLastModified);
+        if (isset($uOptions["newerthan"]) && $tLastMod >= $uOptions["newerthan"]) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -392,13 +388,13 @@ class Io
      *
      * @param string      $uPath         the relative path
      * @param mixed       $uDefaultValue the default value
-     * @param int|bool    $uTtl          the time to live period in seconds
+     * @param array       $uOptions      options
      *
      * @return mixed the result
      */
-    public static function readFromCache($uPath, $uDefaultValue, $uTtl = false)
+    public static function readFromCache($uPath, $uDefaultValue, array $uOptions = [])
     {
-        if (self::isReadable($uPath, $uTtl)) {
+        if (self::isReadable($uPath, $uOptions)) {
             return self::readSerialize($uPath);
         }
 

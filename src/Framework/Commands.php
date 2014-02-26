@@ -50,7 +50,9 @@ class Commands
                 $tParser = new Parser();
                 return $tParser->parse(Io::read($tCommandsYamlPath));
             },
-            60 * 60
+            [
+                "ttl" => 60 * 60
+            ]
         );
 
         // register psr-0 source paths to composer.

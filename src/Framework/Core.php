@@ -68,7 +68,9 @@ class Core
                 $tParser = new Parser();
                 return $tParser->parse(Io::read($tProjectYamlPath));
             },
-            60 * 60
+            [
+                "ttl" => 60 * 60
+            ]
         );
     }
 
@@ -98,6 +100,7 @@ class Core
             }
 
             if ($tTargetApplication !== false) {
+                // TODO: is sanitizing $tProjectFile needed for paths?
                 $tApplicationWritablePath = self::$basepath .
                     "/writable/generated/{$uProjectConfigPath}/{$tTargetApplication}";
                 self::runApplication($tApplicationConfig, $tApplicationWritablePath);

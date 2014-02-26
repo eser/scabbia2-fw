@@ -69,6 +69,7 @@ class GenerateCommand
             throw new \RuntimeException("invalid configuration - {$tProjectFile}/{$tApplicationName}");
         }
 
+        // TODO: is sanitizing $tProjectFile needed for paths?
         $tApplicationWritablePath = Core::$basepath . "/writable/generated/{$tProjectFile}/{$tApplicationName}";
         if (!file_exists($tApplicationWritablePath)) {
             mkdir($tApplicationWritablePath, 0777, true);

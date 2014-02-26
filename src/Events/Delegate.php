@@ -49,6 +49,7 @@ class Delegate
         };
     }
 
+    // @codingStandardsIgnoreStart
     /**
      * Unserializes an instance of delegate
      *
@@ -58,6 +59,7 @@ class Delegate
      */
     public static function __set_state(array $uPropertyBag)
     {
+        // @codingStandardsIgnoreEnd
         $tNewInstance = new static($uPropertyBag["expectedReturn"]);
         $tNewInstance->callbacks = $uPropertyBag["callbacks"];
 

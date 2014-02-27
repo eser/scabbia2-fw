@@ -1,0 +1,18 @@
+Portions of this code are from Symfony YAML Component under the MIT license.
+
+(c) Fabien Potencier <fabien@symfony.com>
+
+For the full copyright and license information, please view the LICENSE-MIT
+file that was distributed with this source code.
+
+Modifications made:
+- Scabbia Framework code styles applied.
+- All dump methods are moved under Dumper class.
+- Redundant classes removed.
+- Namespace changed.
+- Tests ported to Scabbia2.
+- Encoding checks removed.
+
+Latest commit applied:
+https://github.com/symfony/Yaml/commit/9a3c7e61ed72602cfcaaf98b7bd79b0834f1cb3f
+e49a47d60348665261f6e279ba383241deb73cab

@@ -584,11 +584,11 @@ EOF;
     }
 
     /**
-     * Tests nested string block with comments
+     * Tests folded string block with comments
      *
      * @return void
      */
-    public function testNestedStringBlockWithComments()
+    public function testFoldedStringBlockWithComments()
     {
         $yaml1 = <<<EOT
 # comment 1
@@ -617,5 +617,39 @@ EOT;
 EOF;
 
         $this->assertEquals([["content" => $yaml1]], $this->parser->parse($yaml2));
+    }
+
+    public function testNestedFoldedStringBlockWithComments()
+    {
+        $this->assertEquals(
+            [[
+            "title"   => "some title",
+            "content" => <<<EOT
+# comment 1
+header
+
+    # comment 2
+    <body>
+        <h1>title</h1>
+    </body>
+
+footer # comment3
+EOT
+            ]],
+            $this->parser->parse(<<<EOF
+-
+    title: some title
+    content: |
+        # comment 1
+        header
+
+            # comment 2
+            <body>
+                <h1>title</h1>
+            </body>
+
+        footer # comment3
+EOF
+        ));
     }
 }

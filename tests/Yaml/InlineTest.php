@@ -233,6 +233,9 @@ class InlineTest extends UnitTestFixture
             "\"a \\\"string\\\" with 'quoted strings inside'\"" => "a \"string\" with 'quoted strings inside'",
             "'a \"string\" with ''quoted strings inside'''" => "a \"string\" with 'quoted strings inside'",
 
+            "'-dash'" => "-dash",
+            "'-'" => "-",
+
             // sequences
             // urls are no key value mapping. see #3609. Valid yaml "key: value" mappings require a space after the
             // colon
@@ -314,7 +317,6 @@ class InlineTest extends UnitTestFixture
             // ".Inf" => -log(0),
             "-.Inf" => log(0),
             "'686e444'" => "686e444",
-            ".Inf" => 646e444,
             "\"foo\\r\\nbar\"" => "foo\r\nbar",
             "'foo#bar'" => "foo#bar",
             "'foo # bar'" => "foo # bar",

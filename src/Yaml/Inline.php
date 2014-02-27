@@ -278,59 +278,44 @@ class Inline
     protected static function evaluateScalar($scalar)
     {
         $scalar = trim($scalar);
+        $scalarLower = strtolower($scalar);
 
-        if (strtolower($scalar) === "null" || $scalar === "" || $scalar === "~") {
+        if ($scalarLower === "null" || $scalar === "" || $scalar === "~") {
             return null;
-        } elseif (strpos($scalar, "!str") === 0) {
-            return (string) substr($scalar, 5);
-        } elseif (strpos($scalar, "! ") === 0) {
-            return intval(self::parseScalar(substr($scalar, 2)));
-        } elseif (strpos($scalar, "!!php/object:") === 0) {
-            return unserialize(substr($scalar, 13));
-        } elseif (ctype_digit($scalar)) {
-            $raw = $scalar;
-            $cast = intval($scalar);
-
-            if ($scalar[0] === "0") {
-                return octdec($scalar);
-            }
-
-            if ((string)$raw === (string)$cast) {
-                return $cast;
-            }
-
-            return $raw;
-        } elseif ($scalar[0] === "-" && ctype_digit(substr($scalar, 1))) {
-            $raw = $scalar;
-            $cast = intval($scalar);
-
-            if ($scalar[1] === "0") {
-                return octdec($scalar);
-            }
-
-            if ((string)$raw === (string)$cast) {
-                return $cast;
-            }
-
-            return $raw;
-        } elseif (strtolower($scalar) === "true") {
+        } elseif ($scalarLower === "true") {
             return true;
-        } elseif (strtolower($scalar) === "false") {
+        } elseif ($scalarLower === "false") {
             return false;
-        } elseif (is_numeric($scalar)) {
-            if ($scalar[0] . $scalar[1] === "0x") {
-                return hexdec($scalar);
-            }
+        } elseif ($scalar[0] === "+" || $scalar[0] === "-" || $scalar[0] === "." || $scalar[0] === "!" ||
+            is_numeric($scalar[0])) { // Optimise for returning strings.
 
-            return floatval($scalar);
-        } elseif (strcasecmp($scalar, ".inf") === 0 || strcasecmp($scalar, ".NaN") === 0) {
-            return -log(0);
-        } elseif (strcasecmp($scalar, "-.inf") === 0) {
-            return log(0);
-        } elseif (preg_match("/^(-|\\+)?[0-9,]+(\\.[0-9]+)?$/", $scalar)) {
-            return floatval(str_replace(",", "", $scalar));
-        } elseif (preg_match(self::getTimestampRegex(), $scalar)) {
-            return strtotime($scalar);
+            if (strpos($scalar, "!str") === 0) {
+                return (string)substr($scalar, 5);
+            } elseif (strpos($scalar, '! ') === 0) {
+                return intval(self::parseScalar(substr($scalar, 2)));
+            } elseif (strpos($scalar, '!!php/object:')) {
+                return unserialize(substr($scalar, 13));
+            } elseif (ctype_digit($scalar)) {
+                $raw = $scalar;
+                $cast = intval($scalar);
+
+                return $scalar[0] == "0" ? octdec($scalar) : (((string)$raw == (string)$cast) ? $cast : $raw);
+            } elseif ($scalar[0] === "-" && ctype_digit(substr($scalar, 1))) {
+                $raw = $scalar;
+                $cast = intval($scalar);
+
+                return $scalar[1] == "0" ? octdec($scalar) : (((string)$raw == (string)$cast) ? $cast : $raw);
+            } elseif (is_numeric($scalar)) {
+                return $scalar[0] . $scalar[1] == "0x" ? hexdec($scalar) : floatval($scalar);
+            } elseif (strcasecmp($scalar, ".inf") == 0 || strcasecmp($scalar, ".NaN") == 0) {
+                return -log(0);
+            } elseif (strcasecmp($scalar, "-.inf") == 0) {
+                return log(0);
+            } elseif (preg_match("/^(-|\\+)?[0-9,]+(\\.[0-9]+)?$/", $scalar)) {
+                return floatval(str_replace(",", "", $scalar));
+            } elseif (preg_match(self::getTimestampRegex(), $scalar)) {
+                return strtotime($scalar);
+            }
         } else {
             return (string)$scalar;
         }

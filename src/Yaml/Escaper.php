@@ -103,7 +103,7 @@ class Escaper
      */
     public static function requiresSingleQuoting($value)
     {
-        return preg_match("/[ \\s ' \" \\: \\{ \\} \\[ \\] , & \\* \\# \\?] | \\A[ - ? | < > = ! % @ ` ]/x", $value);
+        return preg_match("/[ \\s ' \" \\: \\{ \\} \\[ \\] , & \\* \\# \\?] | \\A[ \\- ? | < > = ! % @ ` ]/x", $value);
     }
 
     /**

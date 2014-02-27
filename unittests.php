@@ -24,18 +24,17 @@ $tLoader->register();
 $tLoader->addNamespace("Scabbia\\", __DIR__ . "/src/");
 $tLoader->addNamespace("Scabbia\\Tests\\", __DIR__ . "/tests/");
 
-use Scabbia\Testing\Testing;
+use Scabbia\Output\ConsoleOutput;
+use Scabbia\Testing\TestsCommand;
 
-$tTestFixtures = [
-    "Scabbia\\Tests\\Yaml\\ParserTest",
-    "Scabbia\\Tests\\Yaml\\InlineTest"
+$tConfig = [
+    "fixtures" => [
+        "Scabbia\\Tests\\Yaml\\ParserTest",
+        "Scabbia\\Tests\\Yaml\\InlineTest"
+    ]
 ];
 
-Testing::coverageStart();
-$tExitCode = Testing::runUnitTests($tTestFixtures);
-$tCoverageReport = Testing::coverageStop();
-
-$tCoverage = round($tCoverageReport["total"]["percentage"], 2);
-echo "Code Coverage = {$tCoverage}%";
+$tOutput = new ConsoleOutput();
+$tExitCode = TestsCommand::tests([], $tConfig, $tOutput);
 
 exit($tExitCode);

@@ -93,11 +93,13 @@ class InlineTest extends UnitTestFixture
         $locale = setlocale(LC_NUMERIC, 0);
         if ($locale === false) {
             $this->markTestSkipped("Your platform does not support locales.");
+            return;
         }
 
         $required_locales = ["fr_FR.UTF-8", "fr_FR.UTF8", "fr_FR.utf-8", "fr_FR.utf8", "French_France.1252"];
         if (setlocale(LC_ALL, $required_locales) === false) {
             $this->markTestSkipped("Could not set any of required locales: " . implode(", ", $required_locales));
+            return;
         }
 
         $this->assertEquals("1.2", Dumper::dumpInline(1.2));

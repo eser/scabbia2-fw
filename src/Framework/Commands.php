@@ -101,7 +101,11 @@ class Commands
         $tOutput = new ConsoleOutput();
 
         foreach ($tCallbacks as $tCallback) {
-            call_user_func($tCallback, $uCommands, $tConfig, $tOutput);
+            $tReturn = call_user_func($tCallback, $uCommands, $tConfig, $tOutput);
+
+            if ($tReturn !== null && $tReturn !== 0) {
+                return $tReturn;
+            }
         }
 
         return 0;

@@ -293,7 +293,7 @@ class Inline
                 return (string)substr($scalar, 5);
             } elseif (strpos($scalar, '! ') === 0) {
                 return intval(self::parseScalar(substr($scalar, 2)));
-            } elseif (strpos($scalar, '!!php/object:')) {
+            } elseif (strpos($scalar, '!!php/object:') === 0) {
                 return unserialize(substr($scalar, 13));
             } elseif (ctype_digit($scalar)) {
                 $raw = $scalar;
@@ -307,9 +307,9 @@ class Inline
                 return $scalar[1] == "0" ? octdec($scalar) : (((string)$raw == (string)$cast) ? $cast : $raw);
             } elseif (is_numeric($scalar)) {
                 return $scalar[0] . $scalar[1] == "0x" ? hexdec($scalar) : floatval($scalar);
-            } elseif (strcasecmp($scalar, ".inf") == 0 || strcasecmp($scalar, ".NaN") == 0) {
+            } elseif (strcasecmp($scalar, ".inf") === 0 || strcasecmp($scalar, ".NaN") === 0) {
                 return -log(0);
-            } elseif (strcasecmp($scalar, "-.inf") == 0) {
+            } elseif (strcasecmp($scalar, "-.inf") === 0) {
                 return log(0);
             } elseif (preg_match("/^(-|\\+)?[0-9,]+(\\.[0-9]+)?$/", $scalar)) {
                 return floatval(str_replace(",", "", $scalar));

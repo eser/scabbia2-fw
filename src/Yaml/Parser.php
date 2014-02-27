@@ -154,7 +154,7 @@ class Parser
                 "|[^ '\"\\[\\{].*?) *\\:(\\s+(?P<value>.+?))?\\s*$#u",
                 $this->currentLine,
                 $values
-            ) && strpos($values["key"]," #") === false) {
+            ) && strpos($values["key"], " #") === false) {
                 if ($context && $context === "sequence") {
                     throw new ParseException("You cannot define a mapping item when in a sequence");
                 }

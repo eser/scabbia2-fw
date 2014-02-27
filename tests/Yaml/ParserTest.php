@@ -621,22 +621,7 @@ EOF;
 
     public function testNestedFoldedStringBlockWithComments()
     {
-        $this->assertEquals(
-            [[
-            "title"   => "some title",
-            "content" => <<<EOT
-# comment 1
-header
-
-    # comment 2
-    <body>
-        <h1>title</h1>
-    </body>
-
-footer # comment3
-EOT
-            ]],
-            $this->parser->parse(<<<EOF
+        $yaml = <<<EOF
 -
     title: some title
     content: |
@@ -649,7 +634,24 @@ EOT
             </body>
 
         footer # comment3
-EOF
-        ));
+EOF;
+
+        $this->assertEquals(
+            [[
+                "title"   => "some title",
+                "content" => <<<EOT
+# comment 1
+header
+
+    # comment 2
+    <body>
+        <h1>title</h1>
+    </body>
+
+footer # comment3
+EOT
+            ]],
+            $this->parser->parse($yaml)
+        );
     }
 }

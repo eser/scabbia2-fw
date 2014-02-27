@@ -164,7 +164,10 @@ class ParseException extends \RuntimeException
         }
 
         if ($this->parsedFile !== null) {
-            $this->message .= sprintf(" in %s", json_encode($this->parsedFile, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+            $this->message .= sprintf(
+                " in %s",
+                json_encode($this->parsedFile, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+            );
         }
 
         if ($this->parsedLine >= 0) {

@@ -50,8 +50,8 @@ class ParseExceptionTest extends UnitTestFixture
         $tException = new ParseException("Error message", 42, "foo: bar", "/var/www/app/config.yml");
 
         $this->assertEquals(
-                "Error message in \"/var/www/app/config.yml\" at line 42 (near \"foo: bar\")",
-                $tException->getMessage()
+            "Error message in \"/var/www/app/config.yml\" at line 42 (near \"foo: bar\")",
+            $tException->getMessage()
         );
     }
 }

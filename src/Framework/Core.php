@@ -15,7 +15,7 @@ namespace Scabbia\Framework;
 
 use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Io;
-use Scabbia\Yaml\Parser;
+use Scabbia\Config\Config;
 
 /**
  * Core framework functionality
@@ -50,31 +50,6 @@ class Core
     }
 
     /**
-     * Reads the project file
-     *
-     * @param string $uProjectConfigPath The path of project configuration file
-     *
-     * @return array project file read
-     */
-    public static function readProjectFile($uProjectConfigPath)
-    {
-        // load project.yml
-        $tProjectYamlPath = Io::combinePaths(self::$basepath, $uProjectConfigPath);
-        $tProjectYamlCachePath = self::$basepath . "/writable/cache/" . crc32($tProjectYamlPath);
-
-        return Io::readFromCache(
-            $tProjectYamlCachePath,
-            function () use ($tProjectYamlPath) {
-                $tParser = new Parser();
-                return $tParser->parse(Io::read($tProjectYamlPath));
-            },
-            [
-                "ttl" => 60 * 60
-            ]
-        );
-    }
-
-    /**
      * Loads the project file
      *
      * @param string $uProjectConfigPath The path of project configuration file
@@ -83,10 +58,10 @@ class Core
      */
     public static function loadProject($uProjectConfigPath)
     {
-        $tProjectConfig = self::readProjectFile($uProjectConfigPath);
+        $tProjectConfig = Config::load($uProjectConfigPath);
 
         // test cases for applications, and bind configuration to app
-        foreach ($tProjectConfig as $tApplicationKey => $tApplicationConfig) {
+        foreach ($tProjectConfig->content as $tApplicationKey => $tApplicationConfig) {
             $tTargetApplication = $tApplicationKey;
 
             if (isset($tApplicationConfig["tests"])) {

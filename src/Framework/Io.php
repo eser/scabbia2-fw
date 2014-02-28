@@ -13,6 +13,8 @@
 
 namespace Scabbia\Framework;
 
+use Scabbia\Framework\Core;
+
 /**
  * Io functionality for framework
  *
@@ -392,7 +394,7 @@ class Io
      *
      * @return mixed the result
      */
-    public static function readFromCache($uPath, $uDefaultValue, array $uOptions = [])
+    public static function readFromCacheFile($uPath, $uDefaultValue, array $uOptions = [])
     {
         if (self::isReadable($uPath, $uOptions)) {
             return self::readSerialize($uPath);
@@ -407,29 +409,29 @@ class Io
     }
 
     /**
-     * Garbage collects the given path
+     * Reads the contents from cache folder as long as it is not expired
+     * If the cached content is expired, invokes callback method and caches output
      *
-     * @param string    $uPath  path
-     * @param int       $uTtl   age
+     * @param string      $uPath         the relative path
+     * @param mixed       $uDefaultValue the default value
+     * @param array       $uOptions      options
      *
-     * @return void
+     * @return mixed the result
      */
-    public static function garbageCollect($uPath, $uTtl = -1)
+    public static function readFromCache($uPath, $uDefaultValue, array $uOptions = [])
     {
-        $tDirectory = new \DirectoryIterator($uPath);
+        $tCachePath = Core::$basepath . "/writable/cache/" . crc32($uPath);
 
-        clearstatcache();
-        foreach ($tDirectory as $tFile) {
-            if (!$tFile->isFile()) {
-                continue;
-            }
-
-            if ($uTtl !== -1 && (time() - $tFile->getMTime()) < $uTtl) {
-                continue;
-            }
-
-            unlink($tFile->getPathname());
+        if (self::isReadable($tCachePath, $uOptions)) {
+            return self::readSerialize($tCachePath);
         }
+
+        if (is_a($uDefaultValue, "Closure")) {
+            $uDefaultValue = call_user_func($uDefaultValue);
+        }
+
+        self::writeSerialize($tCachePath, $uDefaultValue);
+        return $uDefaultValue;
     }
 
     /**
@@ -474,6 +476,32 @@ class Io
         }
 
         return $tArray;
+    }
+
+    /**
+     * Garbage collects the given path
+     *
+     * @param string    $uPath  path
+     * @param null|int  $uTtl   age
+     *
+     * @return void
+     */
+    public static function garbageCollect($uPath, $uTtl = null)
+    {
+        $tDirectory = new \DirectoryIterator($uPath);
+
+        clearstatcache();
+        foreach ($tDirectory as $tFile) {
+            if (!$tFile->isFile()) {
+                continue;
+            }
+
+            if ($uTtl !== null && (time() - $tFile->getMTime()) < $uTtl) {
+                continue;
+            }
+
+            unlink($tFile->getPathname());
+        }
     }
 
     /**

@@ -42,10 +42,9 @@ class Commands
     {
         // load commands.yml
         $tCommandsYamlPath = Io::combinePaths(Core::$basepath, $uCommandsConfigPath);
-        $tCommandsYamlCachePath = Core::$basepath . "/writable/cache/" . crc32($tCommandsYamlPath);
 
         $tCommandsConfig = Io::readFromCache(
-            $tCommandsYamlCachePath,
+            $tCommandsYamlPath,
             function () use ($tCommandsYamlPath) {
                 $tParser = new Parser();
                 return $tParser->parse(Io::read($tCommandsYamlPath));

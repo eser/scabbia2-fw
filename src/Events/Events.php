@@ -24,10 +24,10 @@ use Scabbia\Events\Delegate;
  */
 class Events
 {
-    /** @type null|array event subscribers */
+    /** @type array event subscribers */
     public $events = [];
     /** @type array      event depth */
-    public $eventDepth = array();
+    public $eventDepth = [];
     /** @type bool       indicates the event manager is currently disabled or not */
     public $disabled = false;
 

@@ -25,7 +25,7 @@ use Scabbia\Events\Events;
 abstract class ApplicationBase
 {
     /** @type ApplicationBase $current current application instance */
-    public static $current;
+    public static $current = null;
     /** @type Events          $events events */
     public $events;
     /** @type string          $writablePath writable output folder */

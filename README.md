@@ -1,5 +1,4 @@
-Scabbia2 PHP Framework
-======================
+# Scabbia2 PHP Framework
 
 **Scabbia2** is an open source PHP framework project which is currently on planning stage. Keep visiting [project homepage](http://scabbiafw.com/) and [repositories](https://github.com/scabbiafw/) for further updates.
 
@@ -8,28 +7,23 @@ Scabbia2 PHP Framework
 [![Total Downloads](https://poser.pugx.org/scabbiafw/scabbia2/downloads.png)](https://packagist.org/packages/scabbiafw/scabbia2)
 [![License](https://poser.pugx.org/scabbiafw/scabbia2/license.png)](https://packagist.org/packages/scabbiafw/scabbia2)
 
-History
--------
+## History
 
 This project derived from [Scabbia Framework](https://github.com/larukedi/Scabbia-Framework/) with taken advantage of modern software tools. Since we don't have active GitHub users and online continous integration tools for free when we started 3 years ago, we think it's time to create a new branch of the existing framework idea/brand for a reset.
 
 1.x versions had been under development by [Eser Ozvataf](http://eser.ozvataf.com/) for 2 years and reached version 1.5 on stable branch. You can take a look to the repository of [Scabbia 1.x](https://github.com/larukedi/Scabbia-Framework/). It's active development is frozen but small bugfixes will be available in time.
 
 
-Links
------
+## Links
 - [Documentation](http://scabbiafw.com/docs/)
 - [Twitter](https://twitter.com/scabbiafw)
+- [Contributor List](contributors.md)
+- [License Information](LICENSE)
 
 
-License
--------
-See [LICENSE](LICENSE)
+## Contributing
+It is publicly open for any contribution. Bugfixes, new features and extra modules are welcome. All contributions should be filed on the [scabbiafw/scabbia2](http://github.com/scabbiafw/scabbia2) repository.
 
-
-Contributing
-------------
-All contributions should be filed on the [scabbiafw/scabbia2](http://github.com/scabbiafw/scabbia2) repository.
-
-* Fork the repo, push your changes to your fork, and submit a pull request.
-* If something does not work, please report it using GitHub issues.
+* To contribute to code: Fork the repo, push your changes to your fork, and submit a pull request.
+* To report a bug: If something does not work, please report it using GitHub issues.
+* To support: [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BXNMWG56V6LYS)

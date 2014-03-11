@@ -80,11 +80,7 @@ class Config
      *
      * @return void
      */
-    protected function process(
-        &$uTarget,
-        $uNode,
-        $uOverwrite
-    )
+    protected function process(&$uTarget, $uNode, $uOverwrite)
     {
         // TODO: array concat
         if (is_scalar($uNode)) {

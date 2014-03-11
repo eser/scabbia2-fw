@@ -15,6 +15,7 @@ namespace Scabbia\Framework\Commands;
 
 use Scabbia\Framework\Core;
 use Scabbia\Framework\Io;
+use Scabbia\Config\Config;
 use Scabbia\Yaml\Parser;
 use Scabbia\Output\IOutput;
 
@@ -63,9 +64,9 @@ class GenerateCommand
             }
         }
 
-        $uApplicationConfig = Core::readProjectFile($tProjectFile);
+        $uApplicationConfig = Config::load($tProjectFile);
 
-        if ($uApplicationConfig === null || !isset($uApplicationConfig[$tApplicationName])) {
+        if ($uApplicationConfig === null || !isset($uApplicationConfig->content[$tApplicationName])) {
             throw new \RuntimeException("invalid configuration - {$tProjectFile}/{$tApplicationName}");
         }
 
@@ -76,7 +77,7 @@ class GenerateCommand
         }
 
         self::$result = [];
-        foreach ($uApplicationConfig[$tApplicationName]["sources"] as $tPath) {
+        foreach ($uApplicationConfig->content[$tApplicationName]["sources"] as $tPath) {
             Io::getFilesWalk(
                 Core::translateVariables($tPath),
                 "*.php",

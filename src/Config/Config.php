@@ -94,6 +94,10 @@ class Config
         }
 
         $tOverwrite = $uOverwrite;
+        if ($uNode === null) {
+            return;
+        }
+
         foreach ($uNode as $tKey => $tSubnode) {
             $tNodeParts = explode("|", $tKey);
 

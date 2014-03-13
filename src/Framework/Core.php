@@ -28,6 +28,8 @@ class Core
 {
     /** @type string $basepath the base directory which framework runs in */
     public static $basepath = null;
+    /** @type array $runningApplications array of running applications */
+    public static $runningApplications = [];
     /** @type array $variable array of framework variables */
     public static $variables = [];
     /** @type object $composerAutoloader the instance of the composer's autoloader class */
@@ -46,7 +48,7 @@ class Core
         mb_internal_encoding("UTF-8");
 
         self::$composerAutoloader = $uComposerAutoloader;
-        self::setVariables();
+        self::initVariables();
     }
 
     /**
@@ -94,19 +96,36 @@ class Core
     public static function runApplication($uApplicationConfig, $uWritablePath)
     {
         // register psr-0 source paths to composer.
-        $tPaths = [];
+        if (ApplicationBase::$current !== null) {
+            $tPaths = ApplicationBase::$current->paths;
+        } else {
+            $tPaths = [];
+        }
+
         foreach ($uApplicationConfig["sources"] as $tPath) {
+            // FIXME in_array may be placed here to check for paths against duplication, but it's a rare case.
             $tPaths[] = self::translateVariables($tPath);
         }
 
         self::$composerAutoloader->set(false, $tPaths);
 
+        // construct the application class
         $tApplicationType = $uApplicationConfig["type"];
-        $tApplication = new $tApplicationType ($uApplicationConfig, $uWritablePath);
+        $tApplication = new $tApplicationType ($uApplicationConfig, $tPaths, $uWritablePath);
+
+        // push framework variables
+        self::$runningApplications[] = ApplicationBase::$current;
         ApplicationBase::$current = $tApplication;
 
         $tApplication->generateRequestFromGlobals();
-        $tApplication->run();
+
+        // pop framework variables
+        ApplicationBase::$current = array_pop(self::$runningApplications);
+        if (ApplicationBase::$current !== null) {
+            self::$composerAutoloader->set(false, ApplicationBase::$current->paths);
+        } else {
+            self::$composerAutoloader->set(false, []);
+        }
     }
 
     /**
@@ -130,11 +149,11 @@ class Core
     }
 
     /**
-     * Sets the variables
+     * Initializes framework variables
      *
      * @return void
      */
-    protected static function setVariables()
+    protected static function initVariables()
     {
         if (self::$basepath === null) {
             $tScriptDirectory = pathinfo($_SERVER["SCRIPT_FILENAME"], PATHINFO_DIRNAME);

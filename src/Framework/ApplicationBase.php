@@ -28,6 +28,8 @@ abstract class ApplicationBase
     public static $current = null;
     /** @type Events          $events events */
     public $events;
+    /** @type array           $paths paths include source files */
+    public $paths;
     /** @type string          $writablePath writable output folder */
     public $writablePath;
     /** @type bool            $development the development flag of application is on or off */
@@ -40,16 +42,26 @@ abstract class ApplicationBase
      * Initializes an application
      *
      * @param mixed  $uOptions      options
+     * @param array  $uPaths        paths include source files
      * @param string $uWritablePath writable output folder
      *
      * @return ApplicationBase
      */
-    public function __construct($uOptions, $uWritablePath)
+    public function __construct($uOptions, $uPaths, $uWritablePath)
     {
+        $this->paths = $uPaths;
         $this->writablePath = $uWritablePath;
 
         $this->development = $uOptions["development"];
         $this->disableCaches = $uOptions["disableCaches"];
+
+        $this->events = new Events();
+        $this->events->events = require "{$this->writablePath}/events.php";
+
+        // TODO initialize the proper environment
+        // TODO instantiate application with variables (environment, application config [development, disableCaches])
+        // TODO load modules
+        // TODO execute autoexecs
     }
 
     /**
@@ -70,20 +82,4 @@ abstract class ApplicationBase
      * @return void
      */
     abstract public function generateRequestFromGlobals();
-
-    /**
-     * Runs the application
-     *
-     * @return void
-     */
-    public function run()
-    {
-        $this->events = new Events();
-        $this->events->events = require "{$this->writablePath}/events.php";
-
-        // TODO initialize the proper environment
-        // TODO instantiate application with variables (environment, application config [development, disableCaches])
-        // TODO load modules
-        // TODO execute autoexecs
-    }
 }

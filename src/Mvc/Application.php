@@ -14,6 +14,7 @@
 namespace Scabbia\Mvc;
 
 use Scabbia\Framework\ApplicationBase;
+use Scabbia\Framework\Core;
 use Scabbia\Router\Router;
 use Scabbia\Helpers\String;
 
@@ -29,14 +30,17 @@ class Application extends ApplicationBase
     /**
      * Initializes an application
      *
-     * @param mixed  $uOptions       options
+     * @param mixed  $uOptions      options
+     * @param array  $uPaths        paths include source files
      * @param string $uWritablePath writable output folder
      *
      * @return Application
      */
-    public function __construct($uOptions, $uWritablePath)
+    public function __construct($uOptions, $uPaths, $uWritablePath)
     {
-        parent::__construct($uOptions, $uWritablePath);
+        parent::__construct($uOptions, $uPaths, $uWritablePath);
+
+        $this->events->invoke("applicationInit");
     }
 
     /**
@@ -51,7 +55,9 @@ class Application extends ApplicationBase
      */
     public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters, array $uPostParameters)
     {
-        //
+        $tDispatch = Router::dispatch($uMethod, $uPathInfo);
+
+        String::vardump($tDispatch);
     }
 
     /**
@@ -61,24 +67,8 @@ class Application extends ApplicationBase
      */
     public function generateRequestFromGlobals()
     {
-        // $this->generateRequest('GET', 'home/index', $_GET, $_POST);
-    }
-
-    /**
-     * Runs the application
-     *
-     * @return void
-     */
-    public function run()
-    {
-        parent::run();
-
         if (isset($_GET["q"])) {
-            $tDispatch = Router::dispatch("get", $_GET["q"]);
-
-            String::vardump($tDispatch);
+            $this->generateRequest("get", $_GET["q"], $_GET, $_POST);
         }
-
-        $this->events->invoke("load");
     }
 }

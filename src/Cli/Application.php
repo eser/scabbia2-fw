@@ -27,14 +27,15 @@ class Application extends ApplicationBase
     /**
      * Initializes an application
      *
-     * @param mixed $uOptions options
+     * @param mixed  $uOptions      options
+     * @param array  $uPaths        paths include source files
      * @param string $uWritablePath writable output folder
      *
      * @return Application
      */
-    public function __construct($uOptions, $uWritablePath)
+    public function __construct($uOptions, $uPaths, $uWritablePath)
     {
-        parent::__construct($uOptions, $uWritablePath);
+        parent::__construct($uOptions, $uPaths, $uWritablePath);
     }
 
     /**
@@ -59,16 +60,6 @@ class Application extends ApplicationBase
      */
     public function generateRequestFromGlobals()
     {
-        // $this->generateRequest('GET', 'home/index', $_GET, $_POST);
-    }
-
-    /**
-     * Runs the application
-     *
-     * @return void
-     */
-    public function run()
-    {
-        parent::run();
+        // $this->generateRequest("GET", "home/index", $_GET, $_POST);
     }
 }

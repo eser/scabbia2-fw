@@ -230,12 +230,22 @@ class GenerateCommand
                 if ($tTokenId === T_STRING || $tTokenId === T_NS_SEPARATOR) {
                     $tBuffer .= $tTokenContent;
                 } else {
-                    $tLastClassDerivedFrom = $tBuffer;
+                    $tFound = false;
+
                     foreach ($tUses as $tUse) {
                         $tLength = strlen($tBuffer);
                         if (strlen($tUse) > $tLength && substr($tUse, -$tLength) === $tBuffer) {
                             $tLastClassDerivedFrom = $tUse;
+                            $tFound = true;
                             break;
+                        }
+                    }
+
+                    if (!$tFound) {
+                        if (strpos($tBuffer, "\\") !== false) {
+                            $tLastClassDerivedFrom = $tBuffer;
+                        } else {
+                            $tLastClassDerivedFrom = "{$tLastNamespace}\\{$tBuffer}";
                         }
                     }
 

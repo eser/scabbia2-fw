@@ -507,14 +507,15 @@ class Io
     /**
      * Apply a function/method to every file matching the given pattern
      *
-     * @param string        $uPath       path to be searched
-     * @param string|null   $uPattern    pattern of files will be in the list
-     * @param bool          $uRecursive  recursive search
-     * @param callable      $uCallback   callback function/method
+     * @param string        $uPath         path to be searched
+     * @param string|null   $uPattern      pattern of files will be in the list
+     * @param bool          $uRecursive    recursive search
+     * @param callable      $uCallback     callback function/method
+     * @param mixed         $uStateObject  parameters will be passed to function
      *
      * @return void
      */
-    public static function getFilesWalk($uPath, $uPattern, $uRecursive, /* callable */ $uCallback)
+    public static function getFilesWalk($uPath, $uPattern, $uRecursive, /* callable */ $uCallback, $uStateObject = null)
     {
         $tDir = new \DirectoryIterator($uPath);
 
@@ -526,12 +527,12 @@ class Io
             }
 
             if ($uRecursive && $tFile->isDir()) {
-                self::getFilesWalk("{$uPath}/{$tFileName}", $uPattern, true, $uCallback);
+                self::getFilesWalk("{$uPath}/{$tFileName}", $uPattern, true, $uCallback, $uStateObject);
                 continue;
             }
 
             if ($tFile->isFile() && ($uPattern === null || fnmatch($uPattern, $tFileName))) {
-                call_user_func($uCallback, "{$uPath}/{$tFileName}");
+                call_user_func($uCallback, "{$uPath}/{$tFileName}", $uStateObject);
             }
         }
     }

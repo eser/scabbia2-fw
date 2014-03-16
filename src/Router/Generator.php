@@ -37,76 +37,94 @@ class Generator
     public static $staticRoutes = [];
     /** @type array $regexToRoutesMap map of variable routes */
     public static $regexToRoutesMap = [];
+    /** @type array $namedRoutes map of named routes */
+    public static $namedRoutes = [];
 
 
     /**
      * Adds specified route
      *
-     * @param string   $uMethod    http method
-     * @param string   $uRoute     route
-     * @param callable $uCallback  callback
+     * @param string|array  $uMethods   http methods
+     * @param string        $uRoute     route
+     * @param callable      $uCallback  callback
+     * @param string|null   $uName      name of route
      *
      * @return void
      */
-    public static function addRoute($uMethod, $uRoute, $uCallback)
+    public static function addRoute($uMethods, $uRoute, $uCallback, $uName = null)
     {
         $tRouteData = Router::parse($uRoute);
+        $tMethods = (array)$uMethods;
 
         if (count($tRouteData) === 1 && is_string($tRouteData[0])) {
-            self::addStaticRoute($uMethod, $tRouteData, $uCallback);
+            self::addStaticRoute($tMethods, $tRouteData, $uCallback, $uName);
         } else {
-            self::addVariableRoute($uMethod, $tRouteData, $uCallback);
+            self::addVariableRoute($tMethods, $tRouteData, $uCallback, $uName);
         }
     }
 
     /**
      * Adds a static route
      *
-     * @param string   $uMethod    http method
-     * @param array    $uRouteData route data
-     * @param callable $uCallback  callback
+     * @param array         $uMethods    http methods
+     * @param array         $uRouteData  route data
+     * @param callable      $uCallback   callback
+     * @param string|null   $uName       name of route
      *
      * @throws \Exception if an routing problem occurs
      * @return void
      */
-    public static function addStaticRoute($uMethod, $uRouteData, $uCallback)
+    public static function addStaticRoute(array $uMethods, $uRouteData, $uCallback, $uName = null)
     {
         $tRouteStr = $uRouteData[0];
 
-        if (isset(self::$staticRoutes[$tRouteStr][$uMethod])) {
-            throw new \Exception(
-                "Cannot register two routes matching \"{$tRouteStr}\" for method \"{$uMethod}\""
-            );
-        }
-
-        foreach (self::$regexToRoutesMap as $tRoutes) {
-            if (!isset($tRoutes[$uMethod])) {
-                continue;
-            }
-
-            $tRoute = $tRoutes[$uMethod];
-            if (preg_match("~^{$tRoute["regex"]}$~", $tRouteStr) === 1) {
+        foreach ($uMethods as $tMethod) {
+            if (isset(self::$staticRoutes[$tRouteStr][$tMethod])) {
                 throw new \Exception(
-                    "Static route \"{$tRouteStr}\" is shadowed by previously defined variable route
-                    \"{$tRoute["regex"]}\" for method \"{$uMethod}\""
+                    "Cannot register two routes matching \"{$tRouteStr}\" for method \"{$tMethod}\""
                 );
             }
         }
 
-        self::$staticRoutes[$tRouteStr][$uMethod] = $uCallback;
+        foreach ($uMethods as $tMethod) {
+            foreach (self::$regexToRoutesMap as $tRoutes) {
+                if (!isset($tRoutes[$tMethod])) {
+                    continue;
+                }
+
+                $tRoute = $tRoutes[$tMethod];
+                if (preg_match("~^{$tRoute["regex"]}$~", $tRouteStr) === 1) {
+                    throw new \Exception(
+                        "Static route \"{$tRouteStr}\" is shadowed by previously defined variable route
+                        \"{$tRoute["regex"]}\" for method \"{$tMethod}\""
+                    );
+                }
+            }
+
+            self::$staticRoutes[$tRouteStr][$tMethod] = $uCallback;
+
+            if ($uName !== null) {
+                if (!isset(self::$namedRoutes[$tMethod])) {
+                    self::$namedRoutes[$tMethod] = [];
+                }
+
+                self::$namedRoutes[$tMethod][$uName] = [$tRouteStr, []];
+            }
+        }
     }
 
     /**
      * Adds a variable route
      *
-     * @param string   $uMethod    http method
-     * @param array    $uRouteData route data
-     * @param callable $uCallback  callback
+     * @param array         $uMethods    http method
+     * @param array         $uRouteData  route data
+     * @param callable      $uCallback   callback
+     * @param string|null   $uName       name of route
      *
      * @throws \Exception if an routing problem occurs
      * @return void
      */
-    public static function addVariableRoute($uMethod, $uRouteData, $uCallback)
+    public static function addVariableRoute(array $uMethods, $uRouteData, $uCallback, $uName = null)
     {
         $tRegex = "";
         $tVariables = [];
@@ -127,18 +145,30 @@ class Generator
             $tRegex .= "({$tRegexPart})";
         }
 
-        if (isset(self::$regexToRoutesMap[$tRegex][$uMethod])) {
-            throw new \Exception(
-                "Cannot register two routes matching \"{$tRegex}\" for method \"{$uMethod}\""
-            );
+        foreach ($uMethods as $tMethod) {
+            if (isset(self::$regexToRoutesMap[$tRegex][$tMethod])) {
+                throw new \Exception(
+                    "Cannot register two routes matching \"{$tRegex}\" for method \"{$tMethod}\""
+                );
+            }
         }
 
-        self::$regexToRoutesMap[$tRegex][$uMethod] = [
-            "method"    => $uMethod,
-            "callback"  => $uCallback,
-            "regex"     => $tRegex,
-            "variables" => $tVariables
-        ];
+        foreach ($uMethods as $tMethod) {
+            self::$regexToRoutesMap[$tRegex][$tMethod] = [
+                "method"    => $tMethod,
+                "callback"  => $uCallback,
+                "regex"     => $tRegex,
+                "variables" => $tVariables
+            ];
+
+            if ($uName !== null) {
+                if (!isset(self::$namedRoutes[$tMethod])) {
+                    self::$namedRoutes[$tMethod] = [];
+                }
+
+                self::$namedRoutes[$tMethod][$uName] = [$tRegex, $tVariables];
+            }
+        }
     }
 
     /**
@@ -162,7 +192,8 @@ class Generator
 
         return [
             "static"   => self::$staticRoutes,
-            "variable" => $tVariableRouteData
+            "variable" => $tVariableRouteData,
+            "named"    => self::$namedRoutes
         ];
     }
 
@@ -219,7 +250,8 @@ class Generator
                     self::addRoute(
                         $tRoute["method"],
                         $tRoute["path"],
-                        [$tClassKey, $tMethodKey]
+                        [$tClassKey, $tMethodKey],
+                        isset($tRoute["name"]) ? $tRoute["name"] : null
                     );
                 }
             }

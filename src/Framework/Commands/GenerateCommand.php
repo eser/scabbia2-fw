@@ -76,13 +76,24 @@ class GenerateCommand
             mkdir($tApplicationWritablePath, 0777, true);
         }
 
+        // -- scan composer maps
+        Core::pushComposerPaths($uApplicationConfig->content[$tApplicationName]);
+        $tFolders = self::scanComposerMaps($uOutput);
+
+        $uOutput->writeColor("green", "Composer Maps:");
+        foreach ($tFolders as $tFolder) {
+            $uOutput->writeColor("white", "- {$tFolder[0]} => {$tFolder[1]}");
+        }
+
+        // -- process files
         self::$result = [];
-        foreach ($uApplicationConfig->content[$tApplicationName]["sources"] as $tPath) {
+        foreach ($tFolders as $tPath) {
             Io::getFilesWalk(
-                Core::translateVariables($tPath),
+                Core::translateVariables($tPath[1]),
                 "*.php",
                 true,
-                [__CLASS__, "processFile"]
+                [__CLASS__, "processFile"],
+                $tPath[0]
             );
         }
 
@@ -94,24 +105,66 @@ class GenerateCommand
             }
         }
 
+        Core::popComposerPaths();
         $uOutput->writeColor("yellow", "done.");
 
         return 0;
     }
 
     /**
-     * Processes given file to search for classes
-     *
-     * @param string $uFile file
+     * Scans the folders mapped in composer
      *
      * @return void
      */
-    public static function processFile($uFile)
+    public static function scanComposerMaps()
+    {
+        $tFolders = [];
+
+        // PSR-4 lookup
+        foreach (Core::$composerAutoloader->getPrefixesPsr4() as $prefix => $dirs) {
+            foreach ($dirs as $dir) {
+                $tFolders[] = [$prefix, $dir];
+            }
+        }
+
+        // PSR-4 fallback dirs
+        foreach (Core::$composerAutoloader->getFallbackDirsPsr4() as $dir) {
+            $tFolders[] = ["", $dir];
+        }
+
+        foreach (Core::$composerAutoloader->getPrefixes() as $dirs) {
+            foreach ($dirs as $dir) {
+                $tFolders[] = ["", $dir];
+            }
+        }
+
+        // PSR-0 fallback dirs
+        foreach (Core::$composerAutoloader->getFallbackDirs() as $dir) {
+            $tFolders[] = ["", $dir];
+        }
+
+        return $tFolders;
+    }
+
+    /**
+     * Processes given file to search for classes
+     *
+     * @param string $uFile             file
+     * @param string $uNamespacePrefix  namespace prefix
+     *
+     * @return void
+     */
+    public static function processFile($uFile, $uNamespacePrefix)
     {
         $tFileContents = Io::read($uFile);
         $tTokens = token_get_all($tFileContents);
 
-        $tLastNamespace = "";
+        $tBuffer = "";
+
+        $tUses = [];
+        $tLastNamespace = null;
+        $tLastClass = null;
+        $tLastClassDerivedFrom = null;
         $tExpectation = 0; // 1=namespace, 2=class
 
         foreach ($tTokens as $tToken) {
@@ -127,27 +180,74 @@ class GenerateCommand
                 continue;
             }
 
-            if ($tTokenId === T_NAMESPACE) {
-                $tLastNamespace = "";
-                $tExpectation = 1;
-                continue;
-            }
+            if ($tExpectation === 0) {
+                if ($tTokenId === T_NAMESPACE) {
+                    $tBuffer = "";
+                    $tExpectation = 1;
+                    continue;
+                }
 
-            if ($tTokenId === T_CLASS) {
-                $tExpectation = 2;
-                continue;
-            }
+                if ($tTokenId === T_CLASS) {
+                    $tExpectation = 2;
+                    continue;
+                }
 
-            if ($tExpectation === 1) {
+                if ($tTokenId === T_USE) {
+                    $tBuffer = "";
+                    $tExpectation = 5;
+                    continue;
+                }
+            } elseif ($tExpectation === 1) {
                 if ($tTokenId === T_STRING || $tTokenId === T_NS_SEPARATOR) {
-                    $tLastNamespace .= $tTokenContent;
+                    $tBuffer .= $tTokenContent;
                 } else {
+                    $tLastNamespace = $tBuffer;
                     $tExpectation = 0;
                 }
             } elseif ($tExpectation === 2) {
-                // $tClasses[] = "{$tLastNamespace}\\{$tTokenContent}";
-                self::processClass("{$tLastNamespace}\\{$tTokenContent}");
+                $tLastClass = "{$tLastNamespace}\\{$tTokenContent}";
+                $tExpectation = 3;
+            } elseif ($tExpectation === 3) {
+                if ($tTokenId === T_EXTENDS) {
+                    $tBuffer = "";
+                    $tExpectation = 4;
+                    continue;
+                }
+
+                $tSkip = false;
+                if ($tLastClassDerivedFrom !== null && !class_exists($tLastClassDerivedFrom)) {
+                    $tSkip = true;
+                    // TODO throw exception instead.
+                    echo "\"{$tLastClass}\" derived from \"{$tLastClassDerivedFrom}\", but it could not be found.\n";
+                }
+
+                if (!$tSkip) {
+                    self::processClass($tLastClass, $uNamespacePrefix);
+                }
+
                 $tExpectation = 0;
+            } elseif ($tExpectation === 4) {
+                if ($tTokenId === T_STRING || $tTokenId === T_NS_SEPARATOR) {
+                    $tBuffer .= $tTokenContent;
+                } else {
+                    $tLastClassDerivedFrom = $tBuffer;
+                    foreach ($tUses as $tUse) {
+                        $tLength = strlen($tBuffer);
+                        if (strlen($tUse) > $tLength && substr($tUse, -$tLength) === $tBuffer) {
+                            $tLastClassDerivedFrom = $tUse;
+                            break;
+                        }
+                    }
+
+                    $tExpectation = 3;
+                }
+            } elseif ($tExpectation === 5) {
+                if ($tTokenId === T_STRING || $tTokenId === T_NS_SEPARATOR) {
+                    $tBuffer .= $tTokenContent;
+                } else {
+                    $tUses[] = $tBuffer;
+                    $tExpectation = 0;
+                }
             }
         }
     }
@@ -155,11 +255,12 @@ class GenerateCommand
     /**
      * Processes classes using reflection to scan annotations
      *
-     * @param string $uClass class name
+     * @param string $uClass            class name
+     * @param string $uNamespacePrefix  namespace prefix
      *
      * @return void
      */
-    public static function processClass($uClass)
+    public static function processClass($uClass, $uNamespacePrefix)
     {
         $tClassAnnotations = [
             // "class" => [],

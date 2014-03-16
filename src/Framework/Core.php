@@ -88,12 +88,37 @@ class Core
     /**
      * Runs an application
      *
-     * @param mixed $uApplicationConfig The application configuration
-     * @param string $uWritablePath writable output folder
+     * @param mixed  $uApplicationConfig the application configuration
+     * @param string $uWritablePath      writable output folder
      *
      * @return void
      */
     public static function runApplication($uApplicationConfig, $uWritablePath)
+    {
+        // push framework variables
+        $tPaths = self::pushComposerPaths($uApplicationConfig);
+        self::$runningApplications[] = [ApplicationBase::$current, self::$variables];
+
+        // construct the application class
+        $tApplicationType = $uApplicationConfig["type"];
+        $tApplication = new $tApplicationType ($uApplicationConfig, $tPaths, $uWritablePath);
+
+        ApplicationBase::$current = $tApplication;
+        $tApplication->generateRequestFromGlobals();
+
+        // pop framework variables
+        list(ApplicationBase::$current, self::$variables) = array_pop(self::$runningApplications);
+        self::popComposerPaths();
+    }
+
+    /**
+     * Pushes composer paths into stack
+     *
+     * @param mixed  $uApplicationConfig the application configuration
+     *
+     * @return void
+     */
+    public static function pushComposerPaths($uApplicationConfig)
     {
         // register psr-0 source paths to composer.
         if (ApplicationBase::$current !== null) {
@@ -109,18 +134,16 @@ class Core
 
         self::$composerAutoloader->set(false, $tPaths);
 
-        // construct the application class
-        $tApplicationType = $uApplicationConfig["type"];
-        $tApplication = new $tApplicationType ($uApplicationConfig, $tPaths, $uWritablePath);
+        return $tPaths;
+    }
 
-        // push framework variables
-        self::$runningApplications[] = ApplicationBase::$current;
-        ApplicationBase::$current = $tApplication;
-
-        $tApplication->generateRequestFromGlobals();
-
-        // pop framework variables
-        ApplicationBase::$current = array_pop(self::$runningApplications);
+    /**
+     * Pops composer paths in stack
+     *
+     * @return void
+     */
+    public static function popComposerPaths()
+    {
         if (ApplicationBase::$current !== null) {
             self::$composerAutoloader->set(false, ApplicationBase::$current->paths);
         } else {

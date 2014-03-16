@@ -1679,6 +1679,32 @@ class String
     }
 
     /**
+     * Returns the best matching path among the alternatives
+     *
+     * @param array  $uPathList set of paths
+     * @param string $uFullPath the full path
+     *
+     * @return string|false the path if found, false otherwise
+     */
+    public function matchPaths($uPathList, $uFullPath)
+    {
+        $uFullPath = ltrim(strtr($uFullPath, "\\", "/"), "/");
+
+        $tLastFound = [0, false];
+
+        foreach ($uPathList as $tKey) {
+            $tKey = trim(strtr($tKey, "\\", "/"), "/") . "/";
+            $tKeyLength = strlen($tKey);
+
+            if ($tLastFound[0] < $tKeyLength && strpos($uFullPath, $tKey) === 0) {
+                $tLastFound = [$tKeyLength, $tKey];
+            }
+        }
+
+        return $tLastFound[1];
+    }
+
+    /**
      * Captures and replaces http links in a string
      *
      * @param string   $uString   the input string

@@ -143,4 +143,38 @@ REGEX;
 
         return $tRouteData;
     }
+
+    /**
+     * Generates a path using named routes
+     *
+     * @param string $uName        name of route
+     * @param array  $uParameters  parameters
+     *
+     * @return false|string
+     */
+    public static function path($uName, array $uParameters = [])
+    {
+        if (self::$routes === null) {
+            $tRoutesFilePath = ApplicationBase::$current->writablePath . "/routes.php";
+            self::$routes = require $tRoutesFilePath;
+        }
+
+        if (!isset(self::$routes["named"][$uName])) {
+            return false;
+        }
+
+        $tNamedRoute = self::$routes["named"][$uName];
+        $tLink = $tNamedRoute[0];
+        foreach ($tNamedRoute[1] as $tParameter) {
+            if (isset($uParameters[$tParameter])) {
+                $tValue = $uParameters[$tParameter];
+            } else {
+                $tValue = "";
+            }
+
+            $tLink = str_replace("{{$tParameter}}", $tValue, $tLink);
+        }
+
+        return $tLink;
+    }
 }

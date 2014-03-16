@@ -103,12 +103,17 @@ class Generator
 
             self::$staticRoutes[$tRouteStr][$tMethod] = $uCallback;
 
+            /*
             if ($uName !== null) {
                 if (!isset(self::$namedRoutes[$tMethod])) {
                     self::$namedRoutes[$tMethod] = [];
                 }
 
                 self::$namedRoutes[$tMethod][$uName] = [$tRouteStr, []];
+            }
+            */
+            if ($uName !== null && !isset(self::$namedRoutes[$uName])) {
+                self::$namedRoutes[$uName] = [$tRouteStr, []];
             }
         }
     }
@@ -127,11 +132,13 @@ class Generator
     public static function addVariableRoute(array $uMethods, $uRouteData, $uCallback, $uName = null)
     {
         $tRegex = "";
+        $tReverseRegex = "";
         $tVariables = [];
 
         foreach ($uRouteData as $tPart) {
             if (is_string($tPart)) {
                 $tRegex .= preg_quote($tPart, "~");
+                $tReverseRegex .= preg_quote($tPart, "~");
                 continue;
             }
 
@@ -143,6 +150,7 @@ class Generator
 
             $tVariables[$tVariableName] = $tVariableName;
             $tRegex .= "({$tRegexPart})";
+            $tReverseRegex .= "{{$tVariableName}}";
         }
 
         foreach ($uMethods as $tMethod) {
@@ -161,12 +169,17 @@ class Generator
                 "variables" => $tVariables
             ];
 
+            /*
             if ($uName !== null) {
                 if (!isset(self::$namedRoutes[$tMethod])) {
                     self::$namedRoutes[$tMethod] = [];
                 }
 
                 self::$namedRoutes[$tMethod][$uName] = [$tRegex, $tVariables];
+            }
+            */
+            if ($uName !== null && !isset(self::$namedRoutes[$uName])) {
+                self::$namedRoutes[$uName] = [$tReverseRegex, array_values($tVariables)];
             }
         }
     }

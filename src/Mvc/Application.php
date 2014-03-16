@@ -58,6 +58,8 @@ class Application extends ApplicationBase
         $tDispatch = Router::dispatch($uMethod, $uPathInfo);
 
         String::vardump($tDispatch);
+
+        String::vardump(Router::path("home/user", ["id" => "eser"]));
     }
 
     /**

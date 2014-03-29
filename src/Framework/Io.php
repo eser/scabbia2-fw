@@ -258,10 +258,8 @@ class Io
 
         $tLength = strlen($tFullPath);
         if (strncasecmp(PHP_OS, "WIN", 3) === 0) {
-            if (
-                ($tLength >= 1 && ($tFullPath[0] === "\\" || $tFullPath[0] === "/")) ||
-                ($tLength >= 2 && $tFullPath[1] === ":")
-            ) {
+            if (($tLength >= 1 && ($tFullPath[0] === "\\" || $tFullPath[0] === "/")) ||
+                ($tLength >= 2 && $tFullPath[1] === ":")) {
                 return true;
             }
         } else {

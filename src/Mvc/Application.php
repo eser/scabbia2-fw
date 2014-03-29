@@ -60,6 +60,9 @@ class Application extends ApplicationBase
         String::vardump($tDispatch);
 
         String::vardump(Router::path("home/user", ["id" => "eser"]));
+
+        $tDiff = (microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]);
+        echo "Generated in {$tDiff} msec";
     }
 
     /**

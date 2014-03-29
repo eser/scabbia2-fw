@@ -43,8 +43,8 @@ class String
         "tab" => "\t",
         "eol" => PHP_EOL,
 
-        "squote_replacement" => ["\\" => "\\\\", "'" => "\\'"],
-        "dquote_replacement" => ["\\" => "\\\\", "\"" => "\\\""],
+        "squote_replacement" => [["\\", "'"], ["\\\\", "\\'"]],
+        "dquote_replacement" => [["\\", "\""], ["\\\\", "\\\""]],
 
         "baseconversion_url_chars" => "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:[]@!$'()*+,;",
         "baseconversion_base62_chars" => "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -544,10 +544,20 @@ class String
         // }
 
         if ($uCover) {
-            return "'" . strtr($uString, self::$defaults["squote_replacement"]) . "'";
+            return "'" .
+                str_replace(
+                    self::$defaults["squote_replacement"][0],
+                    self::$defaults["squote_replacement"][1],
+                    $uString
+                ) .
+                "'";
         }
 
-        return strtr($uString, self::$defaults["squote_replacement"]);
+        return str_replace(
+            self::$defaults["squote_replacement"][0],
+            self::$defaults["squote_replacement"][1],
+            $uString
+        );
     }
 
     /**
@@ -565,10 +575,20 @@ class String
         // }
 
         if ($uCover) {
-            return "\"" . strtr($uString, self::$defaults["dquote_replacement"]) . "\"";
+            return "'" .
+            str_replace(
+                self::$defaults["dquote_replacement"][0],
+                self::$defaults["dquote_replacement"][1],
+                $uString
+            ) .
+            "'";
         }
 
-        return strtr($uString, self::$defaults["dquote_replacement"]);
+        return str_replace(
+            self::$defaults["dquote_replacement"][0],
+            self::$defaults["dquote_replacement"][1],
+            $uString
+        );
     }
 
     /**
@@ -584,11 +604,21 @@ class String
         $tArray = [];
         foreach ((array)$uArray as $tKey => $tValue) {
             if ($uCover) {
-                $tArray[$tKey] = "'" . strtr($tValue, self::$defaults["squote_replacement"]) . "'";
+                $tArray[$tKey] = "'" .
+                    str_replace(
+                        self::$defaults["squote_replacement"][0],
+                        self::$defaults["squote_replacement"][1],
+                        $tValue
+                    ) .
+                    "'";
                 continue;
             }
 
-            $tArray[$tKey] = strtr($tValue, self::$defaults["squote_replacement"]);
+            $tArray[$tKey] = str_replace(
+                self::$defaults["squote_replacement"][0],
+                self::$defaults["squote_replacement"][1],
+                $tValue
+            );
         }
 
         return $tArray;
@@ -607,11 +637,21 @@ class String
         $tArray = [];
         foreach ((array)$uArray as $tKey => $tValue) {
             if ($uCover) {
-                $tArray[$tKey] = "\"" . strtr($tValue, self::$defaults["dquote_replacement"]) . "\"";
+                $tArray[$tKey] = "\"" .
+                    str_replace(
+                        self::$defaults["dquote_replacement"][0],
+                        self::$defaults["dquote_replacement"][1],
+                        $tValue
+                    ) .
+                    "\"";
                 continue;
             }
 
-            $tArray[$tKey] = strtr($tValue, self::$defaults["dquote_replacement"]);
+            $tArray[$tKey] = str_replace(
+                self::$defaults["dquote_replacement"][0],
+                self::$defaults["dquote_replacement"][1],
+                $tValue
+            );
         }
 
         return $tArray;
@@ -627,7 +667,7 @@ class String
      */
     public static function replaceBreaks($uString, $uBreaks = "<br />")
     {
-        return strtr($uString, ["\r" => "", "\n" => $uBreaks]);
+        return str_replace(["\r", "\n"], ["", $uBreaks], $uString);
     }
 
     /**
@@ -657,7 +697,11 @@ class String
      */
     public static function encodeHtml($uString)
     {
-        return strtr($uString, ["&" => "&amp;", "\"" => "&quot;", "<" => "&lt;", ">" => "&gt;"]);
+        return str_replace(
+            ["&", "\"", "<", ">"],
+            ["&amp;", "&quot;", "&lt;", "&gt;"],
+            $uString
+        );
     }
 
     /**
@@ -669,7 +713,11 @@ class String
      */
     public static function decodeHtml($uString)
     {
-        return strtr($uString, ["&amp;" => "&", "&quot;" => "\"", "&lt;" => "<", "&gt;" => ">"]);
+        return str_replace(
+            ["&amp;", "&quot;", "&lt;", "&gt;"],
+            ["&", "\"", "<", ">"],
+            $uString
+        );
     }
 
     /**
@@ -1641,25 +1689,41 @@ class String
     public static function sanitizeFilename($uFilename, $uRemoveAccent = false, $uRemoveSpaces = false)
     {
         static $sReplaceChars = [
-            "\\" => "-",
-            "/" => "-",
-            ":" => "-",
-            "?" => "-",
-            "*" => "-",
-            "'" => "-",
-            "\"" => "-",
-            "<" => "-",
-            ">" => "-",
-            "|" => "-",
-            "." => "-",
-            "+" => "-"
+            [
+                "\\",
+                "/",
+                ":",
+                "?",
+                "*",
+                "'",
+                "\"",
+                "<",
+                ">",
+                "|",
+                ".",
+                "+"
+            ],
+            [
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-"
+            ]
         ];
 
         $tPathInfo = pathinfo($uFilename);
-        $tFilename = strtr($tPathInfo["filename"], $sReplaceChars);
+        $tFilename = str_replace($sReplaceChars[0], $sReplaceChars[1], $tPathInfo["filename"]);
 
         if (isset($tPathInfo["extension"])) {
-            $tFilename .= "." . strtr($tPathInfo["extension"], $sReplaceChars);
+            $tFilename .= "." . str_replace($sReplaceChars[0], $sReplaceChars[1], $tPathInfo["extension"]);
         }
 
         $tFilename = self::removeInvisibles($tFilename);
@@ -1668,11 +1732,11 @@ class String
         }
 
         if ($uRemoveSpaces) {
-            $tFilename = strtr($tFilename, " ", "_");
+            $tFilename = str_replace(" ", "_", $tFilename);
         }
 
         if (isset($tPathInfo["dirname"]) && $tPathInfo["dirname"] !== ".") {
-            return rtrim(strtr($tPathInfo["dirname"], "\\", "/"), "/") . "/{$tFilename}";
+            return rtrim(str_replace("\\", "/", $tPathInfo["dirname"]), "/") . "/{$tFilename}";
         }
 
         return $tFilename;
@@ -1688,12 +1752,12 @@ class String
      */
     public function matchPaths($uPathList, $uFullPath)
     {
-        $uFullPath = ltrim(strtr($uFullPath, "\\", "/"), "/");
+        $uFullPath = ltrim(str_replace("\\", "/", $uFullPath), "/");
 
         $tLastFound = [0, false];
 
         foreach ($uPathList as $tKey) {
-            $tKey = trim(strtr($tKey, "\\", "/"), "/") . "/";
+            $tKey = trim(str_replace("\\", "/", $tKey), "/") . "/";
             $tKeyLength = strlen($tKey);
 
             if ($tLastFound[0] < $tKeyLength && strpos($uFullPath, $tKey) === 0) {

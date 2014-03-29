@@ -30,11 +30,11 @@ class Generator
      * Entry point for processor
      *
      * @param array  $uAnnotations  annotations
-     * @param string $uWritablePath writable output folder
+     * @param string $uOutputPath   output path for generated files
      *
      * @return void
      */
-    public static function generate(array $uAnnotations, $uWritablePath)
+    public static function generate(array $uAnnotations, $uOutputPath)
     {
         $tEvents = new Events();
 
@@ -55,6 +55,6 @@ class Generator
             }
         }
 
-        Io::writePhpFile("{$uWritablePath}/events.php", $tEvents->events);
+        Io::writePhpFile("{$uOutputPath}/events.php", $tEvents->events);
     }
 }

@@ -89,7 +89,7 @@ class GenerateCommand
         self::$result = [];
         foreach ($tFolders as $tPath) {
             Io::getFilesWalk(
-                Core::translateVariables($tPath[1]),
+                $tPath[1],
                 "*.php",
                 true,
                 [__CLASS__, "processFile"],

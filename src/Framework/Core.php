@@ -32,6 +32,8 @@ class Core
     public static $runningApplications = [];
     /** @type array $variable array of framework variables */
     public static $variables = [];
+    /** @type array $variablesPlaceholderCache cache for framework variables which will be used for translation */
+    public static $variablesPlaceholderCache = [[], []];
     /** @type object $composerAutoloader the instance of the composer's autoloader class */
     public static $composerAutoloader = null;
 
@@ -152,6 +154,26 @@ class Core
     }
 
     /**
+     * Updates the cache of variables which will be used in translateVariables method
+     *
+     * @return void
+     */
+    public function updateVariablesCache()
+    {
+        self::$variablesPlaceholderCache[0] = [];
+        self::$variablesPlaceholderCache[1] = [];
+
+        foreach (self::$variables as $tKey => $tValue) {
+            if (!is_scalar($tValue)) {
+                continue;
+            }
+
+            self::$variablesPlaceholderCache[0][] = "{" . $tKey . "}";
+            self::$variablesPlaceholderCache[1][] = $tValue;
+        }
+    }
+
+    /**
      * Replaces placeholders in given string with framework-variables
      *
      * @param string $uInput the string with placeholders
@@ -160,15 +182,7 @@ class Core
      */
     public static function translateVariables($uInput)
     {
-        foreach (self::$variables as $tKey => $tValue) {
-            if (!is_scalar($tValue)) {
-                continue;
-            }
-
-            $uInput = str_replace("{" . $tKey . "}", $tValue, $uInput);
-        }
-
-        return $uInput;
+        return str_replace(self::$variablesPlaceholderCache[0], self::$variablesPlaceholderCache[1], $uInput);
     }
 
     /**
@@ -242,5 +256,7 @@ class Core
         } else {
             self::$variables["os"] = "*nix";
         }
+
+        self::updateVariablesCache();
     }
 }

@@ -247,11 +247,11 @@ class Generator
      * Entry point for processor
      *
      * @param array  $uAnnotations  annotations
-     * @param string $uWritablePath writable output folder
+     * @param string $uOutputPath   output path for generated files
      *
      * @return void
      */
-    public static function generate(array $uAnnotations, $uWritablePath)
+    public static function generate(array $uAnnotations, $uOutputPath)
     {
         foreach ($uAnnotations as $tClassKey => $tClass) {
             foreach ($tClass["methods"] as $tMethodKey => $tMethod) {
@@ -270,6 +270,6 @@ class Generator
             }
         }
 
-        Io::writePhpFile("{$uWritablePath}/routes.php", self::getData());
+        Io::writePhpFile("{$uOutputPath}/routes.php", self::getData());
     }
 }

@@ -116,12 +116,12 @@ class Delegate
      */
     public function invoke()
     {
-        $tArgs = func_get_args();
-
         if ($this->callbacks !== null) {
+            $tArgs = func_get_args();
+
             foreach ($this->callbacks as $tCallback) {
                 $tEventArgs = $tArgs;
-                array_unshift($tEventArgs, $tCallback[1]);
+                // array_unshift($tEventArgs, $tCallback[1]);
 
                 if (call_user_func_array($tCallback[0], $tEventArgs) === $this->expectedReturn) {
                     return false;

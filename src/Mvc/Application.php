@@ -51,18 +51,34 @@ class Application extends ApplicationBase
      * @param array  $uQueryParameters query parameters
      * @param array  $uPostParameters  post parameters
      *
+     * @throws \Exception if routing fails
      * @return void
      */
     public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters, array $uPostParameters)
     {
-        $tDispatch = Router::dispatch($uMethod, $uPathInfo);
+        $tRoute = Router::dispatch($uMethod, $uPathInfo);
+        $tRequestData = [
+            "method"          => $uMethod,
+            "pathinfo"        => $uPathInfo,
+            "queryParameters" => $uQueryParameters,
+            "postParameters"  => $uPostParameters,
+            "route"           => $tRoute
+        ];
 
-        String::vardump($tDispatch);
+        $this->events->invoke("requestBegin", $tRequestData);
+        if ($tRoute[0] === Router::FOUND) {
+            // push some variables like named parameters
+            call_user_func_array($tRoute[1], $tRoute[2]);
+            // pop previously pushed variables
+        } elseif ($tRoute[0] === Router::METHOD_NOT_ALLOWED) {
+            // TODO exception
+            throw new \Exception("");
+        } elseif ($tRoute[0] === Router::NOT_FOUND) {
+            // TODO exception
+            throw new \Exception("");
+        }
 
-        String::vardump(Router::path("home/user", ["id" => "eser"]));
-
-        $tDiff = (microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]);
-        echo "Generated in {$tDiff} msec";
+        $this->events->invoke("requestEnd", $tRequestData);
     }
 
     /**

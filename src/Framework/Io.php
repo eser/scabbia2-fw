@@ -383,7 +383,7 @@ class Io
         }
 
         $tLastMod = filemtime($tFullPath);
-        if (isset($uOptions["ttl"]) && time() - $tLastMod < $uOptions["ttl"]) {
+        if (isset($uOptions["ttl"]) && time() - $tLastMod > $uOptions["ttl"]) {
             return false;
         }
 
@@ -433,7 +433,7 @@ class Io
         // FIXME is it really necessary?
         $tFullPath = Core::translateVariables($uPath);
 
-        $tCachePath = Core::$basepath . "/writable/cache/" . crc32($tFullPath);
+        $tCachePath = Core::$basepath . "/writable/cache/" . crc32(realpath($tFullPath));
 
         if (self::isReadable($tCachePath, $uOptions)) {
             return self::readSerialize($tCachePath);
@@ -444,6 +444,7 @@ class Io
         }
 
         self::writeSerialize($tCachePath, $uDefaultValue);
+
         return $uDefaultValue;
     }
 

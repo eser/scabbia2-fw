@@ -62,7 +62,10 @@ class Core
      */
     public static function loadProject($uProjectConfigPath)
     {
-        $tProjectConfig = Config::load($uProjectConfigPath);
+        $tProjectConfigPath = Io::combinePaths(Core::$basepath, $uProjectConfigPath);
+        $tProjectConfigBasename = pathinfo($tProjectConfigPath, PATHINFO_BASENAME);
+
+        $tProjectConfig = Config::load($tProjectConfigPath);
 
         // test cases for applications, and bind configuration to app
         foreach ($tProjectConfig->content as $tApplicationKey => $tApplicationConfig) {
@@ -81,7 +84,9 @@ class Core
             if ($tTargetApplication !== false) {
                 // TODO: is sanitizing $tProjectFile needed for paths?
                 $tApplicationWritablePath = self::$basepath .
-                    "/writable/generated/{$uProjectConfigPath}/{$tTargetApplication}";
+                    "/writable/generated/{$tProjectConfigBasename}.{$tTargetApplication}." .
+                    crc32(realpath($tProjectConfigPath));
+
                 self::runApplication($tApplicationConfig, $tApplicationWritablePath);
             }
         }

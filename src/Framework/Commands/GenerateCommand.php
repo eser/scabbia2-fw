@@ -64,14 +64,20 @@ class GenerateCommand
             }
         }
 
+        $tProjectFile = Io::combinePaths(Core::$basepath, $tProjectFile);
+        $tProjectFileBasename = pathinfo($tProjectFile, PATHINFO_BASENAME);
+
         $uApplicationConfig = Config::load($tProjectFile);
 
         if ($uApplicationConfig === null || !isset($uApplicationConfig->content[$tApplicationName])) {
-            throw new \RuntimeException("invalid configuration - {$tProjectFile}/{$tApplicationName}");
+            throw new \RuntimeException("invalid configuration - {$tProjectFile}::{$tApplicationName}");
         }
 
         // TODO: is sanitizing $tProjectFile needed for paths?
-        $tApplicationWritablePath = Core::$basepath . "/writable/generated/{$tProjectFile}/{$tApplicationName}";
+        $tApplicationWritablePath = Core::$basepath .
+            "/writable/generated/{$tProjectFileBasename}.{$tApplicationName}." .
+            crc32(realpath($tProjectFile));
+
         if (!file_exists($tApplicationWritablePath)) {
             mkdir($tApplicationWritablePath, 0777, true);
         }

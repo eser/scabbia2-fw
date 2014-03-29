@@ -41,9 +41,9 @@ REGEX;
     /** @type string DEFAULT_DISPATCH_REGEX Regex expression of default dispatch */
     const DEFAULT_DISPATCH_REGEX = "[^/]+";
 
-    /** @type int FOUND route found */
+    /** @type int FOUND              route found */
     const FOUND = 0;
-    /** @type int NOT_FOUND route not found */
+    /** @type int NOT_FOUND          route not found */
     const NOT_FOUND = 1;
     /** @type int METHOD_NOT_ALLOWED route method is not allowed */
     const METHOD_NOT_ALLOWED = 2;

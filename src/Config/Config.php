@@ -26,10 +26,16 @@ use Scabbia\Yaml\Parser;
  */
 class Config
 {
+    /** @type int NONE      no flag */
+    const NONE = 0;
+    /** @type int OVERWRITE overwrite existing nodes by default */
+    const OVERWRITE = 1;
+    /** @type int FLATTEN   flatten nodes by default */
+    const FLATTEN = 2;
+
+
     /** @type array configuration content */
     public $content = [];
-    /** @type null|array node stack */
-    protected $nodeStack = null;
 
 
     /**
@@ -50,12 +56,12 @@ class Config
     /**
      * Adds a file into configuration compilation
      *
-     * @param string $uPath      path of configuration file
-     * @param bool   $uOverwrite overwrite existing values
+     * @param string $uPath   path of configuration file
+     * @param int    $uFlags  loading flags
      *
      * @return void
      */
-    public function add($uPath, $uOverwrite = false)
+    public function add($uPath, $uFlags = self::NONE)
     {
         $tConfigContent = Io::readFromCache(
             $uPath,
@@ -68,66 +74,57 @@ class Config
             ]
         );
 
-        $this->process($this->content, $tConfigContent, $uOverwrite);
+        $this->process($this->content, $tConfigContent, $uFlags);
     }
 
     /**
      * Processes the configuration file in order to simplify its accessibility
      *
-     * @param mixed $uTarget     target reference
-     * @param mixed $uNode       source object
-     * @param bool  $uOverwrite  overwrite existing values
+     * @param mixed $uTarget  target reference
+     * @param mixed $uNode    source object
+     * @param int   $uFlags   loading flags
      *
      * @return void
      */
-    protected function process(&$uTarget, $uNode, $uOverwrite)
+    public function process(&$uTarget, $uNode, $uFlags)
     {
-        // TODO: array concat
-        if (is_scalar($uNode)) {
-            if ($this->nodeStack !== null) {
-                $uTarget[implode("/", $this->nodeStack)] = $uNode;
-                return;
-            }
+        $tQueue = [
+            [[], $uNode, $uFlags, &$uTarget]
+        ];
 
-            $uTarget = $uNode;
-            return;
-        }
+        while (count($tQueue) > 0) {
+            $tItem = array_pop($tQueue);
 
-        $tOverwrite = $uOverwrite;
-        if ($uNode === null) {
-            return;
-        }
-
-        foreach ($uNode as $tKey => $tSubnode) {
-            $tNodeParts = explode("|", $tKey);
-
-            $tNodeKey = array_shift($tNodeParts);
-            foreach ($tNodeParts as $tNodePart) {
-                if ($tNodePart === "disabled") {
-                    continue 2;
-                } elseif ($tNodePart === "development") {
-                    if (ApplicationBase::$current === null || !ApplicationBase::$current->development) {
-                        continue 2;
-                    }
-                } elseif ($tNodePart === "important") {
-                    $tOverwrite = true;
-                } elseif ($tNodePart === "flat") {
-                    $this->nodeStack = [];
-                }
-            }
-
-            if ($this->nodeStack !== null) {
-                $this->nodeStack[] = $tNodeKey;
-                $this->process($uTarget, $tSubnode, $tOverwrite);
-
-                if (array_pop($this->nodeStack) === false) {
-                    $this->nodeStack = null;
-                }
+            if (is_scalar($tItem[1]) || $tItem[1] === null) {
+                $tItem[3] = $tItem[1];
                 continue;
             }
 
-            if (!isset($uTarget[$tNodeKey]) || $tOverwrite) {
-                $this->process($uTarget[$tNodeKey], $tSubnode, $tOverwrite);
+            $tFlags = $tItem[2];
+            $tItem[3] = []; // initialize as an empty array
+
+            foreach ($tItem[1] as $tKey => $tSubnode) {
+                $tNodeParts = explode("|", $tKey);
+                $tNodeKey = array_shift($tNodeParts);
+
+                foreach ($tNodeParts as $tNodePart) {
+                    if ($tNodePart === "disabled") {
+                        continue 2;
+                    } elseif ($tNodePart === "development") {
+                        if (ApplicationBase::$current === null || !ApplicationBase::$current->development) {
+                            continue 2;
+                        }
+                    } elseif ($tNodePart === "important") {
+                        $tFlags |= self::OVERWRITE;
+                    } elseif ($tNodePart === "flat") {
+                        $tFlags |= self::FLATTEN;
+                    }
+                }
+
+                $tNewNodeKey = $tItem[0];
+                $tNewNodeKey[] = $tNodeKey;
+
+                $tQueue[] = [$tNewNodeKey, $tSubnode, $tFlags, &$tItem[3][$tNodeKey]];
             }
         }
     }

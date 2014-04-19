@@ -34,6 +34,8 @@ class Config
     const FLATTEN = 2;
 
 
+    /** @type array configuration paths */
+    public $paths = [];
     /** @type array configuration content */
     public $content = [];
 
@@ -63,18 +65,33 @@ class Config
      */
     public function add($uPath, $uFlags = self::NONE)
     {
-        $tConfigContent = Io::readFromCache(
-            $uPath,
-            function () use ($uPath) {
-                $tParser = new Parser();
-                return $tParser->parse(Io::read($uPath));
-            },
-            [
-                "ttl" => 60 * 60
-            ]
-        );
+        $this->paths[] = [$uPath, $uFlags];
+    }
 
-        $this->process($this->content, $tConfigContent, $uFlags);
+    /**
+     * Compiles given configuration files into single configuration
+     *
+     * @return array final configuration
+     */
+    public function get()
+    {
+        // TODO mass caching with pathnames and flags
+        foreach ($this->paths as $tPath) {
+            $tConfigContent = Io::readFromCache(
+                $tPath[0],
+                function () use ($tPath) {
+                    $tParser = new Parser();
+                    return $tParser->parse(Io::read($tPath[0]));
+                },
+                [
+                    "ttl" => 60 * 60
+                ]
+            );
+
+            $this->process($this->content, $tConfigContent, $tPath[1]);
+        }
+
+        return $this->content;
     }
 
     /**
@@ -121,10 +138,12 @@ class Config
                     }
                 }
 
-                $tNewNodeKey = $tItem[0];
-                $tNewNodeKey[] = $tNodeKey;
+                if (($tFlags & self::OVERWRITE) === self::OVERWRITE || !isset($tItem[3][$tNodeKey])) {
+                    $tNewNodeKey = $tItem[0];
+                    $tNewNodeKey[] = $tNodeKey;
 
-                $tQueue[] = [$tNewNodeKey, $tSubnode, $tFlags, &$tItem[3][$tNodeKey]];
+                    $tQueue[] = [$tNewNodeKey, $tSubnode, $tFlags, &$tItem[3][$tNodeKey]];
+                }
             }
         }
     }

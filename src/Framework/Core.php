@@ -26,16 +26,18 @@ use Scabbia\Config\Config;
  */
 class Core
 {
+    /** @type object $composerAutoloader the instance of the composer's autoloader class */
+    public static $composerAutoloader = null;
     /** @type string $basepath the base directory which framework runs in */
     public static $basepath = null;
-    /** @type array $runningApplications array of running applications */
-    public static $runningApplications = [];
     /** @type array $variable array of framework variables */
     public static $variables = [];
     /** @type array $variablesPlaceholderCache cache for framework variables which will be used for translation */
     public static $variablesPlaceholderCache = [[], []];
-    /** @type object $composerAutoloader the instance of the composer's autoloader class */
-    public static $composerAutoloader = null;
+    /** @type Config project configuration */
+    public static $projectConfiguration = null;
+    /** @type array $runningApplications array of running applications */
+    public static $runningApplications = [];
 
 
     /**
@@ -50,7 +52,73 @@ class Core
         mb_internal_encoding("UTF-8");
 
         self::$composerAutoloader = $uComposerAutoloader;
-        self::initVariables();
+
+        if (self::$basepath === null) {
+            $tScriptDirectory = pathinfo($_SERVER["SCRIPT_FILENAME"], PATHINFO_DIRNAME);
+
+            if ($tScriptDirectory !== ".") {
+                self::$basepath = Io::combinePaths(getcwd(), $tScriptDirectory);
+            } else {
+                self::$basepath = getcwd();
+            }
+
+            self::$variables["basepath"] = &self::$basepath;
+        }
+
+        // secure
+        if (isset($_SERVER["HTTPS"]) &&
+            ((string)$_SERVER["HTTPS"] === "1" || strcasecmp($_SERVER["HTTPS"], "on") === 0)) {
+            self::$variables["secure"] = true;
+        } elseif (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] === "https") {
+            self::$variables["secure"] = true;
+        } else {
+            self::$variables["secure"] = false;
+        }
+
+        // protocol
+        if (PHP_SAPI === "cli") {
+            self::$variables["protocol"] = "CLI";
+        } elseif (isset($_SERVER["SERVER_PROTOCOL"]) && $_SERVER["SERVER_PROTOCOL"] === "HTTP/1.0") {
+            self::$variables["protocol"] = "HTTP/1.0";
+        } else {
+            self::$variables["protocol"] = "HTTP/1.1";
+        }
+
+        // host
+        if (isset($_SERVER["HTTP_HOST"]) && strlen($_SERVER["HTTP_HOST"]) > 0) {
+            self::$variables["host"] = $_SERVER["HTTP_HOST"];
+        } else {
+            if (isset($_SERVER["SERVER_NAME"])) {
+                self::$variables["host"] = $_SERVER["SERVER_NAME"];
+            } elseif (isset($_SERVER["SERVER_ADDR"])) {
+                self::$variables["host"] = $_SERVER["SERVER_ADDR"];
+            } elseif (isset($_SERVER["LOCAL_ADDR"])) {
+                self::$variables["host"] = $_SERVER["LOCAL_ADDR"];
+            } else {
+                self::$variables["host"] = "localhost";
+            }
+
+            if (isset($_SERVER["SERVER_PORT"])) {
+                if (self::$https) {
+                    if ($_SERVER["SERVER_PORT"] !== "443") {
+                        self::$variables["host"] .= $_SERVER["SERVER_PORT"];
+                    }
+                } else {
+                    if ($_SERVER["SERVER_PORT"] !== "80") {
+                        self::$variables["host"] .= $_SERVER["SERVER_PORT"];
+                    }
+                }
+            }
+        }
+
+        // os
+        if (strncasecmp(PHP_OS, "WIN", 3) === 0) {
+            self::$variables["os"] = "windows";
+        } else {
+            self::$variables["os"] = "*nix";
+        }
+
+        self::updateVariablesCache();
     }
 
     /**
@@ -62,13 +130,25 @@ class Core
      */
     public static function loadProject($uProjectConfigPath)
     {
-        $tProjectConfigPath = Io::combinePaths(Core::$basepath, $uProjectConfigPath);
-        $tProjectConfigBasename = pathinfo($tProjectConfigPath, PATHINFO_BASENAME);
+        if (self::$projectConfiguration === null) {
+            self::$projectConfiguration = new Config();
+        }
 
-        $tProjectConfig = Config::load($tProjectConfigPath);
+        self::$projectConfiguration->add(
+            Io::combinePaths(Core::$basepath, $uProjectConfigPath)
+        );
+    }
 
+    /**
+     * Picks the best suited application
+     *
+     * @return void
+     */
+    public static function pickApplication()
+    {
         // test cases for applications, and bind configuration to app
-        foreach ($tProjectConfig->content as $tApplicationKey => $tApplicationConfig) {
+        foreach (self::$projectConfiguration->get() as $tApplicationKey => $tApplicationConfig) {
+            // TODO: is sanitizing $tApplicationKey needed for paths?
             $tTargetApplication = $tApplicationKey;
 
             if (isset($tApplicationConfig["tests"])) {
@@ -82,11 +162,7 @@ class Core
             }
 
             if ($tTargetApplication !== false) {
-                // TODO: is sanitizing $tProjectFile needed for paths?
-                $tApplicationWritablePath = self::$basepath .
-                    "/writable/generated/{$tProjectConfigBasename}.{$tTargetApplication}." .
-                    crc32(realpath($tProjectConfigPath));
-
+                $tApplicationWritablePath = self::$basepath . "/writable/generated/app.{$tTargetApplication}";
                 self::runApplication($tApplicationConfig, $tApplicationWritablePath);
             }
         }
@@ -188,80 +264,5 @@ class Core
     public static function translateVariables($uInput)
     {
         return str_replace(self::$variablesPlaceholderCache[0], self::$variablesPlaceholderCache[1], $uInput);
-    }
-
-    /**
-     * Initializes framework variables
-     *
-     * @return void
-     */
-    protected static function initVariables()
-    {
-        if (self::$basepath === null) {
-            $tScriptDirectory = pathinfo($_SERVER["SCRIPT_FILENAME"], PATHINFO_DIRNAME);
-
-            if ($tScriptDirectory !== ".") {
-                self::$basepath = Io::combinePaths(getcwd(), $tScriptDirectory);
-            } else {
-                self::$basepath = getcwd();
-            }
-
-            self::$variables["basepath"] = &self::$basepath;
-        }
-
-        // secure
-        if (isset($_SERVER["HTTPS"]) &&
-            ((string)$_SERVER["HTTPS"] === "1" || strcasecmp($_SERVER["HTTPS"], "on") === 0)) {
-            self::$variables["secure"] = true;
-        } elseif (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] === "https") {
-            self::$variables["secure"] = true;
-        } else {
-            self::$variables["secure"] = false;
-        }
-
-        // protocol
-        if (PHP_SAPI === "cli") {
-            self::$variables["protocol"] = "CLI";
-        } elseif (isset($_SERVER["SERVER_PROTOCOL"]) && $_SERVER["SERVER_PROTOCOL"] === "HTTP/1.0") {
-            self::$variables["protocol"] = "HTTP/1.0";
-        } else {
-            self::$variables["protocol"] = "HTTP/1.1";
-        }
-
-        // host
-        if (isset($_SERVER["HTTP_HOST"]) && strlen($_SERVER["HTTP_HOST"]) > 0) {
-            self::$variables["host"] = $_SERVER["HTTP_HOST"];
-        } else {
-            if (isset($_SERVER["SERVER_NAME"])) {
-                self::$variables["host"] = $_SERVER["SERVER_NAME"];
-            } elseif (isset($_SERVER["SERVER_ADDR"])) {
-                self::$variables["host"] = $_SERVER["SERVER_ADDR"];
-            } elseif (isset($_SERVER["LOCAL_ADDR"])) {
-                self::$variables["host"] = $_SERVER["LOCAL_ADDR"];
-            } else {
-                self::$variables["host"] = "localhost";
-            }
-
-            if (isset($_SERVER["SERVER_PORT"])) {
-                if (self::$https) {
-                    if ($_SERVER["SERVER_PORT"] !== "443") {
-                        self::$variables["host"] .= $_SERVER["SERVER_PORT"];
-                    }
-                } else {
-                    if ($_SERVER["SERVER_PORT"] !== "80") {
-                        self::$variables["host"] .= $_SERVER["SERVER_PORT"];
-                    }
-                }
-            }
-        }
-
-        // os
-        if (strncasecmp(PHP_OS, "WIN", 3) === 0) {
-            self::$variables["os"] = "windows";
-        } else {
-            self::$variables["os"] = "*nix";
-        }
-
-        self::updateVariablesCache();
     }
 }

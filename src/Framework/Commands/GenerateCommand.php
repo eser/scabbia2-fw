@@ -52,38 +52,34 @@ class GenerateCommand
 
         if (count($uParameters) === 0) {
             $tProjectFile = "project.yml";
-            $tApplicationName = "default";
+            $tApplicationKey = "default";
         } else {
             $tExploded = explode("/", $uParameters[0], 2);
             if (count($tExploded) === 1) {
                 $tProjectFile = "project.yml";
-                $tApplicationName = $tExploded[0];
+                $tApplicationKey = $tExploded[0];
             } else {
                 $tProjectFile = $tExploded[0];
-                $tApplicationName = $tExploded[1];
+                $tApplicationKey = $tExploded[1];
             }
         }
 
         $tProjectFile = Io::combinePaths(Core::$basepath, $tProjectFile);
-        $tProjectFileBasename = pathinfo($tProjectFile, PATHINFO_BASENAME);
+        $uApplicationConfig = Config::load($tProjectFile)->get();
 
-        $uApplicationConfig = Config::load($tProjectFile);
-
-        if ($uApplicationConfig === null || !isset($uApplicationConfig->content[$tApplicationName])) {
-            throw new \RuntimeException("invalid configuration - {$tProjectFile}::{$tApplicationName}");
+        if (!isset($uApplicationConfig[$tApplicationKey])) {
+            throw new \RuntimeException("invalid configuration - {$tProjectFile}::{$tApplicationKey}");
         }
 
-        // TODO: is sanitizing $tProjectFile needed for paths?
-        $tApplicationWritablePath = Core::$basepath .
-            "/writable/generated/{$tProjectFileBasename}.{$tApplicationName}." .
-            crc32(realpath($tProjectFile));
+        // TODO: is sanitizing $tApplicationKey needed for paths?
+        $tApplicationWritablePath = Core::$basepath . "/writable/generated/app.{$tApplicationKey}";
 
         if (!file_exists($tApplicationWritablePath)) {
             mkdir($tApplicationWritablePath, 0777, true);
         }
 
         // -- scan composer maps
-        Core::pushComposerPaths($uApplicationConfig->content[$tApplicationName]);
+        Core::pushComposerPaths($uApplicationConfig[$tApplicationKey]);
         $tFolders = self::scanComposerMaps($uOutput);
 
         $uOutput->writeColor("green", "Composer Maps:");

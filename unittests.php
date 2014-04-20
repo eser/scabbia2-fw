@@ -30,7 +30,8 @@ use Scabbia\Testing\TestsCommand;
 $tConfig = [
     "fixtures" => [
         "Scabbia\\Tests\\Yaml\\ParserTest",
-        "Scabbia\\Tests\\Yaml\\InlineTest"
+        "Scabbia\\Tests\\Yaml\\InlineTest",
+        "Scabbia\\Tests\\Crypt\\HashTest"
     ]
 ];
 

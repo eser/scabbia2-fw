@@ -60,7 +60,25 @@ class Testing
                 $tIsEverFailed = true;
             }
 
-            $uOutput->writeArray($tInstance->testReport);
+            // $uOutput->writeArray($tInstance->testReport);
+            foreach ($tInstance->testReport as $tTestName => $tTest) {
+                $tFails = [];
+                foreach ($tTest as $tTestCase) {
+                    if ($tTestCase["failed"]) {
+                        $tFails[] = [
+                            "operation" => $tTestCase["operation"],
+                            "message" => $tTestCase["message"]
+                        ];
+                    }
+                }
+
+                if (count($tFails) === 0) {
+                    $uOutput->write("[OK] {$tTestName}");
+                } else {
+                    $uOutput->writeColor("red", "[FAIL] {$tTestName}");
+                    $uOutput->writeArray($tFails);
+                }
+            }
         }
 
         if ($tIsEverFailed) {

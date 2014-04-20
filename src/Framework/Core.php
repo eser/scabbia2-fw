@@ -199,7 +199,7 @@ class Core
      *
      * @param mixed  $uApplicationConfig the application configuration
      *
-     * @return void
+     * @return array array of source paths
      */
     public static function pushComposerPaths($uApplicationConfig)
     {

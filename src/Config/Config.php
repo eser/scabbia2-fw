@@ -106,23 +106,40 @@ class Config
     public function process(&$uTarget, $uNode, $uFlags)
     {
         $tQueue = [
-            [[], $uNode, $uFlags, &$uTarget]
+            [[], $uNode, $uFlags, &$uTarget, null, false]
         ];
 
-        while (count($tQueue) > 0) {
+        do {
             $tItem = array_pop($tQueue);
 
+            if ($tItem[4] === null) {
+                $tRef = &$tItem[3];
+            } else {
+                $tRef = &$tItem[3][$tItem[4]];
+            }
+
             if (is_scalar($tItem[1]) || $tItem[1] === null) {
-                $tItem[3] = $tItem[1];
+                if (!isset($tRef) || ($tItem[2] & self::OVERWRITE) === self::OVERWRITE) {
+                    $tRef = $tItem[1];
+                }
+
                 continue;
             }
 
-            $tFlags = $tItem[2];
-            $tItem[3] = []; // initialize as an empty array
+            if (!is_array($tRef) || ($tItem[2] & self::OVERWRITE) === self::OVERWRITE) {
+                $tRef = []; // initialize as an empty array
+            }
 
             foreach ($tItem[1] as $tKey => $tSubnode) {
+                $tFlags = $tItem[2];
+                $tListNode = false;
+
                 $tNodeParts = explode("|", $tKey);
                 $tNodeKey = array_shift($tNodeParts);
+
+                if ($tItem[5] && is_numeric($tNodeKey)) {
+                    $tNodeKey = count($tRef);
+                }
 
                 foreach ($tNodeParts as $tNodePart) {
                     if ($tNodePart === "disabled") {
@@ -131,6 +148,8 @@ class Config
                         if (ApplicationBase::$current === null || !ApplicationBase::$current->development) {
                             continue 2;
                         }
+                    } elseif ($tNodePart === "list") {
+                        $tListNode = true;
                     } elseif ($tNodePart === "important") {
                         $tFlags |= self::OVERWRITE;
                     } elseif ($tNodePart === "flat") {
@@ -138,13 +157,17 @@ class Config
                     }
                 }
 
-                if (($tFlags & self::OVERWRITE) === self::OVERWRITE || !isset($tItem[3][$tNodeKey])) {
-                    $tNewNodeKey = $tItem[0];
+                $tNewNodeKey = $tItem[0];
+                if (($tFlags & self::FLATTEN) === self::FLATTEN) {
+                    $tNodeKey = ltrim("{$tItem[4]}/{$tNodeKey}", "/");
                     $tNewNodeKey[] = $tNodeKey;
 
-                    $tQueue[] = [$tNewNodeKey, $tSubnode, $tFlags, &$tItem[3][$tNodeKey]];
+                    $tQueue[] = [$tNewNodeKey, $tSubnode, $tFlags, &$tRef, $tNodeKey, $tListNode];
+                } else {
+                    $tNewNodeKey[] = $tNodeKey;
+                    $tQueue[] = [$tNewNodeKey, $tSubnode, $tFlags, &$tRef[$tNodeKey], null, $tListNode];
                 }
             }
-        }
+        } while (count($tQueue) > 0);
     }
 }

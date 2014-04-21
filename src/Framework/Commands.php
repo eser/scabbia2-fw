@@ -14,7 +14,7 @@
 namespace Scabbia\Framework;
 
 use Scabbia\Framework\Core;
-use Scabbia\Framework\Io;
+use Scabbia\Helpers\Io;
 use Scabbia\Output\ConsoleOutput;
 use Scabbia\Yaml\Parser;
 
@@ -41,10 +41,11 @@ class Commands
     public static function load($uCommandsConfigPath)
     {
         // load commands.yml
-        $tCommandsYamlPath = Io::combinePaths(Core::$basepath, $uCommandsConfigPath);
+        $tCommandsYamlPath = Io::combinePaths(Core::$basepath, Core::translateVariables($uCommandsConfigPath));
+        $tCommandsCacheFile = Core::$basepath . "/writable/cache/" . crc32(realpath($tCommandsYamlPath));
 
-        $tCommandsConfig = Io::readFromCache(
-            $tCommandsYamlPath,
+        $tCommandsConfig = Io::readFromCacheFile(
+            $tCommandsCacheFile,
             function () use ($tCommandsYamlPath) {
                 $tParser = new Parser();
                 return $tParser->parse(Io::read($tCommandsYamlPath));

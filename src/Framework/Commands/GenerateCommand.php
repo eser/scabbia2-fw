@@ -13,11 +13,11 @@
 
 namespace Scabbia\Framework\Commands;
 
-use Scabbia\Framework\Core;
-use Scabbia\Framework\Io;
 use Scabbia\Config\Config;
-use Scabbia\Yaml\Parser;
+use Scabbia\Framework\Core;
+use Scabbia\Helpers\Io;
 use Scabbia\Output\IOutput;
+use Scabbia\Yaml\Parser;
 
 /**
  * Command class for "php scabbia generate"
@@ -64,7 +64,7 @@ class GenerateCommand
             }
         }
 
-        $tProjectFile = Io::combinePaths(Core::$basepath, $tProjectFile);
+        $tProjectFile = Io::combinePaths(Core::$basepath, Core::translateVariables($tProjectFile));
         $uApplicationConfig = Config::load($tProjectFile)->get();
 
         if (!isset($uApplicationConfig[$tApplicationKey])) {

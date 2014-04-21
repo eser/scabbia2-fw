@@ -11,21 +11,19 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Framework;
-
-use Scabbia\Framework\Core;
+namespace Scabbia\Helpers;
 
 /**
- * Io functionality for framework
+ * A bunch of utility methods for io functionality
  *
- * @package     Scabbia\Framework
+ * @package     Scabbia\Helpers
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.0.0
  */
 class Io
 {
     /**
-     * Default variables for Io functionality
+     * Default variables for io functionality
      *
      * @type array $defaults array of default variables
      */
@@ -99,8 +97,7 @@ class Io
      */
     public static function read($uPath, $uFlags = LOCK_SH)
     {
-        $tFullPath = Core::translateVariables($uPath);
-        $tHandle = fopen($tFullPath, "r", false);
+        $tHandle = fopen($uPath, "r", false);
         if ($tHandle === false) {
             return false;
         }
@@ -130,9 +127,8 @@ class Io
      */
     public static function write($uPath, $uContent, $uFlags = LOCK_EX)
     {
-        $tFullPath = Core::translateVariables($uPath);
         $tHandle = fopen(
-            $tFullPath,
+            $uPath,
             ($uFlags & FILE_APPEND) > 0 ? "a" : "w",
             false
         );
@@ -249,21 +245,19 @@ class Io
      */
     public static function isPathRooted($uPath)
     {
-        $tFullPath = Core::translateVariables($uPath);
-
-        if (!self::checkInvalidPathChars($tFullPath)) {
+        if (!self::checkInvalidPathChars($uPath)) {
             // TODO exception
             throw new \Exception("");
         }
 
-        $tLength = strlen($tFullPath);
+        $tLength = strlen($uPath);
         if (strncasecmp(PHP_OS, "WIN", 3) === 0) {
-            if (($tLength >= 1 && ($tFullPath[0] === "\\" || $tFullPath[0] === "/")) ||
-                ($tLength >= 2 && $tFullPath[1] === ":")) {
+            if (($tLength >= 1 && ($uPath[0] === "\\" || $uPath[0] === "/")) ||
+                ($tLength >= 2 && $uPath[1] === ":")) {
                 return true;
             }
         } else {
-            if ($tLength >= 1 && $tFullPath[0] === "/") {
+            if ($tLength >= 1 && $uPath[0] === "/") {
                 return true;
             }
         }
@@ -281,25 +275,23 @@ class Io
      */
     public static function isPathRelative($uPath)
     {
-        $tFullPath = Core::translateVariables($uPath);
-
-        if (!self::checkInvalidPathChars($tFullPath)) {
+        if (!self::checkInvalidPathChars($uPath)) {
             // TODO exception
             throw new \Exception("");
         }
 
-        $tLength = strlen($tFullPath);
+        $tLength = strlen($uPath);
         if (strncasecmp(PHP_OS, "WIN", 3) === 0) {
-            if (strncasecmp($tFullPath, "\\\\", 2) === 0) {
+            if (strncasecmp($uPath, "\\\\", 2) === 0) {
                 return false;
             }
 
-            if ($tLength >= 3 && ctype_alpha($tFullPath[0]) && $tFullPath[1] === ":" &&
-                ($tFullPath[2] === "\\" || $tFullPath[2] === "/")) {
+            if ($tLength >= 3 && ctype_alpha($uPath[0]) && $uPath[1] === ":" &&
+                ($uPath[2] === "\\" || $uPath[2] === "/")) {
                 return false;
             }
         } else {
-            if ($tLength >= 1 && $tFullPath[0] === "/") {
+            if ($tLength >= 1 && $uPath[0] === "/") {
                 return false;
             }
         }
@@ -318,7 +310,7 @@ class Io
         $tTrimChars = (strncasecmp(PHP_OS, "WIN", 3) === 0) ? "\\/" : "/";
 
         for ($tPaths = func_get_args(), $i = count($tPaths) - 1; $i >= 0; $i--) {
-            $tPath = Core::translateVariables($tPaths[$i]);
+            $tPath = $tPaths[$i];
 
             if (($tPathLength = strlen($tPath)) === 0) {
                 continue;
@@ -349,12 +341,9 @@ class Io
      */
     public static function getFileLineCount($uPath)
     {
-        $tFullPath = Core::translateVariables($uPath);
         $tLineCount = 1;
 
-        // FIXME don't use silence operator
-        $tFileHandle = @fopen($tFullPath, "r");
-        if ($tFileHandle === false) {
+        if (!is_readable($uPath) || ($tFileHandle = fopen($uPath, "r")) === false) {
             return false;
         }
 
@@ -377,12 +366,11 @@ class Io
      */
     public static function isReadable($uPath, array $uOptions = [])
     {
-        $tFullPath = Core::translateVariables($uPath);
-        if (!file_exists($tFullPath)) {
+        if (!file_exists($uPath)) {
             return false;
         }
 
-        $tLastMod = filemtime($tFullPath);
+        $tLastMod = filemtime($uPath);
         if (isset($uOptions["ttl"]) && time() - $tLastMod > $uOptions["ttl"]) {
             return false;
         }
@@ -419,36 +407,6 @@ class Io
     }
 
     /**
-     * Reads the contents from cache folder as long as it is not expired
-     * If the cached content is expired, invokes callback method and caches output
-     *
-     * @param string      $uPath         the relative path
-     * @param mixed       $uDefaultValue the default value
-     * @param array       $uOptions      options
-     *
-     * @return mixed the result
-     */
-    public static function readFromCache($uPath, $uDefaultValue, array $uOptions = [])
-    {
-        // FIXME is it really necessary?
-        $tFullPath = Core::translateVariables($uPath);
-
-        $tCachePath = Core::$basepath . "/writable/cache/" . crc32(realpath($tFullPath));
-
-        if (self::isReadable($tCachePath, $uOptions)) {
-            return self::readSerialize($tCachePath);
-        }
-
-        if (is_a($uDefaultValue, "Closure")) {
-            $uDefaultValue = call_user_func($uDefaultValue);
-        }
-
-        self::writeSerialize($tCachePath, $uDefaultValue);
-
-        return $uDefaultValue;
-    }
-
-    /**
      * Gets the list of files matching the given pattern
      *
      * @param string        $uPath       path to be searched
@@ -460,10 +418,8 @@ class Io
      */
     public static function getFiles($uPath, $uPattern = null, $uRecursive = true, $uBasenames = false)
     {
-        $tFullPath = Core::translateVariables($uPath);
-
         $tArray = ["." => []];
-        $tDir = new \DirectoryIterator($tFullPath);
+        $tDir = new \DirectoryIterator($uPath);
 
         foreach ($tDir as $tFile) {
             $tFileName = $tFile->getFilename();
@@ -474,7 +430,7 @@ class Io
 
             if ($tFile->isDir()) {
                 if ($uRecursive) {
-                    $tArray[$tFileName] = self::getFiles("{$tFullPath}/{$tFileName}", $uPattern, true, $uBasenames);
+                    $tArray[$tFileName] = self::getFiles("{$uPath}/{$tFileName}", $uPattern, true, $uBasenames);
                     continue;
                 }
 
@@ -504,8 +460,7 @@ class Io
      */
     public static function garbageCollect($uPath, $uTtl = null)
     {
-        $tFullPath = Core::translateVariables($uPath);
-        $tDirectory = new \DirectoryIterator($tFullPath);
+        $tDirectory = new \DirectoryIterator($uPath);
 
         clearstatcache();
         foreach ($tDirectory as $tFile) {
@@ -534,8 +489,7 @@ class Io
      */
     public static function getFilesWalk($uPath, $uPattern, $uRecursive, /* callable */ $uCallback, $uStateObject = null)
     {
-        $tFullPath = Core::translateVariables($uPath);
-        $tDir = new \DirectoryIterator($tFullPath);
+        $tDir = new \DirectoryIterator($uPath);
 
         foreach ($tDir as $tFile) {
             $tFileName = $tFile->getFilename();
@@ -545,12 +499,12 @@ class Io
             }
 
             if ($uRecursive && $tFile->isDir()) {
-                self::getFilesWalk("{$tFullPath}/{$tFileName}", $uPattern, true, $uCallback, $uStateObject);
+                self::getFilesWalk("{$uPath}/{$tFileName}", $uPattern, true, $uCallback, $uStateObject);
                 continue;
             }
 
             if ($tFile->isFile() && ($uPattern === null || fnmatch($uPattern, $tFileName))) {
-                call_user_func($uCallback, "{$tFullPath}/{$tFileName}", $uStateObject);
+                call_user_func($uCallback, "{$uPath}/{$tFileName}", $uStateObject);
             }
         }
     }

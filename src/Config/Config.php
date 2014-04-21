@@ -14,7 +14,8 @@
 namespace Scabbia\Config;
 
 use Scabbia\Framework\ApplicationBase;
-use Scabbia\Framework\Io;
+use Scabbia\Framework\Core;
+use Scabbia\Helpers\Io;
 use Scabbia\Yaml\Parser;
 
 /**
@@ -77,11 +78,13 @@ class Config
     {
         // TODO mass caching with pathnames and flags
         foreach ($this->paths as $tPath) {
-            $tConfigContent = Io::readFromCache(
-                $tPath[0],
-                function () use ($tPath) {
+            $tConfigPath = Core::translateVariables($tPath[0]);
+            $tConfigCacheFile = Core::$basepath . "/writable/cache/" . crc32(realpath($tConfigPath));
+            $tConfigContent = Io::readFromCacheFile(
+                $tConfigCacheFile,
+                function () use ($tConfigPath) {
                     $tParser = new Parser();
-                    return $tParser->parse(Io::read($tPath[0]));
+                    return $tParser->parse(Io::read($tConfigPath));
                 },
                 [
                     "ttl" => 60 * 60

@@ -14,7 +14,7 @@
 namespace Scabbia\Framework;
 
 use Scabbia\Framework\ApplicationBase;
-use Scabbia\Framework\Io;
+use Scabbia\Helpers\Io;
 use Scabbia\Config\Config;
 
 /**
@@ -135,7 +135,7 @@ class Core
         }
 
         self::$projectConfiguration->add(
-            Io::combinePaths(Core::$basepath, $uProjectConfigPath)
+            Io::combinePaths(Core::$basepath, self::translateVariables($uProjectConfigPath))
         );
     }
 

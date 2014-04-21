@@ -14,7 +14,7 @@
 namespace Scabbia\Router;
 
 use Scabbia\Framework\Core;
-use Scabbia\Framework\Io;
+use Scabbia\Helpers\Io;
 use Scabbia\Router\Router;
 
 /**
@@ -270,6 +270,6 @@ class Generator
             }
         }
 
-        Io::writePhpFile("{$uOutputPath}/routes.php", self::getData());
+        Io::writePhpFile(Core::translateVariables("{$uOutputPath}/routes.php"), self::getData());
     }
 }

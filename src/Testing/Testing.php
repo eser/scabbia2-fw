@@ -13,6 +13,7 @@
 
 namespace Scabbia\Testing;
 
+use Scabbia\Helpers\Io;
 use Scabbia\Output\ConsoleOutput;
 use Scabbia\Output\HtmlOutput;
 use Scabbia\Output\IOutput;
@@ -125,7 +126,7 @@ class Testing
             $tFileCoverage = [
                 "path"         => $tPath,
                 "coveredLines" => array_keys($tLines),
-                "totalLines"   => self::getFileLineCount($tPath)
+                "totalLines"   => Io::getFileLineCount($tPath)
             ];
 
             $tFinal["files"][] = $tFileCoverage;
@@ -136,32 +137,5 @@ class Testing
         $tFinal["total"]["percentage"] = ($tFinal["total"]["coveredLines"] * 100) / $tFinal["total"]["totalLines"];
 
         return $tFinal;
-    }
-
-    /**
-     * Gets the number of lines of given file
-     *
-     * @param string $uPath the path
-     *
-     * @return int|bool line count
-     *
-     * @see cloned from Scabbia\Framework\Io::getFileLineCount
-     */
-    protected static function getFileLineCount($uPath)
-    {
-        $tLineCount = 1;
-
-        $tFileHandle = @fopen($uPath, "r");
-        if ($tFileHandle === false) {
-            return false;
-        }
-
-        while (!feof($tFileHandle)) {
-            $tLineCount += substr_count(fgets($tFileHandle, 4096), "\n");
-        }
-
-        fclose($tFileHandle);
-
-        return $tLineCount;
     }
 }

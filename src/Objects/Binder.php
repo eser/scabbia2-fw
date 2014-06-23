@@ -48,7 +48,8 @@ class Binder
      *
      * @return Binder
      */
-    public function __construct($uName) {
+    public function __construct($uName)
+    {
         $this->name = $uName;
 
         $this->cachepath = Core::$basepath . "/writable/cache/" . crc32("binder/{$uName}");

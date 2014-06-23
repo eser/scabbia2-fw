@@ -1,6 +1,6 @@
 {
-    "name": "scabbiafw/scabbia2",
-    "description": "Scabbia2 PHP Framework",
+    "name": "scabbiafw/scabbia2-fw",
+    "description": "Scabbia2 PHP Framework Code",
     "type": "library",
     "minimum-stability": "dev",
     "keywords": [

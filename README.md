@@ -2,6 +2,8 @@
 
 **Scabbia2** is an open source PHP framework project which is currently on planning stage. Keep visiting [project homepage](http://scabbiafw.com/) and [repositories](https://github.com/scabbiafw/) for further updates.
 
+[This repository](https://github.com/scabbiafw/scabbia2-fw/) contains the files of Scabbia2 PHP Framework Code which is required for Scabbia2 packages to run.
+
 [![Build Status](https://travis-ci.org/scabbiafw/scabbia2-fw.png?branch=master)](https://travis-ci.org/scabbiafw/scabbia2-fw)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-fw/badges/quality-score.png?s=ea455753b50c686880c35dce99fd5058a28da810)](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-fw/)
 [![Total Downloads](https://poser.pugx.org/scabbiafw/scabbia2-fw/downloads.png)](https://packagist.org/packages/scabbiafw/scabbia2-fw)

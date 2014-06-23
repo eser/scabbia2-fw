@@ -11,7 +11,7 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace ScabbiaLoaders;
+namespace Scabbia\Loaders;
 
 /**
  * PSR-4 Autoloader Class
@@ -37,29 +37,31 @@ namespace ScabbiaLoaders;
  * as follows:
  *
  *      <?php
- *      // instantiate the loader
- *      $loader = new \Example\Psr4AutoloaderClass;
- *
- *      // register the autoloader
+ *      // instantiate and register the loader
+ *      $loader = new \Scabbia\Loader\Psr4AutoloaderClass();
  *      $loader->register();
  *
  *      // register the base directories for the namespace prefix
- *      $loader->addNamespace('Foo\Bar', '/path/to/packages/foo-bar/src');
- *      $loader->addNamespace('Foo\Bar', '/path/to/packages/foo-bar/tests');
+ *      $loader->addNamespace("Foo\\Bar", "/path/to/packages/foo-bar/src");
+ *      $loader->addNamespace("Foo\\Bar", "/path/to/packages/foo-bar/tests");
  *
  * The following line would cause the autoloader to attempt to load the
  * \Foo\Bar\Qux\Quux class from /path/to/packages/foo-bar/src/Qux/Quux.php:
  *
  *      <?php
- *      new \Foo\Bar\Qux\Quux;
+ *      new \Foo\Bar\Qux\Quux();
  *
  * The following line would cause the autoloader to attempt to load the
  * \Foo\Bar\Qux\QuuxTest class from /path/to/packages/foo-bar/tests/Qux/QuuxTest.php:
  *
  *      <?php
- *      new \Foo\Bar\Qux\QuuxTest;
+ *      new \Foo\Bar\Qux\QuuxTest();
+ *
+ * @package     Scabbia\Loaders
+ * @author      Eser Ozvataf <eser@sent.com>
+ * @since       1.0.0
  */
-class Psr4AutoloaderClass
+class Psr4
 {
     /**
      * An associative array where the key is a namespace prefix and the value is an array of base directories

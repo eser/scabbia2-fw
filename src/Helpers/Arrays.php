@@ -163,6 +163,8 @@ class Arrays
      */
     public static function getRandom(array $uArray)
     {
+        // mt_srand((int)(microtime(true) * 0xFFFF));
+
         $tCount = count($uArray);
         if ($tCount === 0) {
             return null;
@@ -170,7 +172,7 @@ class Arrays
 
         $uValues = array_values($uArray);
 
-        return $uValues[rand(0, $tCount - 1)];
+        return $uValues[mt_rand(0, $tCount - 1)];
     }
 
     /**

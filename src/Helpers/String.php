@@ -364,7 +364,7 @@ class String
      */
     public static function generatePassword($uLength)
     {
-        srand(time() * 1000000);
+        // mt_srand((int)(microtime(true) * 0xFFFF));
 
         static $sVowels = ["a", "e", "i", "o", "u"];
         static $sCons = [
@@ -405,7 +405,7 @@ class String
         $tConsLen = count($sCons) - 1;
         $tVowelsLen = count($sVowels) - 1;
         for ($tOutput = ""; strlen($tOutput) < $uLength;) {
-            $tOutput .= $sCons[rand(0, $tConsLen)] . $sVowels[rand(0, $tVowelsLen)];
+            $tOutput .= $sCons[mt_rand(0, $tConsLen)] . $sVowels[mt_rand(0, $tVowelsLen)];
         }
 
         // prevent overflow of size
@@ -422,6 +422,8 @@ class String
         if (function_exists("com_create_guid")) {
             return strtolower(trim(com_create_guid(), "{}"));
         }
+
+        // mt_srand((int)(microtime(true) * 0xFFFF));
 
         // return md5(uniqid(mt_rand(), true));
         return sprintf(
@@ -455,11 +457,11 @@ class String
      */
     public static function generate($uLength, $uCharset = "0123456789ABCDEF")
     {
-        srand(time() * 1000000);
+        // mt_srand((int)(microtime(true) * 0xFFFF));
 
         $tCharsetLen = self::length($uCharset) - 1;
         for ($tOutput = ""; $uLength > 0; $uLength--) {
-            $tOutput .= self::substr($uCharset, rand(0, $tCharsetLen), 1);
+            $tOutput .= self::substr($uCharset, mt_rand(0, $tCharsetLen), 1);
         }
 
         return $tOutput;

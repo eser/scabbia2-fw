@@ -12,12 +12,10 @@
  */
 
 // include the loader class
-require __DIR__ . "/psr4autoloader.php";
+require __DIR__ . "/src/Loaders/Psr4.php";
 
-// instantiate the loader
-$tLoader = new ScabbiaLoaders\Psr4AutoloaderClass();
-
-// register the autoloader
+// instantiate and register the loader
+$tLoader = new \Scabbia\Loaders\Psr4AutoloaderClass();
 $tLoader->register();
 
 // register the base directories for the namespace prefix

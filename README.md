@@ -1,11 +1,11 @@
-# Scabbia2 PHP Framework
+# Scabbia2 PHP Framework Code
 
 **Scabbia2** is an open source PHP framework project which is currently on planning stage. Keep visiting [project homepage](http://scabbiafw.com/) and [repositories](https://github.com/scabbiafw/) for further updates.
 
-[![Build Status](https://travis-ci.org/scabbiafw/scabbia2.png?branch=master)](https://travis-ci.org/scabbiafw/scabbia2)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/scabbiafw/scabbia2/badges/quality-score.png?s=ea455753b50c686880c35dce99fd5058a28da810)](https://scrutinizer-ci.com/g/scabbiafw/scabbia2/)
-[![Total Downloads](https://poser.pugx.org/scabbiafw/scabbia2/downloads.png)](https://packagist.org/packages/scabbiafw/scabbia2)
-[![License](https://poser.pugx.org/scabbiafw/scabbia2/license.png)](https://packagist.org/packages/scabbiafw/scabbia2)
+[![Build Status](https://travis-ci.org/scabbiafw/scabbia2-fw.png?branch=master)](https://travis-ci.org/scabbiafw/scabbia2-fw)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-fw/badges/quality-score.png?s=ea455753b50c686880c35dce99fd5058a28da810)](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-fw/)
+[![Total Downloads](https://poser.pugx.org/scabbiafw/scabbia2-fw/downloads.png)](https://packagist.org/packages/scabbiafw/scabbia2-fw)
+[![License](https://poser.pugx.org/scabbiafw/scabbia2-fw/license.png)](https://packagist.org/packages/scabbiafw/scabbia2-fw)
 
 ## History
 
@@ -22,7 +22,7 @@ This project derived from [Scabbia Framework](https://github.com/larukedi/Scabbi
 
 
 ## Contributing
-It is publicly open for any contribution. Bugfixes, new features and extra modules are welcome. All contributions should be filed on the [scabbiafw/scabbia2](http://github.com/scabbiafw/scabbia2) repository.
+It is publicly open for any contribution. Bugfixes, new features and extra modules are welcome. All contributions should be filed on the [scabbiafw/scabbia2-fw](http://github.com/scabbiafw/scabbia2-fw) repository.
 
 * To contribute to code: Fork the repo, push your changes to your fork, and submit a pull request.
 * To report a bug: If something does not work, please report it using GitHub issues.

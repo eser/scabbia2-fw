@@ -217,7 +217,7 @@ class Generator
      *
      * @return array chunked
      */
-    public function processChunk(array $uRegexToRoutesMap)
+    public static function processChunk(array $uRegexToRoutesMap)
     {
         $tRouteMap = [];
         $tRegexes = [];

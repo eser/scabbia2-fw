@@ -71,7 +71,7 @@ class GenerateCommand
             throw new \RuntimeException("invalid configuration - {$tProjectFile}::{$tApplicationKey}");
         }
 
-        // TODO: is sanitizing $tApplicationKey needed for paths?
+        // TODO is sanitizing $tApplicationKey needed for paths?
         $tApplicationWritablePath = Core::$basepath . "/writable/generated/app.{$tApplicationKey}";
 
         if (!file_exists($tApplicationWritablePath)) {
@@ -295,7 +295,7 @@ class GenerateCommand
 
         // methods
         foreach ($tReflection->getMethods() as $tMethodReflection) {
-            // TODO: check the correctness of logic
+            // TODO check the correctness of logic
             if ($tMethodReflection->class !== $uClass) {
                 continue;
             }
@@ -318,7 +318,7 @@ class GenerateCommand
 
         // properties
         foreach ($tReflection->getProperties() as $tPropertyReflection) {
-            // TODO: check the correctness of logic
+            // TODO check the correctness of logic
             if ($tPropertyReflection->class !== $uClass) {
                 continue;
             }

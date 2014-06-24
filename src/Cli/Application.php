@@ -45,7 +45,7 @@ class Application extends ApplicationBase
      */
     public function getRequestMethod()
     {
-        // not implemented yet
+        // TODO not implemented
         return null;
     }
 
@@ -56,7 +56,7 @@ class Application extends ApplicationBase
      */
     public function getRequestPathInfo()
     {
-        // not implemented yet
+        // TODO not implemented
         return null;
     }
 
@@ -67,7 +67,7 @@ class Application extends ApplicationBase
      */
     public function getQueryParameters()
     {
-        // not implemented yet
+        // TODO not implemented
         return null;
     }
 
@@ -78,7 +78,7 @@ class Application extends ApplicationBase
      */
     public function getPostParameters()
     {
-        // not implemented yet
+        // TODO not implemented
         return null;
     }
 

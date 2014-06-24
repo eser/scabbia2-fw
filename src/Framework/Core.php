@@ -148,7 +148,7 @@ class Core
     {
         // test cases for applications, and bind configuration to app
         foreach (self::$projectConfiguration->get() as $tApplicationKey => $tApplicationConfig) {
-            // TODO: is sanitizing $tApplicationKey needed for paths?
+            // TODO is sanitizing $tApplicationKey needed for paths?
             $tTargetApplication = $tApplicationKey;
 
             if (isset($tApplicationConfig["tests"])) {

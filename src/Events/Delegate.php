@@ -89,7 +89,7 @@ class Delegate
      */
     public function add(/* callable */ $uCallback, $uState = null, $uPriority = null)
     {
-        // TODO: SplPriorityQueue has a problem with serialization
+        // TODO SplPriorityQueue has a problem with serialization
         /*
         if ($this->callbacks === null) {
             $this->callbacks = new \SplPriorityQueue();

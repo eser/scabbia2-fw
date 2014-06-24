@@ -59,10 +59,38 @@ abstract class ApplicationBase
         $this->events->events = require "{$this->writablePath}/events.php";
 
         // TODO initialize the proper environment
-        // TODO instantiate application with variables (environment, application config [development, disableCaches])
+        // TODO instantiate application with variables (environment and its config [development, disableCaches])
         // TODO load modules
         // TODO execute autoexecs
     }
+
+    /**
+     * Gets request method
+     *
+     * @return array
+     */
+    abstract public function getRequestMethod();
+
+    /**
+     * Gets request path info
+     *
+     * @return array
+     */
+    abstract public function getRequestPathInfo();
+
+    /**
+     * Gets query parameters
+     *
+     * @return array
+     */
+    abstract public function getQueryParameters();
+
+    /**
+     * Gets post parameters
+     *
+     * @return array
+     */
+    abstract public function getPostParameters();
 
     /**
      * Generates request

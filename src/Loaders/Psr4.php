@@ -38,7 +38,7 @@ namespace Scabbia\Loaders;
  *
  *      <?php
  *      // instantiate and register the loader
- *      $loader = new \Scabbia\Loader\Psr4AutoloaderClass();
+ *      $loader = new \Scabbia\Loader\Psr4();
  *      $loader->register();
  *
  *      // register the base directories for the namespace prefix

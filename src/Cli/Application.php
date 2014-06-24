@@ -39,6 +39,50 @@ class Application extends ApplicationBase
     }
 
     /**
+     * Gets request method
+     *
+     * @return array
+     */
+    public function getRequestMethod()
+    {
+        // not implemented yet
+        return null;
+    }
+
+    /**
+     * Gets request path info
+     *
+     * @return array
+     */
+    public function getRequestPathInfo()
+    {
+        // not implemented yet
+        return null;
+    }
+
+    /**
+     * Gets query parameters
+     *
+     * @return array
+     */
+    public function getQueryParameters()
+    {
+        // not implemented yet
+        return null;
+    }
+
+    /**
+     * Gets post parameters
+     *
+     * @return array
+     */
+    public function getPostParameters()
+    {
+        // not implemented yet
+        return null;
+    }
+
+    /**
      * Generates request
      *
      * @param string $uMethod          method
@@ -61,5 +105,11 @@ class Application extends ApplicationBase
     public function generateRequestFromGlobals()
     {
         // $this->generateRequest("GET", "home/index", $_GET, $_POST);
+        $this->generateRequest(
+            $this->getRequestMethod(),
+            $this->getRequestPathInfo(),
+            $this->getQueryParameters(),
+            $this->getPostParameters()
+        );
     }
 }

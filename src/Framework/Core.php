@@ -178,6 +178,11 @@ class Core
      */
     public static function runApplication($uApplicationConfig, $uWritablePath)
     {
+        // run compiled package
+        if (file_exists($tCompiledFile = "{$uWritablePath}/compiled.php")) {
+            require $tCompiledFile;
+        }
+
         // push framework variables
         $tPaths = self::pushComposerPaths($uApplicationConfig);
         self::$runningApplications[] = [ApplicationBase::$current, self::$variables];

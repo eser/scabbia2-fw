@@ -244,7 +244,7 @@ class Core
      *
      * @return void
      */
-    public function updateVariablesCache()
+    public static function updateVariablesCache()
     {
         self::$variablesPlaceholderCache[0] = [];
         self::$variablesPlaceholderCache[1] = [];

@@ -41,46 +41,42 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Serializable
     /**
      * Adds a new element into the collection
      *
-     * @param mixed $uKey  key for element
      * @param mixed $uItem element to be added
      *
      * @return void
      */
-    public function add($uKey, $uItem = null)
+    public function addItem($uItem)
     {
-        if ($uItem !== null) {
-            $this->items[$uKey] = $uItem;
-            return;
-        }
+        $this->items[] = $uItem;
+    }
 
-        $this->items[] = $uKey;
+    /**
+     * Adds a new element into the collection
+     *
+     * @param mixed $uItem reference of the element to be added
+     *
+     * @return void
+     */
+    public function addItemRef(&$uItem)
+    {
+        $this->items[] = &$uItem;
     }
 
     /**
      * Adds a new element into the collection if it is
      * not exist in the collection already
      *
-     * @param mixed $uKey  key for element
      * @param mixed $uItem element to be added
      *
      * @return bool if element is added
      */
-    public function addUnique($uKey, $uItem = null)
+    public function addItemUnique($uItem)
     {
-        if ($uItem !== null) {
-            if (array_key_exists($uKey, $this->items)) {
-                return false;
-            }
-
-            $this->items[$uKey] = $uItem;
-            return true;
-        }
-
-        if (in_array($uKey, $this->items, true)) {
+        if (in_array($uItem, $this->items, true)) {
             return false;
         }
 
-        $this->items[] = $uKey;
+        $this->items[] = $uItem;
         return true;
     }
 
@@ -91,7 +87,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Serializable
      *
      * @return void
      */
-    public function addRange($uItems)
+    public function addItemRange($uItems)
     {
         $this->items += $uItems;
     }
@@ -115,7 +111,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Serializable
      *
      * @return bool if element exists in the collection
      */
-    public function contains($uItem)
+    public function containsItem($uItem)
     {
         return in_array($uItem, $this->items, true);
     }
@@ -198,23 +194,30 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Serializable
     }
 
     /**
-     * Removes elements from the collection
+     * Sets a specified key into the collection
      *
-     * @param mixed $uItem  element
-     * @param int   $uLimit limit
+     * @param mixed $uKey  key for element
+     * @param mixed $uItem reference of the element to be set
      *
-     * @return int count of removed elements
+     * @return void
      */
-    public function remove($uItem, $uLimit = 0)
+    public function setRef($uKey, &$uItem)
     {
-        $tRemoved = 0;
+        $this->items[$uKey] = &$uItem;
+    }
 
-        while (($uLimit === 0 || $tRemoved < $uLimit) &&
-            ($tKey = array_search($uItem, $this->items, true)) !== false) {
-            unset($this->items[$tKey]);
+    /**
+     * Sets a specified key into the collection
+     *
+     * @param mixed $uItems set of elements to be set
+     *
+     * @return void
+     */
+    public function setRange(array $uItems)
+    {
+        foreach ($uItems as $tKey => $tValue) {
+            $this->items[$tKey] = $tValue;
         }
-
-        return $tRemoved;
     }
 
     /**
@@ -224,7 +227,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Serializable
      *
      * @return int count of removed elements
      */
-    public function removeKey($uKey)
+    public function remove($uKey)
     {
         if (!isset($this->items[$uKey])) {
             return 0;
@@ -232,6 +235,26 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Serializable
 
         unset($this->items[$uKey]);
         return 1;
+    }
+
+    /**
+     * Removes elements from the collection
+     *
+     * @param mixed $uItem  element
+     * @param int   $uLimit limit
+     *
+     * @return int count of removed elements
+     */
+    public function removeItem($uItem, $uLimit = 0)
+    {
+        $tRemoved = 0;
+
+        while (($uLimit === 0 || $tRemoved < $uLimit) &&
+            ($tKey = array_search($uItem, $this->items, true)) !== false) {
+            unset($this->items[$tKey]);
+        }
+
+        return $tRemoved;
     }
 
     /**

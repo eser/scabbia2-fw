@@ -13,6 +13,9 @@
 
 namespace Scabbia\Mvc;
 
+use Scabbia\Container\Container;
+use Scabbia\Objects\Collection;
+
 /**
  * Controller class template
  *
@@ -20,6 +23,25 @@ namespace Scabbia\Mvc;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.0.0
  */
-abstract class Controller
+abstract class Controller extends Container
 {
+    /** @type string $view the default view file */
+    public $view = null;
+    /** @type string $outputFormat the default output format */
+    public $outputFormat = null;
+    /** @type Collection $vars variables */
+    public $vars;
+
+
+    /**
+     * Initializes a Controller class instance
+     *
+     * @return Controller
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->vars = new Collection();
+    }
 }

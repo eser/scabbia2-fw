@@ -25,10 +25,14 @@ use Scabbia\Helpers\String;
  *
  * @todo form open
  * @todo form fields
- * @todo Html::script
- * @todo Html::style
- * @todo Html::list (<li> every row)
+ * @todo form csrf protection
+ * @todo Html::list (<li> every row, nested)
  * @todo Html::br (<br /> implode)
+ * @todo Html::image
+ * @todo Html::anchor
+ * @todo Html::anchorEmail
+ * @todo Html::textarea
+ * @todo Html::button
  */
 class Html
 {
@@ -124,7 +128,7 @@ class Html
                 continue;
             }
 
-            $tReturn[] = "{$tKey}=\"" . String::htmlEscape($tValue) . "\"";
+            $tReturn[] = "{$tKey}=\"" . String::escapeHtml($tValue) . "\"";
         }
 
         return implode(" ", $tReturn);
@@ -363,6 +367,79 @@ class Html
         }
 
         return false;
+    }
+
+    /**
+     * Creates a script element
+     *
+     * @param string $uHref       hypertext reference of script file
+     * @param array  $uAttributes set of the tag attributes
+     *
+     * @return string html output
+     */
+    public static function script($uHref, array $uAttributes = [])
+    {
+        $uAttributes["src"] = $uHref;
+
+        $tOutput = "<script " . self::attributes($uAttributes) . "></script>";
+
+        return $tOutput;
+    }
+
+    /**
+     * Creates an inline script element
+     *
+     * @param string $uScriptContent  script content
+     * @param array  $uAttributes     set of the tag attributes
+     *
+     * @return string html output
+     */
+    public static function scriptInline($uScriptContent, array $uAttributes = [])
+    {
+        $uAttributes["src"] = $uHref;
+
+        $tOutput = "<script " . self::attributes($uAttributes) . ">{$uScriptContent}</script>";
+
+        return $tOutput;
+    }
+
+    /**
+     * Creates a link element
+     *
+     * @param string $uRelation   relation type
+     * @param string $uHref       hypertext reference of linked file
+     * @param array  $uAttributes set of the tag attributes
+     *
+     * @return string html output
+     */
+    public static function link($uRelation, $uHref, array $uAttributes = [])
+    {
+        $uAttributes["rel"] = $uRelation;
+        $uAttributes["href"] = $uHref;
+
+        $tOutput = "<link " . self::attributes($uAttributes) . " />";
+
+        return $tOutput;
+    }
+
+    /**
+     * Creates a link element to link a stylesheet file
+     *
+     * @param string $uHref       hypertext reference of linked file
+     * @param string $uMediaType  target media type
+     * @param array  $uAttributes set of the tag attributes
+     *
+     * @return string html output
+     */
+    public static function linkStyleSheet($uHref, $uMediaType = "all", array $uAttributes = [])
+    {
+        $uAttributes["rel"] = "stylesheet";
+        $uAttributes["media"] = $uMediaType;
+        $uAttributes["href"] = $uHref;
+
+        $tOutput = "<link " . self::attributes($uAttributes) . " />";
+
+        return $tOutput;
     }
 
     /**

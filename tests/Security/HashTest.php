@@ -22,10 +22,10 @@
  * - Scabbia Framework code styles applied.
  */
 
-namespace Scabbia\Tests\Crypt;
+namespace Scabbia\Tests\Security;
 
 use Scabbia\Testing\UnitTestFixture;
-use Scabbia\Crypt\Hash;
+use Scabbia\Security\Hash;
 
 /**
  * Tests of Hash class

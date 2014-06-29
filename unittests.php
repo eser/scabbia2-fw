@@ -29,7 +29,7 @@ $tConfig = [
     "fixtures" => [
         "Scabbia\\Tests\\Yaml\\ParserTest",
         "Scabbia\\Tests\\Yaml\\InlineTest",
-        "Scabbia\\Tests\\Crypt\\HashTest"
+        "Scabbia\\Tests\\Security\\HashTest"
     ]
 ];
 

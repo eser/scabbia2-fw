@@ -22,6 +22,22 @@ namespace Scabbia\Helpers;
  */
 class Io
 {
+    /** @type int NONE               no flag */
+    const NONE = 0;
+    /** @type int ENCRYPTION         use encryption */
+    const ENCRYPTION = 1;
+    /** @type int USE_JSON           use json for serialization */
+    const USE_JSON = 2;
+    /** @type int APPEND             append to file */
+    const APPEND = 4;
+    /** @type int LOCK_NONBLOCKING   lock file with nonblocking lock */
+    const LOCK_NONBLOCKING = 8;
+    /** @type int LOCK_SHARE         lock file with share lock */
+    const LOCK_SHARE = 16;
+    /** @type int LOCK_EXCLUSIVE     lock file with exclusive lock */
+    const LOCK_EXCLUSIVE = 32;
+
+
     /**
      * Default variables for io functionality
      *
@@ -29,7 +45,8 @@ class Io
      */
     public static $defaults = [
         "pathSeparator" => DIRECTORY_SEPARATOR,
-        "fileReadBuffer" => 4096
+        "fileReadBuffer" => 4096,
+        "keyphase" => "scabbia_default"
     ];
 
 
@@ -90,28 +107,46 @@ class Io
     /**
      * Reads from a file
      *
-     * @param string    $uPath  the file path
-     * @param int       $uFlags io flags
+     * @param string    $uPath      the file path
+     * @param int       $uFlags     flags
      *
      * @return bool|string the file content
      */
-    public static function read($uPath, $uFlags = LOCK_SH)
+    public static function read($uPath, $uFlags = self::LOCK_SHARE)
     {
         $tHandle = fopen($uPath, "r", false);
         if ($tHandle === false) {
             return false;
         }
 
-        $tLock = flock($tHandle, $uFlags);
-        if ($tLock === false) {
-            fclose($tHandle);
+        if (($uFlags & self::LOCK_NONBLOCKING) === self::LOCK_NONBLOCKING) {
+            $tLockFlag = LOCK_NB;
+        } elseif (($uFlags & self::LOCK_SHARE) === self::LOCK_SHARE) {
+            $tLockFlag = LOCK_SH;
+        } elseif (($uFlags & self::LOCK_EXCLUSIVE) === self::LOCK_EXCLUSIVE) {
+            $tLockFlag = LOCK_EX;
+        } else {
+            $tLockFlag = false;
+        }
 
-            return false;
+        if ($tLockFlag !== false) {
+            if (flock($tHandle, $tLockFlag) === false) {
+                fclose($tHandle);
+
+                return false;
+            }
         }
 
         $tContent = stream_get_contents($tHandle);
-        flock($tHandle, LOCK_UN);
+        if ($tLockFlag !== false) {
+            flock($tHandle, LOCK_UN);
+        }
+
         fclose($tHandle);
+
+        if (($uFlags & self::ENCRYPTION) === self::ENCRYPTION) {
+            return self::decrypt($tContent, self::$defaults["keyphase"]);
+        }
 
         return $tContent;
     }
@@ -121,30 +156,50 @@ class Io
      *
      * @param string    $uPath      the file path
      * @param string    $uContent   the file content
-     * @param int       $uFlags     io flags
+     * @param int       $uFlags     flags
      *
      * @return bool
      */
-    public static function write($uPath, $uContent, $uFlags = LOCK_EX)
+    public static function write($uPath, $uContent, $uFlags = self::LOCK_EXCLUSIVE)
     {
         $tHandle = fopen(
             $uPath,
-            ($uFlags & FILE_APPEND) > 0 ? "a" : "w",
+            (($uFlags & self::APPEND) === self::APPEND) ? "a" : "w",
             false
         );
         if ($tHandle === false) {
             return false;
         }
 
-        if (flock($tHandle, $uFlags) === false) {
-            fclose($tHandle);
-
-            return false;
+        if (($uFlags & self::LOCK_NONBLOCKING) === self::LOCK_NONBLOCKING) {
+            $tLockFlag = LOCK_NB;
+        } elseif (($uFlags & self::LOCK_SHARE) === self::LOCK_SHARE) {
+            $tLockFlag = LOCK_SH;
+        } elseif (($uFlags & self::LOCK_EXCLUSIVE) === self::LOCK_EXCLUSIVE) {
+            $tLockFlag = LOCK_EX;
+        } else {
+            $tLockFlag = false;
         }
 
-        fwrite($tHandle, $uContent);
+        if ($tLockFlag !== false) {
+            if (flock($tHandle, $tLockFlag) === false) {
+                fclose($tHandle);
+
+                return false;
+            }
+        }
+
+        if (($uFlags & self::ENCRYPTION) === self::ENCRYPTION) {
+            fwrite($tHandle, self::encrypt($tContent, self::$defaults["keyphase"]));
+        } else {
+            fwrite($tHandle, $uContent);
+        }
+
         fflush($tHandle);
-        flock($tHandle, LOCK_UN);
+        if ($tLockFlag !== false) {
+            flock($tHandle, LOCK_UN);
+        }
+
         fclose($tHandle);
 
         return true;
@@ -153,22 +208,22 @@ class Io
     /**
      * Reads from a serialized file
      *
-     * @param string        $uPath      the file path
-     * @param string|null   $uKeyphase  the key
+     * @param string    $uPath      the file path
+     * @param int       $uFlags     flags
      *
      * @return bool|mixed   the unserialized object
      */
-    public static function readSerialize($uPath, $uKeyphase = null)
+    public static function readSerialize($uPath, $uFlags = self::LOCK_SHARE)
     {
-        $tContent = self::read($uPath);
+        $tContent = self::read($uPath, $uFlags);
 
         //! ambiguous return value
         if ($tContent === false) {
             return false;
         }
 
-        if ($uKeyphase !== null && strlen($uKeyphase) > 0) {
-            $tContent = self::decrypt($tContent, $uKeyphase);
+        if (($uFlags & self::USE_JSON) === self::USE_JSON) {
+            return json_decode($tContent);
         }
 
         return unserialize($tContent);
@@ -179,19 +234,17 @@ class Io
      *
      * @param string        $uPath      the file path
      * @param string        $uContent   the file content
-     * @param string|null   $uKeyphase  the key
+     * @param int           $uFlags     flags
      *
      * @return bool
      */
-    public static function writeSerialize($uPath, $uContent, $uKeyphase = null)
+    public static function writeSerialize($uPath, $uContent, $uFlags = self::LOCK_EXCLUSIVE)
     {
-        $tContent = serialize($uContent);
-
-        if ($uKeyphase !== null && strlen($uKeyphase) > 0) {
-            $tContent = self::encrypt($tContent, $uKeyphase);
+        if (($uFlags & self::USE_JSON) === self::USE_JSON) {
+            return self::write($uPath, json_encode($uContent), $uFlags);
         }
 
-        return self::write($uPath, $tContent);
+        return self::write($uPath, serialize($uContent), $uFlags);
     }
 
     /**
@@ -453,12 +506,12 @@ class Io
     /**
      * Garbage collects the given path
      *
-     * @param string    $uPath  path
-     * @param null|int  $uTtl   age
+     * @param string  $uPath    path
+     * @param array   $uOptions options
      *
      * @return void
      */
-    public static function garbageCollect($uPath, $uTtl = null)
+    public static function garbageCollect($uPath, array $uOptions = [])
     {
         $tDirectory = new \DirectoryIterator($uPath);
 
@@ -468,7 +521,12 @@ class Io
                 continue;
             }
 
-            if ($uTtl !== null && (time() - $tFile->getMTime()) < $uTtl) {
+            $tLastMod = $tFile->getMTime();
+            if (isset($uOptions["ttl"]) && time() - $tLastMod <= $uOptions["ttl"]) {
+                continue;
+            }
+
+            if (isset($uOptions["newerthan"]) && $tLastMod < $uOptions["newerthan"]) {
                 continue;
             }
 

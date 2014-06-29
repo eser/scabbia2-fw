@@ -19,7 +19,7 @@ use Scabbia\Helpers\Io;
 /**
  * Binder
  *
- * @package     Scabbia\Config
+ * @package     Scabbia\Objects
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.5.0
  */
@@ -140,10 +140,8 @@ class Binder
             } elseif ($tContent[0] === "callback") {
                 $this->output .= call_user_func($tContent[2]);
             } elseif ($tContent[0] === "file") {
-                $tFileCacheFile = Core::$basepath . "/writable/cache/" . crc32(realpath($tContent[2]));
-
-                $this->output .= Io::readFromCacheFile(
-                    $tFileCacheFile,
+                $this->output .= Core::cachedRead(
+                    $tContent[2],
                     function () use ($tContent) {
                         return Io::read($tContent[2]);
                     },

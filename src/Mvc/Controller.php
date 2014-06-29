@@ -22,5 +22,4 @@ namespace Scabbia\Mvc;
  */
 abstract class Controller
 {
-
 }

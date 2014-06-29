@@ -84,10 +84,10 @@ class Application extends ApplicationBase
             Core::$variables["http-request-uri"] = $_SERVER["UNENCODED_URL"];
         } elseif (isset($_SERVER["REQUEST_URI"])) {
             if (strncmp(
-                    $_SERVER["REQUEST_URI"],
-                    Core::$variables["host"],
-                    $tHostLength = strlen(Core::$variables["host"])
-                ) === 0) {
+                $_SERVER["REQUEST_URI"],
+                Core::$variables["host"],
+                $tHostLength = strlen(Core::$variables["host"])
+            ) === 0) {
                 Core::$variables["http-request-uri"] = substr($_SERVER["REQUEST_URI"], $tHostLength);
             } else {
                 Core::$variables["http-request-uri"] = $_SERVER["REQUEST_URI"];

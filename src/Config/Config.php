@@ -79,9 +79,8 @@ class Config
         // TODO mass caching with pathnames and flags
         foreach ($this->paths as $tPath) {
             $tConfigPath = Core::translateVariables($tPath[0]);
-            $tConfigCacheFile = Core::$basepath . "/writable/cache/" . crc32(realpath($tConfigPath));
-            $tConfigContent = Io::readFromCacheFile(
-                $tConfigCacheFile,
+            $tConfigContent = Core::cachedRead(
+                $tConfigPath,
                 function () use ($tConfigPath) {
                     $tParser = new Parser();
                     return $tParser->parse(Io::read($tConfigPath));

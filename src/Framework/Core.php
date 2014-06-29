@@ -270,4 +270,25 @@ class Core
     {
         return str_replace(self::$variablesPlaceholderCache[0], self::$variablesPlaceholderCache[1], $uInput);
     }
+
+    /**
+     * Reads the contents from cache folder as long as it is not expired
+     * If the file is expired, invokes callback method and caches output
+     *
+     * @param string      $uPath         the relative path
+     * @param mixed       $uDefaultValue the default value
+     * @param array       $uOptions      options
+     *
+     * @return mixed the result
+     */
+    public static function cachedRead($uPath, $uDefaultValue, array $uOptions = [])
+    {
+        $tCacheFile = self::$basepath . "/writable/cache/" . crc32(realpath($uPath));
+
+        return Io::readFromCacheFile(
+            $tCacheFile,
+            $uDefaultValue,
+            $uOptions
+        );
+    }
 }

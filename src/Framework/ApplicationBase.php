@@ -59,6 +59,13 @@ abstract class ApplicationBase
         $this->events->events = require "{$this->writablePath}/events.php";
 
         // TODO initialize the proper environment
+        if ($this->development) {
+            error_reporting(-1);
+        } else {
+            error_reporting(0);
+        }
+
+        // TODO set exception handler
         // TODO instantiate application with variables (environment and its config [development, disableCaches])
         // TODO load modules
         // TODO execute autoexecs

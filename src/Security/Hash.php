@@ -22,13 +22,13 @@
  * - Scabbia Framework code styles applied.
  */
 
-namespace Scabbia\Crypt;
+namespace Scabbia\Security;
 
 /**
  * Basic hash class which is originally named as Portable PHP password hashing framework
- * For bcrypt functionality, it is made a part of Scabbia\Crypt.
+ * For bcrypt functionality, it is made a part of Scabbia\Security.
  *
- * @package     Scabbia\Crypt
+ * @package     Scabbia\Security
  * @author      Solar Designer <solar@openwall.com>
  * @since       2.0.0
  */

@@ -13,8 +13,8 @@
 
 namespace Scabbia\Testing;
 
+use Scabbia\Commands\CommandBase;
 use Scabbia\Testing\Testing;
-use Scabbia\Output\IOutput;
 
 /**
  * Command class for "php scabbia tests"
@@ -23,21 +23,30 @@ use Scabbia\Output\IOutput;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-class TestsCommand
+class TestsCommand extends CommandBase
 {
     /**
-     * Entry point for the command
+     * Initializes the tests command
      *
-     * @param array   $uParameters command parameters
-     * @param mixed   $uConfig     command configuration
-     * @param IOutput $uOutput     output
+     * @return TestsCommand
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Executes the command
      *
+     * @param array $uParameters parameters
+     *
+     * @throws \RuntimeException if configuration is invalid
      * @return int exit code
      */
-    public static function tests(array $uParameters, $uConfig, IOutput $uOutput)
+    public function executeCommand(array $uParameters)
     {
         Testing::coverageStart();
-        $tExitCode = Testing::runUnitTests($uConfig["fixtures"], $uOutput);
+        $tExitCode = Testing::runUnitTests($this->config["fixtures"], $this->output);
         $tCoverageReport = Testing::coverageStop();
 
         if ($tCoverageReport !== null) {
@@ -46,8 +55,8 @@ class TestsCommand
             $tCoverage = "unknown";
         }
 
-        $uOutput->writeColor("green", "Code Coverage = {$tCoverage}");
-        $uOutput->writeColor("yellow", "done.");
+        $this->output->writeColor("green", "Code Coverage = {$tCoverage}");
+        $this->output->writeColor("yellow", "done.");
 
         return $tExitCode;
     }

@@ -14,6 +14,7 @@
 namespace Scabbia\Router;
 
 use Scabbia\Framework\Core;
+use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\Io;
 use Scabbia\Router\Router;
 
@@ -27,19 +28,84 @@ use Scabbia\Router\Router;
  * Routing related code based on the nikic's FastRoute solution:
  * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  */
-class Generator
+class Generator extends GeneratorBase
 {
     /** @type string FILTER_VALIDATE_BOOLEAN a symbolic constant for boolean validation */
     const APPROX_CHUNK_SIZE = 10;
 
 
+    /** @type array $annotations set of annotations */
+    public $annotations = [
+        "route" => ["format" => "yaml"]
+    ];
     /** @type array $staticRoutes set of static routes */
-    public static $staticRoutes = [];
+    public $staticRoutes = [];
     /** @type array $regexToRoutesMap map of variable routes */
-    public static $regexToRoutesMap = [];
+    public $regexToRoutesMap = [];
     /** @type array $namedRoutes map of named routes */
-    public static $namedRoutes = [];
+    public $namedRoutes = [];
 
+
+    /**
+     * Initializes a generator
+     *
+     * @return Generator
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Processes a file
+     *
+     * @param string $uPath         file path
+     * @param string $uFileContents contents of file
+     * @param string $uTokens       tokens extracted by tokenizer
+     *
+     * @return void
+     */
+    public function processFile($uPath, $uFileContents, $uTokens)
+    {
+    }
+
+    /**
+     * Processes set of annotations
+     *
+     * @param array $uAnnotations annotations
+     *
+     * @return void
+     */
+    public function processAnnotations($uAnnotations)
+    {
+        foreach ($uAnnotations as $tClassKey => $tClass) {
+            foreach ($tClass["methods"] as $tMethodKey => $tMethod) {
+                if (!isset($tMethod["route"])) {
+                    continue;
+                }
+
+                foreach ($tMethod["route"] as $tRoute) {
+                    $this->addRoute(
+                        $tRoute["method"],
+                        $tRoute["path"],
+                        [$tClassKey, $tMethodKey],
+                        isset($tRoute["name"]) ? $tRoute["name"] : null
+                    );
+                }
+            }
+        }
+
+        Io::writePhpFile(Core::translateVariables($this->outputPath . "/routes.php"), $this->getData());
+    }
+
+    /**
+     * Finalizes generator
+     *
+     * @return void
+     */
+    public function finalize()
+    {
+    }
 
     /**
      * Adds specified route
@@ -51,15 +117,15 @@ class Generator
      *
      * @return void
      */
-    public static function addRoute($uMethods, $uRoute, $uCallback, $uName = null)
+    public function addRoute($uMethods, $uRoute, $uCallback, $uName = null)
     {
         $tRouteData = Router::parse($uRoute);
         $tMethods = (array)$uMethods;
 
         if (count($tRouteData) === 1 && is_string($tRouteData[0])) {
-            self::addStaticRoute($tMethods, $tRouteData, $uCallback, $uName);
+            $this->addStaticRoute($tMethods, $tRouteData, $uCallback, $uName);
         } else {
-            self::addVariableRoute($tMethods, $tRouteData, $uCallback, $uName);
+            $this->addVariableRoute($tMethods, $tRouteData, $uCallback, $uName);
         }
     }
 
@@ -74,12 +140,12 @@ class Generator
      * @throws \Exception if an routing problem occurs
      * @return void
      */
-    public static function addStaticRoute(array $uMethods, $uRouteData, $uCallback, $uName = null)
+    public function addStaticRoute(array $uMethods, $uRouteData, $uCallback, $uName = null)
     {
         $tRouteStr = $uRouteData[0];
 
         foreach ($uMethods as $tMethod) {
-            if (isset(self::$staticRoutes[$tRouteStr][$tMethod])) {
+            if (isset($this->staticRoutes[$tRouteStr][$tMethod])) {
                 throw new \Exception(
                     "Cannot register two routes matching \"{$tRouteStr}\" for method \"{$tMethod}\""
                 );
@@ -87,7 +153,7 @@ class Generator
         }
 
         foreach ($uMethods as $tMethod) {
-            foreach (self::$regexToRoutesMap as $tRoutes) {
+            foreach ($this->regexToRoutesMap as $tRoutes) {
                 if (!isset($tRoutes[$tMethod])) {
                     continue;
                 }
@@ -101,19 +167,19 @@ class Generator
                 }
             }
 
-            self::$staticRoutes[$tRouteStr][$tMethod] = $uCallback;
+            $this->staticRoutes[$tRouteStr][$tMethod] = $uCallback;
 
             /*
             if ($uName !== null) {
-                if (!isset(self::$namedRoutes[$tMethod])) {
-                    self::$namedRoutes[$tMethod] = [];
+                if (!isset($this->namedRoutes[$tMethod])) {
+                    $this->namedRoutes[$tMethod] = [];
                 }
 
-                self::$namedRoutes[$tMethod][$uName] = [$tRouteStr, []];
+                $this->namedRoutes[$tMethod][$uName] = [$tRouteStr, []];
             }
             */
-            if ($uName !== null && !isset(self::$namedRoutes[$uName])) {
-                self::$namedRoutes[$uName] = [$tRouteStr, []];
+            if ($uName !== null && !isset($this->namedRoutes[$uName])) {
+                $this->namedRoutes[$uName] = [$tRouteStr, []];
             }
         }
     }
@@ -129,7 +195,7 @@ class Generator
      * @throws \Exception if an routing problem occurs
      * @return void
      */
-    public static function addVariableRoute(array $uMethods, $uRouteData, $uCallback, $uName = null)
+    public function addVariableRoute(array $uMethods, $uRouteData, $uCallback, $uName = null)
     {
         $tRegex = "";
         $tReverseRegex = "";
@@ -154,7 +220,7 @@ class Generator
         }
 
         foreach ($uMethods as $tMethod) {
-            if (isset(self::$regexToRoutesMap[$tRegex][$tMethod])) {
+            if (isset($this->regexToRoutesMap[$tRegex][$tMethod])) {
                 throw new \Exception(
                     "Cannot register two routes matching \"{$tRegex}\" for method \"{$tMethod}\""
                 );
@@ -162,7 +228,7 @@ class Generator
         }
 
         foreach ($uMethods as $tMethod) {
-            self::$regexToRoutesMap[$tRegex][$tMethod] = [
+            $this->regexToRoutesMap[$tRegex][$tMethod] = [
                 "method"    => $tMethod,
                 "callback"  => $uCallback,
                 "regex"     => $tRegex,
@@ -171,15 +237,15 @@ class Generator
 
             /*
             if ($uName !== null) {
-                if (!isset(self::$namedRoutes[$tMethod])) {
-                    self::$namedRoutes[$tMethod] = [];
+                if (!isset($this->namedRoutes[$tMethod])) {
+                    $this->namedRoutes[$tMethod] = [];
                 }
 
-                self::$namedRoutes[$tMethod][$uName] = [$tRegex, $tVariables];
+                $this->namedRoutes[$tMethod][$uName] = [$tRegex, $tVariables];
             }
             */
-            if ($uName !== null && !isset(self::$namedRoutes[$uName])) {
-                self::$namedRoutes[$uName] = [$tReverseRegex, array_values($tVariables)];
+            if ($uName !== null && !isset($this->namedRoutes[$uName])) {
+                $this->namedRoutes[$uName] = [$tReverseRegex, array_values($tVariables)];
             }
         }
     }
@@ -189,9 +255,9 @@ class Generator
      *
      * @return array data
      */
-    public static function getData()
+    public function getData()
     {
-        $tRegexToRoutesMapCount = count(self::$regexToRoutesMap);
+        $tRegexToRoutesMapCount = count($this->regexToRoutesMap);
 
         if ($tRegexToRoutesMapCount === 0) {
             $tVariableRouteData = [];
@@ -199,14 +265,14 @@ class Generator
             $tNumParts = max(1, round($tRegexToRoutesMapCount / self::APPROX_CHUNK_SIZE));
             $tChunkSize = ceil($tRegexToRoutesMapCount / $tNumParts);
 
-            $tChunks = array_chunk(self::$regexToRoutesMap, $tChunkSize, true);
+            $tChunks = array_chunk($this->regexToRoutesMap, $tChunkSize, true);
             $tVariableRouteData = array_map([__CLASS__, "processChunk"], $tChunks);
         }
 
         return [
-            "static"   => self::$staticRoutes,
+            "static"   => $this->staticRoutes,
             "variable" => $tVariableRouteData,
-            "named"    => self::$namedRoutes
+            "named"    => $this->namedRoutes
         ];
     }
 
@@ -217,7 +283,7 @@ class Generator
      *
      * @return array chunked
      */
-    public static function processChunk(array $uRegexToRoutesMap)
+    public function processChunk(array $uRegexToRoutesMap)
     {
         $tRouteMap = [];
         $tRegexes = [];
@@ -241,35 +307,5 @@ class Generator
             "regex"    => "~^(?|" . implode("|", $tRegexes) . ")$~",
             "routeMap" => $tRouteMap
         ];
-    }
-
-    /**
-     * Entry point for processor
-     *
-     * @param array  $uAnnotations  annotations
-     * @param string $uOutputPath   output path for generated files
-     *
-     * @return void
-     */
-    public static function generate(array $uAnnotations, $uOutputPath)
-    {
-        foreach ($uAnnotations as $tClassKey => $tClass) {
-            foreach ($tClass["methods"] as $tMethodKey => $tMethod) {
-                if (!isset($tMethod["route"])) {
-                    continue;
-                }
-
-                foreach ($tMethod["route"] as $tRoute) {
-                    self::addRoute(
-                        $tRoute["method"],
-                        $tRoute["path"],
-                        [$tClassKey, $tMethodKey],
-                        isset($tRoute["name"]) ? $tRoute["name"] : null
-                    );
-                }
-            }
-        }
-
-        Io::writePhpFile(Core::translateVariables("{$uOutputPath}/routes.php"), self::getData());
     }
 }

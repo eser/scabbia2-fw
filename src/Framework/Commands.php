@@ -15,6 +15,7 @@ namespace Scabbia\Framework;
 
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\Io;
+use Scabbia\Helpers\Runtime;
 use Scabbia\Output\ConsoleOutput;
 use Scabbia\Yaml\Parser;
 
@@ -77,32 +78,50 @@ class Commands
      */
     public static function execute(array $uCommands)
     {
-        $tCommand = trim(array_shift($uCommands));
+        $tCommandName = trim(array_shift($uCommands));
 
-        if (isset(self::$commands[$tCommand])) {
-            $tCallbacks = (array)self::$commands[$tCommand]["callback"];
+        if (isset(self::$commands[$tCommandName])) {
+            $tCommand = self::$commands[$tCommandName];
 
-            if (isset(self::$commands[$tCommand]["config"])) {
-                $tConfig = self::$commands[$tCommand]["config"];
+            if (isset($tCommand["class"])) {
+                $tClass = $tCommand["class"];
+                $tCallbacks = [];
+            } else {
+                $tClass = null;
+                $tCallbacks = (array)$tCommand["callback"];
+            }
+
+            if (isset($tCommand["config"])) {
+                $tConfig = $tCommand["config"];
             } else {
                 $tConfig = null;
             }
-        } elseif (is_callable($tCommand)) {
-            $tCallbacks = [$tCommand];
+        } elseif (class_exists($tCommandName, true)) {
+            $tClass = $tCommandName;
+            $tCallbacks = [];
             $tConfig = null;
-        }
-
-        if (!isset($tCallbacks)) {
-            throw new \RuntimeException("Command not found - " . $tCommand . ".");
+        } else {
+            throw new \RuntimeException("Command not found - " . $tCommandName . ".");
         }
 
         $tOutput = new ConsoleOutput();
 
-        foreach ($tCallbacks as $tCallback) {
-            $tReturn = call_user_func($tCallback, $uCommands, $tConfig, $tOutput);
+        if ($tClass !== null) {
+            $tInstance = new $tClass ();
+            $tInstance->config = $tConfig;
+            $tInstance->output = $tOutput;
 
-            if ($tReturn !== null && $tReturn !== 0) {
-                return $tReturn;
+            return $tInstance->executeCommand($uCommands);
+        } else {
+            foreach ($tCallbacks as $tCallback) {
+                $tReturn = call_user_func_array(
+                    Runtime::callbacks($tCallback),
+                    $uCommands
+                );
+
+                if ($tReturn !== null && $tReturn !== 0) {
+                    return $tReturn;
+                }
             }
         }
 

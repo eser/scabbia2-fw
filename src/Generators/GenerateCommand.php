@@ -11,45 +11,55 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Framework\Commands;
+namespace Scabbia\Generators;
 
+use Scabbia\Commands\CommandBase;
 use Scabbia\Config\Config;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\Io;
-use Scabbia\Output\IOutput;
 use Scabbia\Yaml\Parser;
 
 /**
  * Command class for "php scabbia generate"
  *
- * @package     Scabbia\Framework\Commands
+ * @package     Scabbia\Generators
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
+ *
+ * @todo only pass annotations requested by generator
  */
-class GenerateCommand
+class GenerateCommand extends CommandBase
 {
-    /** @type Parser|null $parser yaml parser */
-    public static $parser = null;
-    /** @type array $config configuration of generator command */
-    public static $config = null;
-    /** @type array $annotations result of generator command */
-    public static $result = null;
+    /** @type Parser|null $parser      yaml parser */
+    public $parser = null;
+    /** @type array       $generators  set of generators */
+    public $generators = [];
+    /** @type array       $annotations set of annotations */
+    public $annotations = [];
+    /** @type array       $result      result of generator command */
+    public $result = null;
 
 
     /**
-     * Entry point for the command
+     * Initializes the generate command
      *
-     * @param array   $uParameters command parameters
-     * @param mixed   $uConfig     command configuration
-     * @param IOutput $uOutput     output
+     * @return GenerateCommand
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Executes the command
+     *
+     * @param array $uParameters parameters
      *
      * @throws \RuntimeException if configuration is invalid
      * @return int exit code
      */
-    public static function generate(array $uParameters, $uConfig, IOutput $uOutput)
+    public function executeCommand(array $uParameters)
     {
-        self::$config = $uConfig;
-
         if (count($uParameters) === 0) {
             $tProjectFile = "project.yml";
             $tApplicationKey = "default";
@@ -78,37 +88,51 @@ class GenerateCommand
             mkdir($tApplicationWritablePath, 0777, true);
         }
 
+        // initialize generators read from configuration
+        if (isset($this->config["generators"])) {
+            foreach ($this->config["generators"] as $tCommandGeneratorClass) {
+                $tInstance = new $tCommandGeneratorClass ();
+                $tInstance->outputPath = $tApplicationWritablePath;
+                foreach ($tInstance->annotations as $tAnnotationKey => $tAnnotation) {
+                    $this->annotations[$tAnnotationKey] = $tAnnotation;
+                }
+
+                $this->generators[$tCommandGeneratorClass] = $tInstance;
+            }
+        }
+
         // -- scan composer maps
         Core::pushComposerPaths($uApplicationConfig[$tApplicationKey]);
-        $tFolders = self::scanComposerMaps($uOutput);
+        $tFolders = $this->scanComposerMaps($this->output);
 
-        $uOutput->writeColor("green", "Composer Maps:");
+        $this->output->writeColor("green", "Composer Maps:");
         foreach ($tFolders as $tFolder) {
-            $uOutput->writeColor("white", "- {$tFolder[0]} => {$tFolder[1]}");
+            $this->output->writeColor("white", "- {$tFolder[0]} => {$tFolder[1]}");
         }
 
         // -- process files
-        self::$result = [];
+        $this->result = [];
         foreach ($tFolders as $tPath) {
             Io::getFilesWalk(
                 $tPath[1],
                 "*.php",
                 true,
-                [__CLASS__, "processFile"],
+                [&$this, "processFile"],
                 $tPath[0]
             );
         }
 
-        if (isset(self::$config["methods"])) {
-            $tCommandMethods = self::$config["methods"];
-
-            foreach ($tCommandMethods as $tCommandMethod) {
-                call_user_func($tCommandMethod, self::$result, $tApplicationWritablePath);
-            }
+        foreach ($this->generators as $tGenerator) {
+            $tGenerator->processAnnotations($this->result);
         }
 
         Core::popComposerPaths();
-        $uOutput->writeColor("yellow", "done.");
+
+        foreach ($this->generators as $tGenerator) {
+            $tGenerator->finalize();
+        }
+
+        $this->output->writeColor("yellow", "done.");
 
         return 0;
     }
@@ -118,7 +142,7 @@ class GenerateCommand
      *
      * @return void
      */
-    public static function scanComposerMaps()
+    public function scanComposerMaps()
     {
         $tFolders = [];
 
@@ -156,10 +180,14 @@ class GenerateCommand
      *
      * @return void
      */
-    public static function processFile($uFile, $uNamespacePrefix)
+    public function processFile($uFile, $uNamespacePrefix)
     {
         $tFileContents = Io::read($uFile);
         $tTokens = token_get_all($tFileContents);
+
+        foreach ($this->generators as $tGenerator) {
+            $tGenerator->processFile($uFile, $tFileContents, $tTokens);
+        }
 
         $tBuffer = "";
 
@@ -224,7 +252,7 @@ class GenerateCommand
                 }
 
                 if (!$tSkip) {
-                    self::processClass($tLastClass, $uNamespacePrefix);
+                    $this->processClass($tLastClass, $uNamespacePrefix);
                 }
 
                 $tExpectation = 0;
@@ -272,7 +300,7 @@ class GenerateCommand
      *
      * @return void
      */
-    public static function processClass($uClass, $uNamespacePrefix)
+    public function processClass($uClass, $uNamespacePrefix)
     {
         $tClassAnnotations = [
             // "class" => [],
@@ -289,7 +317,7 @@ class GenerateCommand
 
         $tDocComment = $tReflection->getDocComment();
         if (strlen($tDocComment) > 0) {
-            $tClassAnnotations["class"] = self::parseAnnotations($tDocComment);
+            $tClassAnnotations["class"] = $this->parseAnnotations($tDocComment);
             $tCount++;
         }
 
@@ -302,7 +330,7 @@ class GenerateCommand
 
             $tDocComment = $tMethodReflection->getDocComment();
             if (strlen($tDocComment) > 0) {
-                $tParsedDocComment = self::parseAnnotations($tDocComment);
+                $tParsedDocComment = $this->parseAnnotations($tDocComment);
 
                 if (count($tParsedDocComment) === 0) {
                     // nothing
@@ -325,7 +353,7 @@ class GenerateCommand
 
             $tDocComment = $tPropertyReflection->getDocComment();
             if (strlen($tDocComment) > 0) {
-                $tParsedAnnotations = self::parseAnnotations($tDocComment);
+                $tParsedAnnotations = $this->parseAnnotations($tDocComment);
 
                 if (count($tParsedAnnotations) === 0) {
                     // nothing
@@ -340,7 +368,7 @@ class GenerateCommand
         }
 
         if ($tCount > 0) {
-            self::$result[$uClass] = $tClassAnnotations;
+            $this->result[$uClass] = $tClassAnnotations;
         }
     }
 
@@ -351,7 +379,7 @@ class GenerateCommand
      *
      * @return array set of annotations
      */
-    public static function parseAnnotations($uDocComment)
+    public function parseAnnotations($uDocComment)
     {
         preg_match_all(
             "/\\*[\\t| ]\\@([^\\n|\\t| ]+)(?:[\\t| ]([^\\n]+))*/",
@@ -362,36 +390,32 @@ class GenerateCommand
 
         $tParsedAnnotations = [];
 
-        if (isset(self::$config["annotations"])) {
-            $tAnnotationDefinitions = self::$config["annotations"];
-
-            foreach ($tDocCommentLines as $tDocCommentLine) {
-                if (!isset($tAnnotationDefinitions[$tDocCommentLine[1]])) {
-                    continue;
-                }
-
-                $tRegistryItem = $tAnnotationDefinitions[$tDocCommentLine[1]];
-
-                if (!isset($tParsedAnnotations[$tDocCommentLine[1]])) {
-                    $tParsedAnnotations[$tDocCommentLine[1]] = [];
-                }
-
-                if (isset($tDocCommentLine[2])) {
-                    if ($tRegistryItem["format"] === "yaml") {
-                        if (self::$parser === null) {
-                            self::$parser = new Parser();
-                        }
-
-                        $tLine = self::$parser->parse($tDocCommentLine[2]);
-                    } else {
-                        $tLine = $tDocCommentLine[2];
-                    }
-                } else {
-                    $tLine = "";
-                }
-
-                $tParsedAnnotations[$tDocCommentLine[1]][] = $tLine;
+        foreach ($tDocCommentLines as $tDocCommentLine) {
+            if (!isset($this->annotations[$tDocCommentLine[1]])) {
+                continue;
             }
+
+            $tRegistryItem = $this->annotations[$tDocCommentLine[1]];
+
+            if (!isset($tParsedAnnotations[$tDocCommentLine[1]])) {
+                $tParsedAnnotations[$tDocCommentLine[1]] = [];
+            }
+
+            if (isset($tDocCommentLine[2])) {
+                if ($tRegistryItem["format"] === "yaml") {
+                    if ($this->parser === null) {
+                        $this->parser = new Parser();
+                    }
+
+                    $tLine = $this->parser->parse($tDocCommentLine[2]);
+                } else {
+                    $tLine = $tDocCommentLine[2];
+                }
+            } else {
+                $tLine = "";
+            }
+
+            $tParsedAnnotations[$tDocCommentLine[1]][] = $tLine;
         }
 
         return $tParsedAnnotations;

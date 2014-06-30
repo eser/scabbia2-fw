@@ -11,9 +11,8 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Events;
+namespace Scabbia\Documentor;
 
-use Scabbia\Events\Events;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\Io;
@@ -21,16 +20,16 @@ use Scabbia\Helpers\Io;
 /**
  * Generator
  *
- * @package     Scabbia\Events
+ * @package     Scabbia\Documentor
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
 class Generator extends GeneratorBase
 {
     /** @type array $annotations set of annotations */
-    public $annotations = [
-        "event" => ["format" => "yaml"]
-    ];
+    public $annotations = [];
+    /** @type array $files set of files */
+    public $files = [];
 
 
     /**
@@ -54,6 +53,27 @@ class Generator extends GeneratorBase
      */
     public function processFile($uPath, $uFileContents, $uTokens)
     {
+        $tDocLines = [];
+
+        foreach ($uTokens as $tToken) {
+            if (is_array($tToken)) {
+                $tTokenId = $tToken[0];
+                $tTokenContent = $tToken[1];
+            } else {
+                $tTokenId = null;
+                $tTokenContent = $tToken;
+            }
+
+            if ($tTokenId === T_COMMENT) {
+                if (strncmp($tTokenContent, "// MD ", 6) === 0) {
+                    $tDocLines[] = substr($tTokenContent, 6);
+                }
+            }
+        }
+
+        if (count($tDocLines) > 0) {
+            $this->files[$uPath] = $tDocLines;
+        }
     }
 
     /**
@@ -65,26 +85,6 @@ class Generator extends GeneratorBase
      */
     public function processAnnotations($uAnnotations)
     {
-        $tEvents = new Events();
-
-        foreach ($uAnnotations as $tClassKey => $tClass) {
-            foreach ($tClass["staticMethods"] as $tMethodKey => $tMethod) {
-                if (!isset($tMethod["event"])) {
-                    continue;
-                }
-
-                foreach ($tMethod["event"] as $tEvent) {
-                    $tEvents->register(
-                        $tEvent["on"],
-                        [$tClassKey, $tMethodKey],
-                        null,
-                        isset($tEvent["priority"]) ? $tEvent["priority"] : null
-                    );
-                }
-            }
-        }
-
-        Io::writePhpFile(Core::translateVariables($this->outputPath . "/events.php"), $tEvents->events);
     }
 
     /**
@@ -94,5 +94,6 @@ class Generator extends GeneratorBase
      */
     public function finalize()
     {
+        var_dump($this->files);
     }
 }

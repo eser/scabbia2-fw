@@ -11,36 +11,30 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Events;
-
-use Scabbia\Events\Events;
-use Scabbia\Framework\Core;
-use Scabbia\Generators\GeneratorBase;
-use Scabbia\Helpers\Io;
+namespace Scabbia\Generators;
 
 /**
- * Generator
+ * Default methods needed for implementation of a generator
  *
- * @package     Scabbia\Events
+ * @package     Scabbia\Generators
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-class Generator extends GeneratorBase
+abstract class GeneratorBase
 {
-    /** @type array $annotations set of annotations */
-    public $annotations = [
-        "event" => ["format" => "yaml"]
-    ];
+    /** @type array           $annotations  annotations to be processed */
+    public $annotations;
+    /** @type string          $outputPath   output path for generated files */
+    public $outputPath;
 
 
     /**
      * Initializes a generator
      *
-     * @return Generator
+     * @return GeneratorBase
      */
     public function __construct()
     {
-        parent::__construct();
     }
 
     /**
@@ -65,26 +59,6 @@ class Generator extends GeneratorBase
      */
     public function processAnnotations($uAnnotations)
     {
-        $tEvents = new Events();
-
-        foreach ($uAnnotations as $tClassKey => $tClass) {
-            foreach ($tClass["staticMethods"] as $tMethodKey => $tMethod) {
-                if (!isset($tMethod["event"])) {
-                    continue;
-                }
-
-                foreach ($tMethod["event"] as $tEvent) {
-                    $tEvents->register(
-                        $tEvent["on"],
-                        [$tClassKey, $tMethodKey],
-                        null,
-                        isset($tEvent["priority"]) ? $tEvent["priority"] : null
-                    );
-                }
-            }
-        }
-
-        Io::writePhpFile(Core::translateVariables($this->outputPath . "/events.php"), $tEvents->events);
     }
 
     /**

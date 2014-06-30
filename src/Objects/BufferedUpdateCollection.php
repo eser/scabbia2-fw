@@ -20,7 +20,7 @@ namespace Scabbia\Objects;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.5.0
  */
-class BufferedUpdateCollection implements \ArrayAccess, \IteratorAggregate, \Serializable
+class BufferedUpdateCollection
 {
     /** @type array items */
     public $items;

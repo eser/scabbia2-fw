@@ -11,7 +11,7 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Framework;
+namespace Scabbia\Commands;
 
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
@@ -22,7 +22,7 @@ use Scabbia\Yaml\Parser;
 /**
  * Commands functionality for framework
  *
- * @package     Scabbia\Framework
+ * @package     Scabbia\Commands
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.0.0
  */

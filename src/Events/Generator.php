@@ -16,7 +16,7 @@ namespace Scabbia\Events;
 use Scabbia\Events\Events;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
-use Scabbia\Helpers\Io;
+use Scabbia\Helpers\FileSystem;
 
 /**
  * Generator
@@ -84,7 +84,7 @@ class Generator extends GeneratorBase
             }
         }
 
-        Io::writePhpFile(Core::translateVariables($this->outputPath . "/events.php"), $tEvents->events);
+        FileSystem::writePhpFile(Core::translateVariables($this->outputPath . "/events.php"), $tEvents->events);
     }
 
     /**

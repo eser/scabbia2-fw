@@ -14,7 +14,7 @@
 namespace Scabbia\Framework;
 
 use Scabbia\Framework\ApplicationBase;
-use Scabbia\Helpers\Io;
+use Scabbia\Helpers\FileSystem;
 use Scabbia\Config\Config;
 
 /**
@@ -57,7 +57,7 @@ class Core
             $tScriptDirectory = pathinfo($_SERVER["SCRIPT_FILENAME"], PATHINFO_DIRNAME);
 
             if ($tScriptDirectory !== ".") {
-                self::$basepath = Io::combinePaths(getcwd(), $tScriptDirectory);
+                self::$basepath = FileSystem::combinePaths(getcwd(), $tScriptDirectory);
             } else {
                 self::$basepath = getcwd();
             }
@@ -135,7 +135,7 @@ class Core
         }
 
         self::$projectConfiguration->add(
-            Io::combinePaths(Core::$basepath, self::translateVariables($uProjectConfigPath))
+            FileSystem::combinePaths(Core::$basepath, self::translateVariables($uProjectConfigPath))
         );
     }
 
@@ -285,7 +285,7 @@ class Core
     {
         $tCacheFile = self::$basepath . "/writable/cache/" . crc32(realpath($uPath));
 
-        return Io::readFromCacheFile(
+        return FileSystem::readFromCacheFile(
             $tCacheFile,
             $uDefaultValue,
             $uOptions

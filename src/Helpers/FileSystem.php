@@ -14,13 +14,13 @@
 namespace Scabbia\Helpers;
 
 /**
- * A bunch of utility methods for io functionality
+ * A bunch of utility methods for file system functionality
  *
  * @package     Scabbia\Helpers
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.0.0
  */
-class Io
+class FileSystem
 {
     /** @type int NONE               no flag */
     const NONE = 0;

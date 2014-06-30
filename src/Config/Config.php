@@ -15,7 +15,7 @@ namespace Scabbia\Config;
 
 use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
-use Scabbia\Helpers\Io;
+use Scabbia\Helpers\FileSystem;
 use Scabbia\Yaml\Parser;
 
 /**
@@ -83,7 +83,7 @@ class Config
                 $tConfigPath,
                 function () use ($tConfigPath) {
                     $tParser = new Parser();
-                    return $tParser->parse(Io::read($tConfigPath));
+                    return $tParser->parse(FileSystem::read($tConfigPath));
                 },
                 [
                     "ttl" => 60 * 60

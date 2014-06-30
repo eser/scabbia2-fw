@@ -14,7 +14,7 @@
 namespace Scabbia\Objects;
 
 use Scabbia\Framework\Core;
-use Scabbia\Helpers\Io;
+use Scabbia\Helpers\FileSystem;
 
 /**
  * Binder
@@ -57,8 +57,8 @@ class Binder
             "ttl" => 60 * 60
         ];
 
-        if ($this->sealed = Io::isReadable($this->cachepath, $tOptions)) {
-            $this->output = Io::readSerialize($this->cachepath);
+        if ($this->sealed = FileSystem::isReadable($this->cachepath, $tOptions)) {
+            $this->output = FileSystem::readSerialize($this->cachepath);
         }
     }
 
@@ -111,7 +111,7 @@ class Binder
 
         $tFilePath = Core::translateVariables($uPath);
         $tExtension = pathinfo($tFilePath, PATHINFO_EXTENSION);
-        $this->contents[] = ["file", Io::getMimetype($tExtension), $tFilePath];
+        $this->contents[] = ["file", FileSystem::getMimetype($tExtension), $tFilePath];
     }
 
     /**
@@ -143,7 +143,7 @@ class Binder
                 $this->output .= Core::cachedRead(
                     $tContent[2],
                     function () use ($tContent) {
-                        return Io::read($tContent[2]);
+                        return FileSystem::read($tContent[2]);
                     },
                     [
                         "ttl" => 60 * 60
@@ -152,6 +152,6 @@ class Binder
             }
         }
 
-        Io::writeSerialize($this->cachepath, $this->output);
+        FileSystem::writeSerialize($this->cachepath, $this->output);
     }
 }

@@ -15,7 +15,7 @@ namespace Scabbia\Documentor;
 
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
-use Scabbia\Helpers\Io;
+use Scabbia\Helpers\FileSystem;
 
 /**
  * Generator

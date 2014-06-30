@@ -14,7 +14,7 @@
 namespace Scabbia\Framework;
 
 use Scabbia\Framework\Core;
-use Scabbia\Helpers\Io;
+use Scabbia\Helpers\FileSystem;
 use Scabbia\Helpers\Runtime;
 use Scabbia\Output\ConsoleOutput;
 use Scabbia\Yaml\Parser;
@@ -42,12 +42,12 @@ class Commands
     public static function load($uCommandsConfigPath)
     {
         // load commands.yml
-        $tCommandsYamlPath = Io::combinePaths(Core::$basepath, Core::translateVariables($uCommandsConfigPath));
+        $tCommandsYamlPath = FileSystem::combinePaths(Core::$basepath, Core::translateVariables($uCommandsConfigPath));
         $tCommandsConfig = Core::cachedRead(
             $tCommandsYamlPath,
             function () use ($tCommandsYamlPath) {
                 $tParser = new Parser();
-                return $tParser->parse(Io::read($tCommandsYamlPath));
+                return $tParser->parse(FileSystem::read($tCommandsYamlPath));
             },
             [
                 "ttl" => 60 * 60

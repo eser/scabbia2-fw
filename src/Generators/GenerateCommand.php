@@ -16,7 +16,7 @@ namespace Scabbia\Generators;
 use Scabbia\Commands\CommandBase;
 use Scabbia\Config\Config;
 use Scabbia\Framework\Core;
-use Scabbia\Helpers\Io;
+use Scabbia\Helpers\FileSystem;
 use Scabbia\Yaml\Parser;
 
 /**
@@ -74,7 +74,7 @@ class GenerateCommand extends CommandBase
             }
         }
 
-        $tProjectFile = Io::combinePaths(Core::$basepath, Core::translateVariables($tProjectFile));
+        $tProjectFile = FileSystem::combinePaths(Core::$basepath, Core::translateVariables($tProjectFile));
         $uApplicationConfig = Config::load($tProjectFile)->get();
 
         if (!isset($uApplicationConfig[$tApplicationKey])) {
@@ -113,7 +113,7 @@ class GenerateCommand extends CommandBase
         // -- process files
         $this->result = [];
         foreach ($tFolders as $tPath) {
-            Io::getFilesWalk(
+            FileSystem::getFilesWalk(
                 $tPath[1],
                 "*.php",
                 true,
@@ -182,7 +182,7 @@ class GenerateCommand extends CommandBase
      */
     public function processFile($uFile, $uNamespacePrefix)
     {
-        $tFileContents = Io::read($uFile);
+        $tFileContents = FileSystem::read($uFile);
         $tTokens = token_get_all($tFileContents);
 
         foreach ($this->generators as $tGenerator) {

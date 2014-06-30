@@ -13,7 +13,7 @@
 
 namespace Scabbia\Testing;
 
-use Scabbia\Helpers\Io;
+use Scabbia\Helpers\FileSystem;
 use Scabbia\Output\ConsoleOutput;
 use Scabbia\Output\HtmlOutput;
 use Scabbia\Output\IOutput;
@@ -126,7 +126,7 @@ class Testing
             $tFileCoverage = [
                 "path"         => $tPath,
                 "coveredLines" => array_keys($tLines),
-                "totalLines"   => Io::getFileLineCount($tPath)
+                "totalLines"   => FileSystem::getFileLineCount($tPath)
             ];
 
             $tFinal["files"][] = $tFileCoverage;

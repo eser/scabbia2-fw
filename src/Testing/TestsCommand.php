@@ -28,11 +28,14 @@ class TestsCommand extends CommandBase
     /**
      * Initializes the tests command
      *
+     * @param mixed   $uConfig configuration
+     * @param IOutput $uOutput output class
+     *
      * @return TestsCommand
      */
-    public function __construct()
+    public function __construct($uConfig, $uOutput)
     {
-        parent::__construct();
+        parent::__construct($uConfig, $uOutput);
     }
 
     /**

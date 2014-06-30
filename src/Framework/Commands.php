@@ -107,10 +107,7 @@ class Commands
         $tOutput = new ConsoleOutput();
 
         if ($tClass !== null) {
-            $tInstance = new $tClass ();
-            $tInstance->config = $tConfig;
-            $tInstance->output = $tOutput;
-
+            $tInstance = new $tClass ($tConfig, $tOutput);
             return $tInstance->executeCommand($uCommands);
         } else {
             foreach ($tCallbacks as $tCallback) {

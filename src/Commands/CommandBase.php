@@ -33,10 +33,15 @@ abstract class CommandBase
     /**
      * Initializes a command
      *
+     * @param mixed   $uConfig configuration
+     * @param IOutput $uOutput output class
+     *
      * @return CommandBase
      */
-    public function __construct()
+    public function __construct($uConfig, $uOutput)
     {
+        $this->config = $uConfig;
+        $this->output = $uOutput;
     }
 
     /**

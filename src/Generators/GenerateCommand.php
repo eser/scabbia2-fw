@@ -43,11 +43,14 @@ class GenerateCommand extends CommandBase
     /**
      * Initializes the generate command
      *
+     * @param mixed   $uConfig configuration
+     * @param IOutput $uOutput output class
+     *
      * @return GenerateCommand
      */
-    public function __construct()
+    public function __construct($uConfig, $uOutput)
     {
-        parent::__construct();
+        parent::__construct($uConfig, $uOutput);
     }
 
     /**
@@ -91,8 +94,8 @@ class GenerateCommand extends CommandBase
         // initialize generators read from configuration
         if (isset($this->config["generators"])) {
             foreach ($this->config["generators"] as $tCommandGeneratorClass) {
-                $tInstance = new $tCommandGeneratorClass ();
-                $tInstance->outputPath = $tApplicationWritablePath;
+                $tInstance = new $tCommandGeneratorClass ($tApplicationWritablePath);
+
                 foreach ($tInstance->annotations as $tAnnotationKey => $tAnnotation) {
                     $this->annotations[$tAnnotationKey] = $tAnnotation;
                 }

@@ -31,10 +31,13 @@ abstract class GeneratorBase
     /**
      * Initializes a generator
      *
+     * @param string $uOutputPath output path
+     *
      * @return GeneratorBase
      */
-    public function __construct()
+    public function __construct($uOutputPath)
     {
+        $this->outputPath = $uOutputPath;
     }
 
     /**

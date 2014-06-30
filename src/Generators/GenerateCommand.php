@@ -110,7 +110,7 @@ class GenerateCommand extends CommandBase
 
         $this->output->writeColor("green", "Composer Maps:");
         foreach ($tFolders as $tFolder) {
-            $this->output->writeColor("white", "- {$tFolder[0]} => {$tFolder[1]}");
+            $this->output->writeColor("white", "- [{$tFolder[2]}] \\{$tFolder[0]} => {$tFolder[1]}");
         }
 
         // -- process files
@@ -152,24 +152,24 @@ class GenerateCommand extends CommandBase
         // PSR-4 lookup
         foreach (Core::$composerAutoloader->getPrefixesPsr4() as $prefix => $dirs) {
             foreach ($dirs as $dir) {
-                $tFolders[] = [$prefix, $dir];
+                $tFolders[] = [$prefix, $dir, "PSR-4"];
             }
         }
 
         // PSR-4 fallback dirs
         foreach (Core::$composerAutoloader->getFallbackDirsPsr4() as $dir) {
-            $tFolders[] = ["", $dir];
+            $tFolders[] = ["", $dir, "PSR-4"];
         }
 
         foreach (Core::$composerAutoloader->getPrefixes() as $dirs) {
             foreach ($dirs as $dir) {
-                $tFolders[] = ["", $dir];
+                $tFolders[] = ["", $dir, "PSR-0"];
             }
         }
 
         // PSR-0 fallback dirs
         foreach (Core::$composerAutoloader->getFallbackDirs() as $dir) {
-            $tFolders[] = ["", $dir];
+            $tFolders[] = ["", $dir, "PSR-0"];
         }
 
         return $tFolders;

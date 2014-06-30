@@ -14,6 +14,7 @@
 namespace Scabbia\Mvc;
 
 use Scabbia\Container\Container;
+use Scabbia\Events\Delegate;
 use Scabbia\Objects\Collection;
 
 /**
@@ -31,6 +32,10 @@ abstract class Controller extends Container
     public $outputFormat = null;
     /** @type Collection $vars variables */
     public $vars;
+    /** @type Delegate $prerender prerender hook */
+    public $prerender;
+    /** @type Delegate $postrender postrender hook */
+    public $postrender;
 
 
     /**
@@ -43,5 +48,7 @@ abstract class Controller extends Container
         parent::__construct();
 
         $this->vars = new Collection();
+        $this->prerender = new Delegate();
+        $this->postrender = new Delegate();
     }
 }

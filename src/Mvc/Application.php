@@ -191,7 +191,9 @@ class Application extends ApplicationBase
         if ($tRoute[0] === Router::FOUND) {
             // push some variables like named parameters
             $tInstance = new $tRoute[1][0] ();
+            $tInstance->prerender->invoke();
             call_user_func_array([&$tInstance, $tRoute[1][1]], $tRoute[2]);
+            $tInstance->postrender->invoke();
             // pop previously pushed variables
         } elseif ($tRoute[0] === Router::METHOD_NOT_ALLOWED) {
             // TODO exception

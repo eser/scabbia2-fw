@@ -20,7 +20,7 @@ namespace Scabbia\Container;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-class Container
+abstract class Container
 {
     /**
      * @ignore
@@ -31,27 +31,24 @@ class Container
     /**
      * @ignore
      */
-    public static function load()
+    public static function load($uModelClass, array $uParameters = [])
     {
-        $tArgs = func_get_args();
-        $tModelClass = array_shift($tArgs);
-
-        if (is_object($tModelClass)) {
-            $tModelClassName = get_class($tModelClass);
+        if (is_object($uModelClass)) {
+            $tModelClassName = get_class($uModelClass);
 
             if (!isset(self::$loaded[$tModelClassName])) {
-                self::$loaded[$tModelClassName] = $tModelClass;
+                self::$loaded[$tModelClassName] = $uModelClass;
             }
 
             return self::$loaded[$tModelClassName];
         }
 
-        if (!isset(self::$loaded[$tModelClass])) {
-            // TODO call constructor w/ $tArgs
-            self::$loaded[$tModelClass] = new $tModelClass ();
+        if (!isset(self::$loaded[$uModelClass])) {
+            // TODO call constructor w/ $uParameters
+            self::$loaded[$uModelClass] = new $uModelClass ();
         }
 
-        return self::$loaded[$tModelClass];
+        return self::$loaded[$uModelClass];
     }
 
     /**
@@ -67,17 +64,13 @@ class Container
     /**
      * @ignore
      */
-    public function bind()
+    public function bind($uModelClass, $uMemberName = null, array $uParameters = [])
     {
-        $tArgs = func_get_args();
-        $tModelClass = array_shift($tArgs);
-        $tMemberName = array_shift($tArgs);
-
-        if ($tMemberName === null) {
-            if (is_object($tModelClass)) {
-                $tModelClassName = get_class($tModelClass);
+        if ($uMemberName === null) {
+            if (is_object($uModelClass)) {
+                $tModelClassName = get_class($uModelClass);
             } else {
-                $tModelClassName = $tModelClass;
+                $tModelClassName = $uModelClass;
             }
 
             if (($tPos = strrpos($tModelClassName, "\\")) !== false) {
@@ -87,6 +80,6 @@ class Container
             }
         }
 
-        $this->{$tMemberName} = call_user_func_array("Container::load", $tArgs);
+        $this->{$uMemberName} = self::load($uModelClass, $uParameters);
     }
 }

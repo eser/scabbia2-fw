@@ -21,6 +21,8 @@ use Scabbia\Interfaces\IInterface;
  * @package     Scabbia\Interfaces
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
+ *
+ * @todo add stdin features
  */
 class Console implements IInterface
 {

@@ -17,6 +17,7 @@ use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Router\Router;
+use \Exception;
 
 /**
  * Generator
@@ -139,7 +140,7 @@ class Generator extends GeneratorBase
      * @param callable      $uCallback   callback
      * @param string|null   $uName       name of route
      *
-     * @throws \Exception if an routing problem occurs
+     * @throws Exception if an routing problem occurs
      * @return void
      */
     public function addStaticRoute(array $uMethods, $uRouteData, $uCallback, $uName = null)
@@ -148,7 +149,7 @@ class Generator extends GeneratorBase
 
         foreach ($uMethods as $tMethod) {
             if (isset($this->staticRoutes[$tRouteStr][$tMethod])) {
-                throw new \Exception(
+                throw new Exception(
                     "Cannot register two routes matching \"{$tRouteStr}\" for method \"{$tMethod}\""
                 );
             }
@@ -162,7 +163,7 @@ class Generator extends GeneratorBase
 
                 $tRoute = $tRoutes[$tMethod];
                 if (preg_match("~^{$tRoute["regex"]}$~", $tRouteStr) === 1) {
-                    throw new \Exception(
+                    throw new Exception(
                         "Static route \"{$tRouteStr}\" is shadowed by previously defined variable route
                         \"{$tRoute["regex"]}\" for method \"{$tMethod}\""
                     );
@@ -194,7 +195,7 @@ class Generator extends GeneratorBase
      * @param callable      $uCallback   callback
      * @param string|null   $uName       name of route
      *
-     * @throws \Exception if an routing problem occurs
+     * @throws Exception if an routing problem occurs
      * @return void
      */
     public function addVariableRoute(array $uMethods, $uRouteData, $uCallback, $uName = null)
@@ -213,7 +214,7 @@ class Generator extends GeneratorBase
             list($tVariableName, $tRegexPart) = $tPart;
 
             if (isset($tVariables[$tVariableName])) {
-                throw new \Exception("Cannot use the same placeholder \"{$tVariableName}\" twice");
+                throw new Exception("Cannot use the same placeholder \"{$tVariableName}\" twice");
             }
 
             $tVariables[$tVariableName] = $tVariableName;
@@ -223,7 +224,7 @@ class Generator extends GeneratorBase
 
         foreach ($uMethods as $tMethod) {
             if (isset($this->regexToRoutesMap[$tRegex][$tMethod])) {
-                throw new \Exception(
+                throw new Exception(
                     "Cannot register two routes matching \"{$tRegex}\" for method \"{$tMethod}\""
                 );
             }

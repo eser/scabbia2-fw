@@ -13,6 +13,9 @@
 
 namespace Scabbia\Helpers;
 
+use \DirectoryIterator;
+use \Exception;
+
 /**
  * A bunch of utility methods for file system functionality
  *
@@ -293,14 +296,14 @@ class FileSystem
      *
      * @param string $uPath the path
      *
-     * @throws \Exception if path contains invalid chars
+     * @throws Exception if path contains invalid chars
      * @return bool true if the path is rooted
      */
     public static function isPathRooted($uPath)
     {
         if (!self::checkInvalidPathChars($uPath)) {
             // TODO exception
-            throw new \Exception("");
+            throw new Exception("");
         }
 
         $tLength = strlen($uPath);
@@ -323,14 +326,14 @@ class FileSystem
      *
      * @param string $uPath the path
      *
-     * @throws \Exception if path contains invalid chars
+     * @throws Exception if path contains invalid chars
      * @return bool true if the path is relative
      */
     public static function isPathRelative($uPath)
     {
         if (!self::checkInvalidPathChars($uPath)) {
             // TODO exception
-            throw new \Exception("");
+            throw new Exception("");
         }
 
         $tLength = strlen($uPath);
@@ -472,7 +475,7 @@ class FileSystem
     public static function getFiles($uPath, $uPattern = null, $uRecursive = true, $uBasenames = false)
     {
         $tArray = ["." => []];
-        $tDir = new \DirectoryIterator($uPath);
+        $tDir = new DirectoryIterator($uPath);
 
         foreach ($tDir as $tFile) {
             $tFileName = $tFile->getFilename();
@@ -513,7 +516,7 @@ class FileSystem
      */
     public static function garbageCollect($uPath, array $uOptions = [])
     {
-        $tDirectory = new \DirectoryIterator($uPath);
+        $tDirectory = new DirectoryIterator($uPath);
 
         clearstatcache();
         foreach ($tDirectory as $tFile) {
@@ -547,7 +550,7 @@ class FileSystem
      */
     public static function getFilesWalk($uPath, $uPattern, $uRecursive, /* callable */ $uCallback, $uStateObject = null)
     {
-        $tDir = new \DirectoryIterator($uPath);
+        $tDir = new DirectoryIterator($uPath);
 
         foreach ($tDir as $tFile) {
             $tFileName = $tFile->getFilename();

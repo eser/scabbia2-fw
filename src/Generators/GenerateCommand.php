@@ -18,6 +18,8 @@ use Scabbia\Config\Config;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Yaml\Parser;
+use \ReflectionClass;
+use \RuntimeException;
 
 /**
  * Command class for "php scabbia generate"
@@ -58,7 +60,7 @@ class GenerateCommand extends CommandBase
      *
      * @param array $uParameters parameters
      *
-     * @throws \RuntimeException if configuration is invalid
+     * @throws RuntimeException if configuration is invalid
      * @return int exit code
      */
     public function executeCommand(array $uParameters)
@@ -81,7 +83,7 @@ class GenerateCommand extends CommandBase
         $uApplicationConfig = Config::load($tProjectFile)->get();
 
         if (!isset($uApplicationConfig[$tApplicationKey])) {
-            throw new \RuntimeException("invalid configuration - {$tProjectFile}::{$tApplicationKey}");
+            throw new RuntimeException("invalid configuration - {$tProjectFile}::{$tApplicationKey}");
         }
 
         // TODO is sanitizing $tApplicationKey needed for paths?
@@ -316,7 +318,7 @@ class GenerateCommand extends CommandBase
         ];
         $tCount = 0;
 
-        $tReflection = new \ReflectionClass($uClass);
+        $tReflection = new ReflectionClass($uClass);
 
         $tDocComment = $tReflection->getDocComment();
         if (strlen($tDocComment) > 0) {

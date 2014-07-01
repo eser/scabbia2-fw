@@ -18,6 +18,7 @@ use Scabbia\Helpers\FileSystem;
 use Scabbia\Helpers\Runtime;
 use Scabbia\Interfaces\Console;
 use Scabbia\Yaml\Parser;
+use \RuntimeException;
 
 /**
  * Commands functionality for framework
@@ -73,7 +74,7 @@ class Commands
      *
      * @param array $uCommands The set of command line arguments
      *
-     * @throws \RuntimeException if command is not found
+     * @throws RuntimeException if command is not found
      * @return int exit code
      */
     public static function execute(array $uCommands)
@@ -101,7 +102,7 @@ class Commands
             $tCallbacks = [];
             $tConfig = null;
         } else {
-            throw new \RuntimeException("Command not found - " . $tCommandName . ".");
+            throw new RuntimeException("Command not found - " . $tCommandName . ".");
         }
 
         $tOutput = new Console();

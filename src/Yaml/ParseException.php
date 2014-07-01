@@ -29,6 +29,8 @@
 
 namespace Scabbia\Yaml;
 
+use \RuntimeException;
+
 /**
  * Exception class thrown when an error occurs during parsing
  *
@@ -36,7 +38,7 @@ namespace Scabbia\Yaml;
  * @author      Fabien Potencier <fabien@symfony.com>
  * @since       2.0.0
  */
-class ParseException extends \RuntimeException
+class ParseException extends RuntimeException
 {
     /** @type null|string   $parsedFile     The file name where the error occurred */
     protected $parsedFile;

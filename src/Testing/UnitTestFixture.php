@@ -13,6 +13,8 @@
 
 namespace Scabbia\Testing;
 
+use \ReflectionClass;
+
 /**
  * Base class for fixtures which is going to be constructed to host unit testing
  * methods inside
@@ -40,7 +42,7 @@ abstract class UnitTestFixture
      */
     public function test()
     {
-        $tMe = new \ReflectionClass($this);
+        $tMe = new ReflectionClass($this);
         $tMethods = $tMe->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         $tReservedMethods = ["setUp", "tearDown"];

@@ -16,6 +16,7 @@ namespace Scabbia\Mvc;
 use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
 use Scabbia\Router\Router;
+use \Exception;
 
 /**
  * Application Implementation for MVC layered architecture
@@ -173,7 +174,7 @@ class Application extends ApplicationBase
      * @param array  $uQueryParameters query parameters
      * @param array  $uPostParameters  post parameters
      *
-     * @throws \Exception if routing fails
+     * @throws Exception if routing fails
      * @return void
      */
     public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters, array $uPostParameters)
@@ -197,10 +198,10 @@ class Application extends ApplicationBase
             // pop previously pushed variables
         } elseif ($tRoute[0] === Router::METHOD_NOT_ALLOWED) {
             // TODO exception
-            throw new \Exception("");
+            throw new Exception("");
         } elseif ($tRoute[0] === Router::NOT_FOUND) {
             // TODO exception
-            throw new \Exception("");
+            throw new Exception("");
         }
 
         $this->events->invoke("requestEnd", $tRequestData);

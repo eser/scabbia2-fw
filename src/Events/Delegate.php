@@ -13,6 +13,8 @@
 
 namespace Scabbia\Events;
 
+// use \SplPriorityQueue;
+
 /**
  * Delegate is an inline members which executes an event-chain execution similar to Events,
  * but designed for object-oriented architecture
@@ -92,7 +94,7 @@ class Delegate
         // TODO SplPriorityQueue has a problem with serialization
         /*
         if ($this->callbacks === null) {
-            $this->callbacks = new \SplPriorityQueue();
+            $this->callbacks = new SplPriorityQueue();
         }
 
         if ($uPriority === null) {

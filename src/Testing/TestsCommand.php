@@ -43,7 +43,6 @@ class TestsCommand extends CommandBase
      *
      * @param array $uParameters parameters
      *
-     * @throws \RuntimeException if configuration is invalid
      * @return int exit code
      */
     public function executeCommand(array $uParameters)

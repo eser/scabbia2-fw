@@ -13,6 +13,8 @@
 
 namespace Scabbia\Objects;
 
+use \ArrayIterator;
+
 /**
  * Collection
  *
@@ -457,7 +459,7 @@ class Collection implements \ArrayAccess, \IteratorAggregate, \Serializable
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->items);
+        return new ArrayIterator($this->items);
     }
 
     // for serialization

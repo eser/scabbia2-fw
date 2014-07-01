@@ -11,16 +11,16 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Output;
+namespace Scabbia\Interfaces;
 
 /**
  * Default methods needed for implementation of output in various interfaces
  *
- * @package     Scabbia\Output
+ * @package     Scabbia\Interfaces
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-interface IOutput
+interface IInterface
 {
     /**
      * Writes given message in header format

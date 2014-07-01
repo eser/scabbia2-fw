@@ -28,14 +28,14 @@ class TestsCommand extends CommandBase
     /**
      * Initializes the tests command
      *
-     * @param mixed   $uConfig configuration
-     * @param IOutput $uOutput output class
+     * @param mixed      $uConfig    configuration
+     * @param IInterface $uInterface interface class
      *
      * @return TestsCommand
      */
-    public function __construct($uConfig, $uOutput)
+    public function __construct($uConfig, $uInterface)
     {
-        parent::__construct($uConfig, $uOutput);
+        parent::__construct($uConfig, $uInterface);
     }
 
     /**
@@ -49,7 +49,7 @@ class TestsCommand extends CommandBase
     public function executeCommand(array $uParameters)
     {
         Testing::coverageStart();
-        $tExitCode = Testing::runUnitTests($this->config["fixtures"], $this->output);
+        $tExitCode = Testing::runUnitTests($this->config["fixtures"], $this->interface);
         $tCoverageReport = Testing::coverageStop();
 
         if ($tCoverageReport !== null) {
@@ -58,8 +58,8 @@ class TestsCommand extends CommandBase
             $tCoverage = "unknown";
         }
 
-        $this->output->writeColor("green", "Code Coverage = {$tCoverage}");
-        $this->output->writeColor("yellow", "done.");
+        $this->interface->writeColor("green", "Code Coverage = {$tCoverage}");
+        $this->interface->writeColor("yellow", "done.");
 
         return $tExitCode;
     }

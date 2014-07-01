@@ -24,24 +24,24 @@ namespace Scabbia\Commands;
  */
 abstract class CommandBase
 {
-    /** @type mixed           $config   command configuration */
+    /** @type mixed           $config      command configuration */
     public $config;
-    /** @type IOutput         $output   output class */
-    public $output;
+    /** @type IInterface      $interface   output class */
+    public $interface;
 
 
     /**
      * Initializes a command
      *
-     * @param mixed   $uConfig configuration
-     * @param IOutput $uOutput output class
+     * @param mixed      $uConfig    configuration
+     * @param IInterface $uInterface interface class
      *
      * @return CommandBase
      */
-    public function __construct($uConfig, $uOutput)
+    public function __construct($uConfig, $uInterface)
     {
         $this->config = $uConfig;
-        $this->output = $uOutput;
+        $this->interface = $uInterface;
     }
 
     /**

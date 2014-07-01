@@ -22,7 +22,7 @@ $tLoader->register();
 $tLoader->addNamespace("Scabbia\\", __DIR__ . "/src/");
 $tLoader->addNamespace("Scabbia\\Tests\\", __DIR__ . "/tests/");
 
-use Scabbia\Output\ConsoleOutput;
+use Scabbia\Interfaces\Console;
 use Scabbia\Testing\TestsCommand;
 
 $tConfig = [
@@ -33,7 +33,8 @@ $tConfig = [
     ]
 ];
 
-$tOutput = new ConsoleOutput();
-$tExitCode = TestsCommand::tests([], $tConfig, $tOutput);
+$tInterface = new Console();
+$tTestCommand = new TestsCommand($tConfig, $tInterface);
+$tExitCode = $tTestCommand->executeCommand([]);
 
 exit($tExitCode);

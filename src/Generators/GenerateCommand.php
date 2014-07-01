@@ -43,14 +43,14 @@ class GenerateCommand extends CommandBase
     /**
      * Initializes the generate command
      *
-     * @param mixed   $uConfig configuration
-     * @param IOutput $uOutput output class
+     * @param mixed      $uConfig    configuration
+     * @param IInterface $uInterface interface class
      *
      * @return GenerateCommand
      */
-    public function __construct($uConfig, $uOutput)
+    public function __construct($uConfig, $uInterface)
     {
-        parent::__construct($uConfig, $uOutput);
+        parent::__construct($uConfig, $uInterface);
     }
 
     /**
@@ -106,11 +106,11 @@ class GenerateCommand extends CommandBase
 
         // -- scan composer maps
         Core::pushComposerPaths($uApplicationConfig[$tApplicationKey]);
-        $tFolders = $this->scanComposerMaps($this->output);
+        $tFolders = $this->scanComposerMaps();
 
-        $this->output->writeColor("green", "Composer Maps:");
+        $this->interface->writeColor("green", "Composer Maps:");
         foreach ($tFolders as $tFolder) {
-            $this->output->writeColor("white", "- [{$tFolder[2]}] \\{$tFolder[0]} => {$tFolder[1]}");
+            $this->interface->writeColor("white", "- [{$tFolder[2]}] \\{$tFolder[0]} => {$tFolder[1]}");
         }
 
         // -- process files
@@ -135,7 +135,7 @@ class GenerateCommand extends CommandBase
             $tGenerator->finalize();
         }
 
-        $this->output->writeColor("yellow", "done.");
+        $this->interface->writeColor("yellow", "done.");
 
         return 0;
     }

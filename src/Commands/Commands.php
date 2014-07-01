@@ -16,7 +16,7 @@ namespace Scabbia\Commands;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Helpers\Runtime;
-use Scabbia\Output\ConsoleOutput;
+use Scabbia\Interfaces\Console;
 use Scabbia\Yaml\Parser;
 
 /**
@@ -104,7 +104,7 @@ class Commands
             throw new \RuntimeException("Command not found - " . $tCommandName . ".");
         }
 
-        $tOutput = new ConsoleOutput();
+        $tOutput = new Console();
 
         if ($tClass !== null) {
             $tInstance = new $tClass ($tConfig, $tOutput);

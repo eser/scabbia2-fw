@@ -14,9 +14,9 @@
 namespace Scabbia\Testing;
 
 use Scabbia\Helpers\FileSystem;
-use Scabbia\Output\ConsoleOutput;
-use Scabbia\Output\HtmlOutput;
-use Scabbia\Output\IOutput;
+use Scabbia\Interfaces\Console;
+use Scabbia\Interfaces\WebPage;
+use Scabbia\Interfaces\IInterface;
 
 /**
  * A small test implementation which helps us during the development of
@@ -31,28 +31,28 @@ class Testing
     /**
      * Runs given unit tests
      *
-     * @param array   $uTestClasses set of unit test classes
-     * @param IOutput $uOutput      output
+     * @param array      $uTestClasses set of unit test classes
+     * @param IInterface $uInterface   interface class
      *
      * @return int exit code
      */
-    public static function runUnitTests(array $uTestClasses, $uOutput = null)
+    public static function runUnitTests(array $uTestClasses, $uInterface = null)
     {
-        if ($uOutput === null) {
+        if ($uInterface === null) {
             if (PHP_SAPI === "cli") {
-                $uOutput = new ConsoleOutput();
+                $uInterface = new Console();
             } else {
-                $uOutput = new HtmlOutput();
+                $uInterface = new WebPage();
             }
         }
 
         $tIsEverFailed = false;
 
-        $uOutput->writeHeader(1, "Unit Tests");
+        $uInterface->writeHeader(1, "Unit Tests");
 
         /** @type string $tTestClass */
         foreach ($uTestClasses as $tTestClass) {
-            $uOutput->writeHeader(2, $tTestClass);
+            $uInterface->writeHeader(2, $tTestClass);
 
             $tInstance = new $tTestClass ();
             $tInstance->test();
@@ -61,7 +61,7 @@ class Testing
                 $tIsEverFailed = true;
             }
 
-            // $uOutput->writeArray($tInstance->testReport);
+            // $uInterface->writeArray($tInstance->testReport);
             foreach ($tInstance->testReport as $tTestName => $tTest) {
                 $tFails = [];
                 foreach ($tTest as $tTestCase) {
@@ -74,10 +74,10 @@ class Testing
                 }
 
                 if (count($tFails) === 0) {
-                    $uOutput->write("[OK] {$tTestName}");
+                    $uInterface->write("[OK] {$tTestName}");
                 } else {
-                    $uOutput->writeColor("red", "[FAIL] {$tTestName}");
-                    $uOutput->writeArray($tFails);
+                    $uInterface->writeColor("red", "[FAIL] {$tTestName}");
+                    $uInterface->writeArray($tFails);
                 }
             }
         }

@@ -11,18 +11,18 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Output;
+namespace Scabbia\Interfaces;
 
-use Scabbia\Output\IOutput;
+use Scabbia\Interfaces\IInterface;
 
 /**
  * Implementation of output in Html format
  *
- * @package     Scabbia\Output
+ * @package     Scabbia\Interfaces
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-class HtmlOutput implements IOutput
+class WebPage implements IInterface
 {
     /**
      * Writes given message in header format

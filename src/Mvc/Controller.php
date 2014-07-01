@@ -13,7 +13,7 @@
 
 namespace Scabbia\Mvc;
 
-use Scabbia\Container\Container;
+use Scabbia\Containers\BindableContainer;
 use Scabbia\Events\Delegate;
 use Scabbia\Objects\Collection;
 
@@ -24,8 +24,10 @@ use Scabbia\Objects\Collection;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.0.0
  */
-abstract class Controller extends Container
+abstract class Controller
 {
+    use BindableContainer;
+
     /** @type string $view the default view file */
     public $view = null;
     /** @type string $outputFormat the default output format */
@@ -45,8 +47,6 @@ abstract class Controller extends Container
      */
     public function __construct()
     {
-        parent::__construct();
-
         $this->vars = new Collection();
         $this->prerender = new Delegate();
         $this->postrender = new Delegate();

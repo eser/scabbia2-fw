@@ -96,6 +96,20 @@ class Generator extends GeneratorBase
      */
     public function finalize()
     {
-        var_dump($this->files);
+        $tContent = "";
+        foreach ($this->files as $tFileKey => $tFileContent) {
+            $tContent .= "# {$tFileKey}" . PHP_EOL;
+
+            foreach ($tFileContent as $tLine) {
+                $tContent .= $tLine;
+            }
+
+            $tContent .= PHP_EOL . PHP_EOL;
+        }
+
+        FileSystem::write(
+            Core::translateVariables($this->outputPath . "/documentor.md"),
+            $tContent
+        );
     }
 }

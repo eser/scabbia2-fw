@@ -40,6 +40,7 @@ class Core
     public static $runningApplications = [];
 
 
+    // MD ## Core::init method
     /**
      * Initializes the framework to be ready to boot
      *
@@ -49,10 +50,13 @@ class Core
      */
     public static function init($uComposerAutoloader)
     {
+        // MD set default encoding to UTF-8
         mb_internal_encoding("UTF-8");
 
+        // MD assign composer autoloader to Core::$composerAutoloader
         self::$composerAutoloader = $uComposerAutoloader;
 
+        // MD determine basepath
         if (self::$basepath === null) {
             $tScriptDirectory = pathinfo($_SERVER["SCRIPT_FILENAME"], PATHINFO_DIRNAME);
 
@@ -65,6 +69,7 @@ class Core
             self::$variables["basepath"] = &self::$basepath;
         }
 
+        // MD determine environment variables
         // secure
         if (isset($_SERVER["HTTPS"]) &&
             ((string)$_SERVER["HTTPS"] === "1" || strcasecmp($_SERVER["HTTPS"], "on") === 0)) {
@@ -121,6 +126,7 @@ class Core
         self::updateVariablesCache();
     }
 
+    // MD ## Core::loadProject method
     /**
      * Loads the project file
      *
@@ -130,15 +136,18 @@ class Core
      */
     public static function loadProject($uProjectConfigPath)
     {
+        // MD create a new project configuration stack if it does not exist
         if (self::$projectConfiguration === null) {
             self::$projectConfiguration = new Config();
         }
 
+        // MD add configuration file to project configuration stack
         self::$projectConfiguration->add(
             FileSystem::combinePaths(Core::$basepath, self::translateVariables($uProjectConfigPath))
         );
     }
 
+    // MD ## Core::pickApplication method
     /**
      * Picks the best suited application
      *
@@ -146,11 +155,13 @@ class Core
      */
     public static function pickApplication()
     {
+        // MD loop through application definitions in project configuration
         // test cases for applications, and bind configuration to app
         foreach (self::$projectConfiguration->get() as $tApplicationKey => $tApplicationConfig) {
             // TODO is sanitizing $tApplicationKey needed for paths?
             $tTargetApplication = $tApplicationKey;
 
+            // MD - test conditions for each application definition
             if (isset($tApplicationConfig["tests"])) {
                 foreach ($tApplicationConfig["tests"] as $tApplicationTest) {
                     $tSubject = self::translateVariables($tApplicationTest[0]);
@@ -161,6 +172,7 @@ class Core
                 }
             }
 
+            // MD - if selected application fits all test conditions, run it
             if ($tTargetApplication !== false) {
                 $tApplicationWritablePath = self::$basepath . "/writable/generated/app.{$tTargetApplication}";
                 self::runApplication($tApplicationConfig, $tApplicationWritablePath);
@@ -168,6 +180,7 @@ class Core
         }
     }
 
+    // MD ## Core::runApplication method
     /**
      * Runs an application
      *
@@ -178,23 +191,23 @@ class Core
      */
     public static function runApplication($uApplicationConfig, $uWritablePath)
     {
-        // run compiled package
+        // MD include compilation file for the application if it exists
         if (file_exists($tCompiledFile = "{$uWritablePath}/compiled.php")) {
             require $tCompiledFile;
         }
 
-        // push framework variables
+        // MD push framework variables to undo application's own variable definitions
         $tPaths = self::pushComposerPaths($uApplicationConfig);
         self::$runningApplications[] = [ApplicationBase::$current, self::$variables];
 
-        // construct the application class
+        // MD construct the application class
         $tApplicationType = $uApplicationConfig["type"];
         $tApplication = new $tApplicationType ($uApplicationConfig, $tPaths, $uWritablePath);
 
         ApplicationBase::$current = $tApplication;
         $tApplication->generateRequestFromGlobals();
 
-        // pop framework variables
+        // MD pop framework variables
         list(ApplicationBase::$current, self::$variables) = array_pop(self::$runningApplications);
         self::popComposerPaths();
     }

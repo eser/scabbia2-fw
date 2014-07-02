@@ -22,7 +22,7 @@ $tLoader->addNamespace("Scabbia\\", __DIR__ . "/src/");
 $tLoader->addNamespace("Scabbia\\Tests\\", __DIR__ . "/tests/");
 
 use Scabbia\Interfaces\Console;
-use Scabbia\Testing\TestsCommand;
+use Scabbia\Testing\TestsTask;
 
 $tConfig = [
     "fixtures" => [
@@ -33,7 +33,7 @@ $tConfig = [
 ];
 
 $tInterface = new Console();
-$tTestCommand = new TestsCommand($tConfig, $tInterface);
-$tExitCode = $tTestCommand->executeCommand([]);
+$tTestTask = new TestsTask($tConfig, $tInterface);
+$tExitCode = $tTestTask->executeTask([]);
 
 exit($tExitCode);

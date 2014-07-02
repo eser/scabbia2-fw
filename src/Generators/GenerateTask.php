@@ -13,7 +13,7 @@
 
 namespace Scabbia\Generators;
 
-use Scabbia\Commands\CommandBase;
+use Scabbia\Tasks\TaskBase;
 use Scabbia\Config\Config;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
@@ -22,7 +22,7 @@ use \ReflectionClass;
 use \RuntimeException;
 
 /**
- * Command class for "php scabbia generate"
+ * Task class for "php scabbia generate"
  *
  * @package     Scabbia\Generators
  * @author      Eser Ozvataf <eser@sent.com>
@@ -30,7 +30,7 @@ use \RuntimeException;
  *
  * @todo only pass annotations requested by generator
  */
-class GenerateCommand extends CommandBase
+class GenerateTask extends TaskBase
 {
     /** @type Parser|null $parser      yaml parser */
     public $parser = null;
@@ -38,17 +38,17 @@ class GenerateCommand extends CommandBase
     public $generators = [];
     /** @type array       $annotations set of annotations */
     public $annotations = [];
-    /** @type array       $result      result of generator command */
+    /** @type array       $result      result of generator task */
     public $result = null;
 
 
     /**
-     * Initializes the generate command
+     * Initializes the generate task
      *
      * @param mixed      $uConfig    configuration
      * @param IInterface $uInterface interface class
      *
-     * @return GenerateCommand
+     * @return GenerateTask
      */
     public function __construct($uConfig, $uInterface)
     {
@@ -56,14 +56,14 @@ class GenerateCommand extends CommandBase
     }
 
     /**
-     * Executes the command
+     * Executes the task
      *
      * @param array $uParameters parameters
      *
      * @throws RuntimeException if configuration is invalid
      * @return int exit code
      */
-    public function executeCommand(array $uParameters)
+    public function executeTask(array $uParameters)
     {
         if (count($uParameters) === 0) {
             $tProjectFile = "project.yml";
@@ -95,14 +95,14 @@ class GenerateCommand extends CommandBase
 
         // initialize generators read from configuration
         if (isset($this->config["generators"])) {
-            foreach ($this->config["generators"] as $tCommandGeneratorClass) {
-                $tInstance = new $tCommandGeneratorClass ($tApplicationWritablePath);
+            foreach ($this->config["generators"] as $tTaskGeneratorClass) {
+                $tInstance = new $tTaskGeneratorClass ($tApplicationWritablePath);
 
                 foreach ($tInstance->annotations as $tAnnotationKey => $tAnnotation) {
                     $this->annotations[$tAnnotationKey] = $tAnnotation;
                 }
 
-                $this->generators[$tCommandGeneratorClass] = $tInstance;
+                $this->generators[$tTaskGeneratorClass] = $tInstance;
             }
         }
 

@@ -11,32 +11,32 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Commands;
+namespace Scabbia\Tasks;
 
 /**
- * Default methods needed for implementation of a command
+ * Default methods needed for implementation of a task
  *
- * @package     Scabbia\Commands
+ * @package     Scabbia\Tasks
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  *
- * @todo "scabbia help <command>" command
+ * @todo "scabbia help <task>" task
  */
-abstract class CommandBase
+abstract class TaskBase
 {
-    /** @type mixed           $config      command configuration */
+    /** @type mixed           $config      task configuration */
     public $config;
     /** @type IInterface      $interface   output class */
     public $interface;
 
 
     /**
-     * Initializes a command
+     * Initializes a task
      *
      * @param mixed      $uConfig    configuration
      * @param IInterface $uInterface interface class
      *
-     * @return CommandBase
+     * @return TaskBase
      */
     public function __construct($uConfig, $uInterface)
     {
@@ -45,11 +45,11 @@ abstract class CommandBase
     }
 
     /**
-     * Executes the command
+     * Executes the task
      *
      * @param array $uParameters parameters
      *
      * @return int exit code
      */
-    abstract public function executeCommand(array $uParameters);
+    abstract public function executeTask(array $uParameters);
 }

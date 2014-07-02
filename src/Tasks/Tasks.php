@@ -11,7 +11,7 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Commands;
+namespace Scabbia\Tasks;
 
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
@@ -21,34 +21,34 @@ use Scabbia\Yaml\Parser;
 use \RuntimeException;
 
 /**
- * Commands functionality for framework
+ * Tasks functionality for framework
  *
- * @package     Scabbia\Commands
+ * @package     Scabbia\Tasks
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.0.0
  */
-class Commands
+class Tasks
 {
-    /** @type object $commands the commands read from commands file */
-    public static $commands = [];
+    /** @type object $tasks the tasks read from tasks file */
+    public static $tasks = [];
 
 
     /**
-     * Loads the commands file.
+     * Loads the tasks file.
      *
-     * @param string $uCommandsConfigPath The path of commands configuration file
+     * @param string $uTasksConfigPath The path of tasks configuration file
      *
      * @return void
      */
-    public static function load($uCommandsConfigPath)
+    public static function load($uTasksConfigPath)
     {
-        // load commands.yml
-        $tCommandsYamlPath = FileSystem::combinePaths(Core::$basepath, Core::translateVariables($uCommandsConfigPath));
-        $tCommandsConfig = Core::cachedRead(
-            $tCommandsYamlPath,
-            function () use ($tCommandsYamlPath) {
+        // load tasks.yml
+        $tTasksYamlPath = FileSystem::combinePaths(Core::$basepath, Core::translateVariables($uTasksConfigPath));
+        $tTasksConfig = Core::cachedRead(
+            $tTasksYamlPath,
+            function () use ($tTasksYamlPath) {
                 $tParser = new Parser();
-                return $tParser->parse(FileSystem::read($tCommandsYamlPath));
+                return $tParser->parse(FileSystem::read($tTasksYamlPath));
             },
             [
                 "ttl" => 60 * 60
@@ -57,64 +57,64 @@ class Commands
 
         // register psr-0 source paths to composer.
         $tPaths = [];
-        foreach ($tCommandsConfig["sources"] as $tPath) {
+        foreach ($tTasksConfig["sources"] as $tPath) {
             $tPaths[] = Core::translateVariables($tPath);
         }
 
         Core::$composerAutoloader->set(false, $tPaths);
 
-        // register commands
-        foreach ($tCommandsConfig["commands"] as $tCommandKey => $tCommand) {
-            self::$commands[$tCommandKey] = $tCommand;
+        // register tasks
+        foreach ($tTasksConfig["tasks"] as $tTaskKey => $tTask) {
+            self::$tasks[$tTaskKey] = $tTask;
         }
     }
 
     /**
-     * Executes given command.
+     * Executes given task.
      *
-     * @param array $uCommands The set of command line arguments
+     * @param array $uTasks The set of task line arguments
      *
-     * @throws RuntimeException if command is not found
+     * @throws RuntimeException if task is not found
      * @return int exit code
      */
-    public static function execute(array $uCommands)
+    public static function execute(array $uTasks)
     {
-        $tCommandName = trim(array_shift($uCommands));
+        $tTaskName = trim(array_shift($uTasks));
 
-        if (isset(self::$commands[$tCommandName])) {
-            $tCommand = self::$commands[$tCommandName];
+        if (isset(self::$tasks[$tTaskName])) {
+            $tTask = self::$tasks[$tTaskName];
 
-            if (isset($tCommand["class"])) {
-                $tClass = $tCommand["class"];
+            if (isset($tTask["class"])) {
+                $tClass = $tTask["class"];
                 $tCallbacks = [];
             } else {
                 $tClass = null;
-                $tCallbacks = (array)$tCommand["callback"];
+                $tCallbacks = (array)$tTask["callback"];
             }
 
-            if (isset($tCommand["config"])) {
-                $tConfig = $tCommand["config"];
+            if (isset($tTask["config"])) {
+                $tConfig = $tTask["config"];
             } else {
                 $tConfig = null;
             }
-        } elseif (class_exists($tCommandName, true)) {
-            $tClass = $tCommandName;
+        } elseif (class_exists($tTaskName, true)) {
+            $tClass = $tTaskName;
             $tCallbacks = [];
             $tConfig = null;
         } else {
-            throw new RuntimeException("Command not found - " . $tCommandName . ".");
+            throw new RuntimeException("Task not found - " . $tTaskName . ".");
         }
 
         $tOutput = new Console();
 
         if ($tClass !== null) {
             $tInstance = new $tClass ($tConfig, $tOutput);
-            return $tInstance->executeCommand($uCommands);
+            return $tInstance->executeTask($uTasks);
         } else {
             foreach ($tCallbacks as $tCallback) {
                 $tReturn = call_user_func_array(
                     Runtime::callbacks($tCallback),
-                    $uCommands
+                    $uTasks
                 );
 
                 if ($tReturn !== null && $tReturn !== 0) {

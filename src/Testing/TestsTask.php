@@ -13,25 +13,25 @@
 
 namespace Scabbia\Testing;
 
-use Scabbia\Commands\CommandBase;
+use Scabbia\Tasks\TaskBase;
 use Scabbia\Testing\Testing;
 
 /**
- * Command class for "php scabbia tests"
+ * Task class for "php scabbia tests"
  *
  * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-class TestsCommand extends CommandBase
+class TestsTask extends TaskBase
 {
     /**
-     * Initializes the tests command
+     * Initializes the tests task
      *
      * @param mixed      $uConfig    configuration
      * @param IInterface $uInterface interface class
      *
-     * @return TestsCommand
+     * @return TestsTask
      */
     public function __construct($uConfig, $uInterface)
     {
@@ -39,13 +39,13 @@ class TestsCommand extends CommandBase
     }
 
     /**
-     * Executes the command
+     * Executes the task
      *
      * @param array $uParameters parameters
      *
      * @return int exit code
      */
-    public function executeCommand(array $uParameters)
+    public function executeTask(array $uParameters)
     {
         Testing::coverageStart();
         $tExitCode = Testing::runUnitTests($this->config["fixtures"], $this->interface);

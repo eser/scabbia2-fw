@@ -285,6 +285,18 @@ class Core
     }
 
     /**
+     * Gets a resource path using composer loader
+     *
+     * @param string $uPath the path needed to be resolved by composer loader
+     *
+     * @return string|false the path if found, false otherwise
+     */
+    public static function findResource($uPath)
+    {
+        return self::$composerAutoloader->findFileWithExtension($uPath, "");
+    }
+
+    /**
      * Reads the contents from cache folder as long as it is not expired
      * If the file is expired, invokes callback method and caches output
      *

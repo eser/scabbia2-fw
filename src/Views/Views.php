@@ -41,7 +41,7 @@ class Views
      */
     public static function viewFile($uView, $uModel = null)
     {
-        $tViewFilePath = Core::translateVariables($uView);
+        $tViewFilePath = Core::findResource($uView);
         $tViewFileInfo = pathinfo($tViewFilePath);
 
         if (!isset(self::$engines[$tViewFileInfo["extension"]])) {

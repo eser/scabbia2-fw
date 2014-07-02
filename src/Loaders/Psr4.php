@@ -71,79 +71,105 @@ class Psr4
      */
     protected $prefixes = [];
 
+
     /**
-     * Register loader with SPL autoloader stack
+     * Initializes Psr4 autoloader and registers it
+     *
+     * @return Psr4 the instance
+     */
+    public static function init()
+    {
+        $tInstance = new static();
+
+        $tInstance->register(true);
+
+        return $tInstance;
+    }
+
+    /**
+     * Registers loader with SPL autoloader stack
+     *
+     * @param bool $uPrepend whether to prepend the autoloader or not
      *
      * @return void
      */
-    public function register()
+    public function register($uPrepend = false)
     {
-        spl_autoload_register([&$this, "loadClass"]);
+        spl_autoload_register([&$this, "loadClass"], true, $uPrepend);
+    }
+
+    /**
+     * Unregisters loader with SPL autoloader stack
+     *
+     * @return void
+     */
+    public function unregister()
+    {
+        spl_autoload_unregister([&$this, "loadClass"]);
     }
 
     /**
      * Adds a base directory for a namespace prefix
      *
-     * @param string $prefix The namespace prefix
-     * @param string $base_dir A base directory for class files in the namespace
-     * @param bool $prepend If true, prepend the base directory to the stack instead of appending it; this causes it
-     * to be searched first rather than last
+     * @param string $uPrefix   the namespace prefix
+     * @param string $uBasePath a base directory for class files in the namespace
+     * @param bool   $uPrepend  if true, prepend the base directory to the stack instead of appending it; this causes
+     *                          it to be searched first rather than last
      *
      * @return void
      */
-    public function addNamespace($prefix, $base_dir, $prepend = false)
+    public function addNamespace($uPrefix, $uBasePath, $uPrepend = false)
     {
         // normalize namespace prefix
-        $prefix = trim($prefix, "\\") . "\\";
+        $uPrefix = trim($uPrefix, "\\") . "\\";
 
         // normalize the base directory with a trailing separator
-        $base_dir = rtrim($base_dir, "/") . DIRECTORY_SEPARATOR;
-        $base_dir = rtrim($base_dir, DIRECTORY_SEPARATOR) . "/";
+        $uBasePath = rtrim($uBasePath, "/" . DIRECTORY_SEPARATOR) . "/";
 
         // initialize the namespace prefix array
-        if (isset($this->prefixes[$prefix]) === false) {
-            $this->prefixes[$prefix] = [];
+        if (isset($this->prefixes[$uPrefix]) === false) {
+            $this->prefixes[$uPrefix] = [];
         }
 
         // retain the base directory for the namespace prefix
-        if ($prepend) {
-            array_unshift($this->prefixes[$prefix], $base_dir);
+        if ($uPrepend) {
+            array_unshift($this->prefixes[$uPrefix], $uBasePath);
         } else {
-            array_push($this->prefixes[$prefix], $base_dir);
+            array_push($this->prefixes[$uPrefix], $uBasePath);
         }
     }
 
     /**
      * Loads the class file for a given class name
      *
-     * @param string $class The fully-qualified class name
+     * @param string $uClass the fully-qualified class name
      *
      * @return mixed The mapped file name on success, or boolean false on failure
      */
-    public function loadClass($class)
+    public function loadClass($uClass)
     {
         // the current namespace prefix
-        $prefix = $class;
+        $tPrefix = $uClass;
 
         // work backwards through the namespace names of the fully-qualified
         // class name to find a mapped file name
-        while (($pos = strrpos($prefix, "\\")) !== false) {
+        while (($tPos = strrpos($tPrefix, "\\")) !== false) {
 
             // retain the trailing namespace separator in the prefix
-            $prefix = substr($class, 0, $pos + 1);
+            $tPrefix = substr($uClass, 0, $tPos + 1);
 
             // the rest is the relative class name
-            $relative_class = substr($class, $pos + 1);
+            $tRelativeClass = substr($uClass, $tPos + 1);
 
             // try to load a mapped file for the prefix and relative class
-            $mapped_file = $this->loadMappedFile($prefix, $relative_class);
-            if ($mapped_file) {
-                return $mapped_file;
+            $tMappedFile = $this->loadMappedFile($tPrefix, $tRelativeClass);
+            if ($tMappedFile) {
+                return $tMappedFile;
             }
 
             // remove the trailing namespace separator for the next iteration
             // of strrpos()
-            $prefix = rtrim($prefix, "\\");
+            $tPrefix = rtrim($tPrefix, "\\");
         }
 
         // never found a mapped file
@@ -153,56 +179,46 @@ class Psr4
     /**
      * Load the mapped file for a namespace prefix and relative class
      *
-     * @param string $prefix The namespace prefix
-     * @param string $relative_class The relative class name
+     * @param string $uPrefix        the namespace prefix
+     * @param string $uRelativeClass the relative class name
      *
-     * @return mixed Boolean false if no mapped file can be loaded, or the name of the mapped file that was loaded
+     * @return mixed boolean false if no mapped file can be loaded, or the name of the mapped file that was loaded
      */
-    protected function loadMappedFile($prefix, $relative_class)
+    protected function loadMappedFile($uPrefix, $uRelativeClass)
     {
         // are there any base directories for this namespace prefix?
-        if (isset($this->prefixes[$prefix]) === false) {
+        if (isset($this->prefixes[$uPrefix]) === false) {
             return false;
         }
 
         // look through base directories for this namespace prefix
-        foreach ($this->prefixes[$prefix] as $base_dir) {
+        foreach ($this->prefixes[$uPrefix] as $uBasePath) {
 
             // replace the namespace prefix with the base directory,
             // replace namespace separators with directory separators
             // in the relative class name, append with .php
-            $file = $base_dir
-                . str_replace("\\", DIRECTORY_SEPARATOR, $relative_class)
-                . ".php";
-            $file = $base_dir
-                . str_replace("\\", "/", $relative_class)
+            $tFile = $uBasePath
+                . str_replace("\\", "/", $uRelativeClass)
                 . ".php";
 
             // if the mapped file exists, require it
-            if ($this->requireFile($file)) {
-                // yes, we're done
-                return $file;
+            if (file_exists($tFile)) {
+                psr4IncludeFile($tFile);
+                return true;
             }
         }
 
         // never found it
         return false;
     }
+}
 
-    /**
-     * If a file exists, require it from the file system
-     *
-     * @param string $file The file to require
-     *
-     * @return bool True if the file exists, false if not
-     */
-    protected function requireFile($file)
-    {
-        if (file_exists($file)) {
-            require $file;
-            return true;
-        }
-
-        return false;
-    }
+/**
+ * Scope isolated include
+ *
+ * Prevents access to $this/self from included files
+ */
+function psr4IncludeFile($uFile)
+{
+    include $uFile;
 }

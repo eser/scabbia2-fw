@@ -57,6 +57,15 @@ class Views
         );
     }
 
+    /**
+     * Renders plain PHP file for using them as a template format
+     *
+     * @param string $tTemplatePath path of the template file
+     * @param string $tTemplateFile filename of the template file
+     * @param mixed  $uModel        model object
+     *
+     * @return void
+     */
     public static function renderPhpFile($tTemplatePath, $tTemplateFile, $uModel = null)
     {
         if ($uModel !== null && is_array($uModel)) {

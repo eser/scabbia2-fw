@@ -30,7 +30,7 @@ abstract class FacadeBase
 
 
     /**
-     * Redirects
+     * Handles static method calls to the class definition
      *
      * @param string $uMethod     method name
      * @param array  $uParameters parameters

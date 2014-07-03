@@ -14,13 +14,13 @@
 namespace Scabbia\Containers;
 
 /**
- * DependencyInjectionContainer
+ * IocContainer
  *
  * @package     Scabbia\Containers
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-trait DependencyInjectionContainer
+trait IocContainer
 {
     /** @type array $parameters parameters */
     public $parameters = [];
@@ -69,7 +69,7 @@ trait DependencyInjectionContainer
     }
 
     /**
-     * Magic method for dependency injection containers
+     * Magic method for inversion of control containers
      *
      * @param string $uName name of the service
      *
@@ -77,6 +77,10 @@ trait DependencyInjectionContainer
      */
     public function __get($uName)
     {
+        // if (!array_key_exists($uName, $this->serviceDefinitions)) {
+        //     return null;
+        // }
+
         if (array_key_exists($uName, $this->sharedInstances)) {
             return $this->sharedInstances[$uName];
         }

@@ -22,14 +22,16 @@ namespace Scabbia\Containers;
  */
 trait BindableContainer
 {
-    /** @type array $loaded loaded classes */
-    public static $loaded = [];
+    /** @type array $loadedObjects loaded objects */
+    public static $loadedObjects = [];
+    /** @type array $sharedBindings shared bindings registry */
+    public static $sharedBindings = [];
 
 
     /**
      * Loads and stores a class
      *
-     * @param string|object $uClass class
+     * @param string|object $uClass      object or class name
      * @param array         $uParameters parameters
      *
      * @return object class instance
@@ -39,19 +41,19 @@ trait BindableContainer
         if (is_object($uClass)) {
             $tClassName = get_class($uClass);
 
-            if (!isset(BindableContainer::$loaded[$tClassName])) {
-                BindableContainer::$loaded[$tClassName] = $uClass;
+            if (!isset(BindableContainer::$loadedObjects[$tClassName])) {
+                BindableContainer::$loadedObjects[$tClassName] = $uClass;
             }
 
-            return BindableContainer::$loaded[$tClassName];
+            return BindableContainer::$loadedObjects[$tClassName];
         }
 
-        if (!isset(BindableContainer::$loaded[$uClass])) {
+        if (!isset(BindableContainer::$loadedObjects[$uClass])) {
             // TODO call constructor w/ $uParameters
-            BindableContainer::$loaded[$uClass] = new $uClass ();
+            BindableContainer::$loadedObjects[$uClass] = new $uClass ();
         }
 
-        return BindableContainer::$loaded[$uClass];
+        return BindableContainer::$loadedObjects[$uClass];
     }
 
     /**
@@ -80,5 +82,30 @@ trait BindableContainer
         }
 
         $this->{$uMemberName} = BindableContainer::load($uClass, $uParameters);
+    }
+
+    /**
+     * Magic method for bindable containers
+     *
+     * @param string $uName name of the shared object
+     *
+     * @return mixed the shared object
+     */
+    public function __get($uName)
+    {
+        // if (!array_key_exists($uName, $this->sharedBindings)) {
+        //     return null;
+        // }
+
+        $tSharedBinding = (array)$this->sharedBindings[$uName];
+        if (count($tSharedBinding) === 1) {
+            $tReturn = BindableContainer::load($tSharedBinding[0]);
+        } else {
+            $tReturn = BindableContainer::load($tSharedBinding[0], $tSharedBinding[1]);
+        }
+
+        $this->{$uName} = $tReturn;
+
+        return $tReturn;
     }
 }

@@ -89,14 +89,12 @@ class Generator extends GeneratorBase
                 }
 
                 foreach ($tMethod["route"] as $tRoute) {
-                    foreach ($this->applicationConfig["modules"] as $tModuleKey => $tModuleConfig) {
-                        if (!is_string($tModuleConfig)) {
-                            $tModuleNamespace = $tModuleConfig["namespace"];
-                        } else {
-                            $tModuleNamespace = $tModuleConfig;
-                        }
-
-                        if (strncmp($tClassKey, $tModuleNamespace, strlen($tModuleNamespace)) !== 0) {
+                    foreach ($this->applicationConfig["modules"] as $tModuleKey => $tModuleDefinition) {
+                        if (strncmp(
+                            $tClassKey,
+                            $tModuleDefinition["namespace"],
+                            strlen($tModuleDefinition["namespace"])
+                        ) !== 0) {
                             continue;
                         }
 

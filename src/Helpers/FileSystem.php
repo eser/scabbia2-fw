@@ -524,6 +524,13 @@ class FileSystem
                 continue;
             }
 
+            $tFileName = $tFile->getFilename();
+
+            if (isset($uOptions["dotFiles"]) && $uOptions["dotFiles"] === false && $tFileName[0] === ".") {
+                // $tFile->isDot()
+                continue;
+            }
+
             $tLastMod = $tFile->getMTime();
             if (isset($uOptions["ttl"]) && time() - $tLastMod <= $uOptions["ttl"]) {
                 continue;

@@ -11,32 +11,29 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Cli;
+namespace Scabbia\Framework;
 
+use Scabbia\Framework\Core;
+use Scabbia\Helpers\FileSystem;
 use Scabbia\Tasks\TaskBase;
-use Boris\Boris;
-use \ReflectionClass;
-use \RuntimeException;
 
 /**
- * Task class for "php scabbia console"
+ * Task class for "php scabbia clean"
  *
- * @package     Scabbia\Generators
+ * @package     Scabbia\Framework
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
- *
- * @todo only pass annotations requested by generator
  */
-class ConsoleTask extends TaskBase
+class CleanTask extends TaskBase
 {
 
     /**
-     * Initializes the console task
+     * Initializes the clean task
      *
      * @param mixed      $uConfig    configuration
      * @param IInterface $uInterface interface class
      *
-     * @return ConsoleTask
+     * @return CleanTask
      */
     public function __construct($uConfig, $uInterface)
     {
@@ -52,8 +49,10 @@ class ConsoleTask extends TaskBase
      */
     public function executeTask(array $uParameters)
     {
-        $tBoris = new Boris("scabbia> ");
-        $tBoris->start();
+        $tPath = Core::$basepath . "/writable/cache";
+        FileSystem::garbageCollect($tPath, ["dotFiles" => false]);
+
+        $this->interface->writeColor("yellow", "done.");
 
         return 0;
     }

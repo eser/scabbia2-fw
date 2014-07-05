@@ -183,7 +183,7 @@ class Application extends ApplicationBase
         $tRoute = Router::dispatch($uMethod, $uPathInfo);
 
         $tModule = "front";
-        foreach ($this->config["modules"] as $tModuleKey => $tModuleConfig) {
+        foreach ($this->config["modules"] as $tModuleKey => $tModuleDefinition) {
             if (strncmp($uPathInfo, "/{$tModuleKey}/", strlen($tModuleKey) + 2) === 0) {
                 $tModule = $tModuleKey;
                 break;
@@ -205,7 +205,11 @@ class Application extends ApplicationBase
 
             $tInstance->routeInfo = $tRoute;
             $tInstance->applicationConfig = $this->config;
-            $tInstance->moduleConfig = $this->config["modules"][$tModule];
+            if (isset($this->config["modules"][$tModule]["config"])) {
+                $tInstance->moduleConfig = $this->config["modules"][$tModule]["config"];
+            } else {
+                $tInstance->moduleConfig = null;
+            }
 
             $tInstance->prerender->invoke();
             call_user_func_array([&$tInstance, $tRoute["callback"][1]], $tRoute["parameters"]);

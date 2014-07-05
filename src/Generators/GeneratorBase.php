@@ -22,21 +22,25 @@ namespace Scabbia\Generators;
  */
 abstract class GeneratorBase
 {
-    /** @type array           $annotations  annotations to be processed */
+    /** @type array       $annotations        annotations to be processed */
     public $annotations;
-    /** @type string          $outputPath   output path for generated files */
+    /** @type mixed       $applicationConfig  application config */
+    public $applicationConfig;
+    /** @type string      $outputPath         output path for generated files */
     public $outputPath;
 
 
     /**
      * Initializes a generator
      *
-     * @param string $uOutputPath output path
+     * @param mixed  $uApplicationConfig application config
+     * @param string $uOutputPath        output path
      *
      * @return GeneratorBase
      */
-    public function __construct($uOutputPath)
+    public function __construct($uApplicationConfig, $uOutputPath)
     {
+        $this->applicationConfig = $uApplicationConfig;
         $this->outputPath = $uOutputPath;
     }
 

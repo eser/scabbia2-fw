@@ -35,13 +35,14 @@ class Generator extends GeneratorBase
     /**
      * Initializes a generator
      *
-     * @param string $uOutputPath output path
+     * @param mixed  $uApplicationConfig application config
+     * @param string $uOutputPath        output path
      *
      * @return Generator
      */
-    public function __construct($uOutputPath)
+    public function __construct($uApplicationConfig, $uOutputPath)
     {
-        parent::__construct($uOutputPath);
+        parent::__construct($uApplicationConfig, $uOutputPath);
     }
 
     /**

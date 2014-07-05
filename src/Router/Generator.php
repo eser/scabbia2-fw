@@ -16,6 +16,7 @@ namespace Scabbia\Router;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
+use Scabbia\Helpers\String;
 use Scabbia\Router\Router;
 use \Exception;
 
@@ -50,13 +51,14 @@ class Generator extends GeneratorBase
     /**
      * Initializes a generator
      *
-     * @param string $uOutputPath output path
+     * @param mixed  $uApplicationConfig application config
+     * @param string $uOutputPath        output path
      *
      * @return Generator
      */
-    public function __construct($uOutputPath)
+    public function __construct($uApplicationConfig, $uOutputPath)
     {
-        parent::__construct($uOutputPath);
+        parent::__construct($uApplicationConfig, $uOutputPath);
     }
 
     /**
@@ -88,12 +90,24 @@ class Generator extends GeneratorBase
                 }
 
                 foreach ($tMethod["route"] as $tRoute) {
-                    $this->addRoute(
-                        $tRoute["method"],
-                        $tRoute["path"],
-                        [$tClassKey, $tMethodKey],
-                        isset($tRoute["name"]) ? $tRoute["name"] : null
-                    );
+                    foreach ($this->applicationConfig["modules"] as $tModuleKey => $tModuleNamespace) {
+                        if (!String::startsWith($tClassKey, $tModuleNamespace)) {
+                            continue;
+                        }
+
+                        if ($tModuleKey === "front") {
+                            $tModulePrefix = "";
+                        } else {
+                            $tModulePrefix = "/{$tModuleKey}";
+                        }
+
+                        $this->addRoute(
+                            $tRoute["method"],
+                            "{$tModulePrefix}{$tRoute["path"]}",
+                            [$tClassKey, $tMethodKey],
+                            isset($tRoute["name"]) ? $tRoute["name"] : null
+                        );
+                    }
                 }
             }
         }

@@ -16,6 +16,7 @@ namespace Scabbia\Mvc;
 use Scabbia\Containers\BindableContainer;
 use Scabbia\Events\Delegate;
 use Scabbia\Objects\Collection;
+use Scabbia\Views\Views;
 
 /**
  * Controller class template
@@ -34,10 +35,6 @@ abstract class Controller
     public $applicationConfig;
     /** @type mixed $moduleConfig module configuration */
     public $moduleConfig;
-    /** @type string $view the default view file */
-    public $view = null;
-    /** @type string $outputFormat the default output format */
-    public $outputFormat = null;
     /** @type Collection $vars variables */
     public $vars;
     /** @type Delegate $prerender prerender hook */
@@ -56,5 +53,16 @@ abstract class Controller
         $this->vars = new Collection();
         $this->prerender = new Delegate();
         $this->postrender = new Delegate();
+    }
+
+    /**
+     * Renders a view
+     *
+     * @param string $uView  view file
+     */
+    public function view($uView)
+    {
+        $tNamespace = $this->applicationConfig["modules"][$this->routeInfo["module"]]["namespace"];
+        Views::viewFile("{$tNamespace}\\Views\\{$uView}", $this->vars->toArray());
     }
 }

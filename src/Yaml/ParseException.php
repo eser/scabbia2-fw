@@ -29,7 +29,7 @@
 
 namespace Scabbia\Yaml;
 
-use \RuntimeException;
+use RuntimeException;
 
 /**
  * Exception class thrown when an error occurs during parsing

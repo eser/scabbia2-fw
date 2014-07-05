@@ -18,7 +18,7 @@ use Scabbia\Helpers\FileSystem;
 use Scabbia\Helpers\Runtime;
 use Scabbia\Interfaces\Console;
 use Scabbia\Yaml\Parser;
-use \RuntimeException;
+use RuntimeException;
 
 /**
  * Tasks functionality for framework

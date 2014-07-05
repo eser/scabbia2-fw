@@ -13,7 +13,7 @@
 
 namespace Scabbia\Loaders;
 
-use \InvalidArgumentException;
+use InvalidArgumentException;
 
 /**
  * Composer Autoloader Class
@@ -96,7 +96,7 @@ class Composer
      */
     public function getPrefixes()
     {
-        return call_user_func_array('array_merge', $this->prefixesPsr0);
+        return call_user_func_array("array_merge", $this->prefixesPsr0);
     }
 
     /**

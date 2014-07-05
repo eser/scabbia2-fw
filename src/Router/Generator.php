@@ -17,7 +17,7 @@ use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Router\Router;
-use \Exception;
+use Exception;
 
 /**
  * Generator

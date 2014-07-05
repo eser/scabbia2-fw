@@ -17,7 +17,7 @@ use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\String;
 use Scabbia\Router\Router;
-use \Exception;
+use Exception;
 
 /**
  * Application Implementation for MVC layered architecture

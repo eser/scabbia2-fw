@@ -13,6 +13,8 @@
 
 namespace Scabbia\Containers;
 
+use ReflectionClass;
+
 /**
  * BindableContainer
  *
@@ -49,8 +51,10 @@ trait BindableContainer
         }
 
         if (!isset(BindableContainer::$loadedObjects[$uClass])) {
-            // TODO call constructor w/ $uParameters
-            BindableContainer::$loadedObjects[$uClass] = new $uClass ();
+            BindableContainer::$loadedObjects[$uClass] = call_user_func_array(
+                [new ReflectionClass($uClass), "newInstance"],
+                $uParameters
+            );
         }
 
         return BindableContainer::$loadedObjects[$uClass];

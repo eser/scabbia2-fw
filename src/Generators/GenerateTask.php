@@ -18,8 +18,8 @@ use Scabbia\Config\Config;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Yaml\Parser;
-use \ReflectionClass;
-use \RuntimeException;
+use ReflectionClass;
+use RuntimeException;
 
 /**
  * Task class for "php scabbia generate"

@@ -13,8 +13,8 @@
 
 namespace Scabbia\Helpers;
 
-use \DirectoryIterator;
-use \Exception;
+use DirectoryIterator;
+use Exception;
 
 /**
  * A bunch of utility methods for file system functionality

@@ -14,7 +14,7 @@
 namespace Scabbia\Facades;
 
 use Scabbia\Helpers\Runtime;
-use \Exception;
+use Exception;
 
 /**
  * Default methods needed for implementation of a facade interface

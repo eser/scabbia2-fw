@@ -14,7 +14,7 @@
 namespace Scabbia\Views;
 
 use Scabbia\Framework\Core;
-use \Exception;
+use Exception;
 
 /**
  * Views

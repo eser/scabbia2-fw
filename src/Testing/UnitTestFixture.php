@@ -13,7 +13,7 @@
 
 namespace Scabbia\Testing;
 
-use \ReflectionClass;
+use ReflectionClass;
 
 /**
  * Base class for fixtures which is going to be constructed to host unit testing

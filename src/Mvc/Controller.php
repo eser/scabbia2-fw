@@ -59,10 +59,19 @@ abstract class Controller
      * Renders a view
      *
      * @param string $uView  view file
+     * @param mixed  $uModel view model
+     *
+     * @return void
      */
-    public function view($uView)
+    public function view($uView, $uModel = null)
     {
+        if ($uModel === null) {
+            $uModel = $this->vars->toArray();
+        }
+
+        $uModel["controller"] = $this;
+
         $tNamespace = $this->applicationConfig["modules"][$this->routeInfo["module"]]["namespace"];
-        Views::viewFile("{$tNamespace}\\Views\\{$uView}", $this->vars->toArray());
+        Views::viewFile("{$tNamespace}\\Views\\{$uView}", $uModel);
     }
 }

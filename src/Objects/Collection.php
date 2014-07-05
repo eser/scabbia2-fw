@@ -13,7 +13,7 @@
 
 namespace Scabbia\Objects;
 
-use \ArrayIterator;
+use ArrayIterator;
 
 /**
  * Collection

@@ -13,7 +13,7 @@
 
 namespace Scabbia\Events;
 
-// use \SplPriorityQueue;
+// use SplPriorityQueue;
 
 /**
  * Delegate is an inline members which executes an event-chain execution similar to Events,

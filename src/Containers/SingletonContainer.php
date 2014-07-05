@@ -13,7 +13,7 @@
 
 namespace Scabbia\Containers;
 
-use \Exception;
+use Exception;
 
 /**
  * SingletonContainer

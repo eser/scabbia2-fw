@@ -27,15 +27,15 @@ class Application extends ApplicationBase
     /**
      * Initializes an application
      *
-     * @param mixed  $uOptions      options
-     * @param array  $uPaths        paths include source files
-     * @param string $uWritablePath writable output folder
+     * @param mixed  $uConfig        application config
+     * @param array  $uPaths         paths include source files
+     * @param string $uWritablePath  writable output folder
      *
      * @return Application
      */
-    public function __construct($uOptions, $uPaths, $uWritablePath)
+    public function __construct($uConfig, $uPaths, $uWritablePath)
     {
-        parent::__construct($uOptions, $uPaths, $uWritablePath);
+        parent::__construct($uConfig, $uPaths, $uWritablePath);
     }
 
     /**

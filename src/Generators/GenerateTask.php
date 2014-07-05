@@ -96,7 +96,10 @@ class GenerateTask extends TaskBase
         // initialize generators read from configuration
         if (isset($this->config["generators"])) {
             foreach ($this->config["generators"] as $tTaskGeneratorClass) {
-                $tInstance = new $tTaskGeneratorClass ($uApplicationConfig[$tApplicationKey], $tApplicationWritablePath);
+                $tInstance = new $tTaskGeneratorClass (
+                    $uApplicationConfig[$tApplicationKey],
+                    $tApplicationWritablePath
+                );
 
                 foreach ($tInstance->annotations as $tAnnotationKey => $tAnnotation) {
                     $this->annotations[$tAnnotationKey] = $tAnnotation;

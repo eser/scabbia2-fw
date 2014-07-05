@@ -15,6 +15,7 @@ namespace Scabbia\Mvc;
 
 use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
+use Scabbia\Helpers\String;
 use Scabbia\Router\Router;
 use \Exception;
 
@@ -30,15 +31,15 @@ class Application extends ApplicationBase
     /**
      * Initializes an application
      *
-     * @param mixed  $uOptions      options
+     * @param mixed  $uConfig       application config
      * @param array  $uPaths        paths include source files
      * @param string $uWritablePath writable output folder
      *
      * @return Application
      */
-    public function __construct($uOptions, $uPaths, $uWritablePath)
+    public function __construct($uConfig, $uPaths, $uWritablePath)
     {
-        parent::__construct($uOptions, $uPaths, $uWritablePath);
+        parent::__construct($uConfig, $uPaths, $uWritablePath);
 
         // remote host
         if (isset($_SERVER["HTTP_CLIENT_IP"])) {
@@ -180,31 +181,40 @@ class Application extends ApplicationBase
     public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters, array $uPostParameters)
     {
         $tRoute = Router::dispatch($uMethod, $uPathInfo);
-        $tRequestData = [
+
+        $tModule = "front";
+        foreach ($this->config["modules"] as $tModuleKey => $tModuleNamespace) {
+            if (String::startsWith($uPathInfo, "/{$tModuleKey}/")) {
+                $tModule = $tModuleKey;
+                break;
+            }
+        }
+
+        $tRoute += [
             "method"          => $uMethod,
+            "module"          => $tModule,
             "pathinfo"        => $uPathInfo,
             "queryParameters" => $uQueryParameters,
-            "postParameters"  => $uPostParameters,
-            "route"           => $tRoute
+            "postParameters"  => $uPostParameters
         ];
 
-        $this->events->invoke("requestBegin", $tRequestData);
-        if ($tRoute[0] === Router::FOUND) {
+        $this->events->invoke("requestBegin", $tRoute);
+        if ($tRoute["status"] === Router::FOUND) {
             // push some variables like named parameters
-            $tInstance = new $tRoute[1][0] ();
+            $tInstance = new $tRoute["callback"][0] ();
             $tInstance->prerender->invoke();
-            call_user_func_array([&$tInstance, $tRoute[1][1]], $tRoute[2]);
+            call_user_func_array([&$tInstance, $tRoute["callback"][1]], $tRoute["parameters"]);
             $tInstance->postrender->invoke();
             // pop previously pushed variables
-        } elseif ($tRoute[0] === Router::METHOD_NOT_ALLOWED) {
+        } elseif ($tRoute["status"] === Router::METHOD_NOT_ALLOWED) {
             // TODO exception
             throw new Exception("");
-        } elseif ($tRoute[0] === Router::NOT_FOUND) {
+        } elseif ($tRoute["status"] === Router::NOT_FOUND) {
             // TODO exception
             throw new Exception("");
         }
 
-        $this->events->invoke("requestEnd", $tRequestData);
+        $this->events->invoke("requestEnd", $tRoute);
     }
 
     /**

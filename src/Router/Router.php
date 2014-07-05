@@ -72,11 +72,22 @@ REGEX;
             $tRoute = self::$routes["static"][$uPathInfo];
 
             if (isset($tRoute[$uMethod])) {
-                return [self::FOUND, $tRoute[$uMethod], []];
+                return [
+                    "status"     => self::FOUND,
+                    "callback"   => $tRoute[$uMethod],
+                    "parameters" => []
+                ];
             } elseif ($uMethod === "HEAD" && isset($tRoute["GET"])) {
-                return [self::FOUND, $tRoute["GET"], []];
+                return [
+                    "status"     => self::FOUND,
+                    "callback"   => $tRoute["GET"],
+                    "parameters" => []
+                ];
             } else {
-                return [self::METHOD_NOT_ALLOWED, array_keys($tRoute)];
+                return [
+                    "status"     => self::METHOD_NOT_ALLOWED,
+                    "methods"    => array_keys($tRoute)
+                ];
             }
         }
 
@@ -90,7 +101,10 @@ REGEX;
                 if ($uMethod === "HEAD" && isset($tRoute["GET"])) {
                     $uMethod = "GET";
                 } else {
-                    return [self::METHOD_NOT_ALLOWED, array_keys($tRoute)];
+                    return [
+                        "status"     => self::METHOD_NOT_ALLOWED,
+                        "methods"    => array_keys($tRoute)
+                    ];
                 }
             }
 
@@ -102,10 +116,16 @@ REGEX;
                 $tVariables[$tVariableName] = $tMatches[++$tCount];
             }
 
-            return [self::FOUND, $tCallback, $tVariables];
+            return [
+                "status"     => self::FOUND,
+                "callback"   => $tCallback,
+                "parameters" => $tVariables
+            ];
         }
 
-        return [self::NOT_FOUND];
+        return [
+            "status"     => self::NOT_FOUND
+        ];
     }
 
     /**

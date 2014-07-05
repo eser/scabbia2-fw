@@ -26,6 +26,8 @@ abstract class ApplicationBase
 {
     /** @type ApplicationBase $current current application instance */
     public static $current = null;
+    /** @type mixed           $config application configuration */
+    public $config;
     /** @type Events          $events events */
     public $events;
     /** @type array           $paths paths include source files */
@@ -34,26 +36,24 @@ abstract class ApplicationBase
     public $writablePath;
     /** @type bool            $development the development flag of application is on or off */
     public $development;
-    /** @type bool            $disableCaches the disable caches flag of application is on or off */
-    public $disableCaches;
 
 
     /**
      * Initializes an application
      *
-     * @param mixed  $uOptions      options
-     * @param array  $uPaths        paths include source files
-     * @param string $uWritablePath writable output folder
+     * @param mixed  $uConfig        application config
+     * @param array  $uPaths         paths include source files
+     * @param string $uWritablePath  writable output folder
      *
      * @return ApplicationBase
      */
-    public function __construct($uOptions, $uPaths, $uWritablePath)
+    public function __construct($uConfig, $uPaths, $uWritablePath)
     {
         $this->paths = $uPaths;
         $this->writablePath = $uWritablePath;
 
-        $this->development = $uOptions["development"];
-        $this->disableCaches = $uOptions["disableCaches"];
+        $this->config = $uConfig;
+        $this->development = $uConfig["development"];
 
         $this->events = new Events();
         $this->events->events = require "{$this->writablePath}/events.php";

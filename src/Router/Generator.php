@@ -16,7 +16,6 @@ namespace Scabbia\Router;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
-use Scabbia\Helpers\String;
 use Scabbia\Router\Router;
 use \Exception;
 
@@ -90,8 +89,14 @@ class Generator extends GeneratorBase
                 }
 
                 foreach ($tMethod["route"] as $tRoute) {
-                    foreach ($this->applicationConfig["modules"] as $tModuleKey => $tModuleNamespace) {
-                        if (!String::startsWith($tClassKey, $tModuleNamespace)) {
+                    foreach ($this->applicationConfig["modules"] as $tModuleKey => $tModuleConfig) {
+                        if (!is_string($tModuleConfig)) {
+                            $tModuleNamespace = $tModuleConfig["namespace"];
+                        } else {
+                            $tModuleNamespace = $tModuleConfig;
+                        }
+
+                        if (strncmp($tClassKey, $tModuleNamespace, strlen($tModuleNamespace)) !== 0) {
                             continue;
                         }
 

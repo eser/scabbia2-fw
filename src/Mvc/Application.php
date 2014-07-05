@@ -183,8 +183,8 @@ class Application extends ApplicationBase
         $tRoute = Router::dispatch($uMethod, $uPathInfo);
 
         $tModule = "front";
-        foreach ($this->config["modules"] as $tModuleKey => $tModuleNamespace) {
-            if (String::startsWith($uPathInfo, "/{$tModuleKey}/")) {
+        foreach ($this->config["modules"] as $tModuleKey => $tModuleConfig) {
+            if (strncmp($uPathInfo, "/{$tModuleKey}/", strlen($tModuleKey) + 2) === 0) {
                 $tModule = $tModuleKey;
                 break;
             }
@@ -202,6 +202,11 @@ class Application extends ApplicationBase
         if ($tRoute["status"] === Router::FOUND) {
             // push some variables like named parameters
             $tInstance = new $tRoute["callback"][0] ();
+
+            $tInstance->routeInfo = $tRoute;
+            $tInstance->applicationConfig = $this->config;
+            $tInstance->moduleConfig = $this->config["modules"][$tModule];
+
             $tInstance->prerender->invoke();
             call_user_func_array([&$tInstance, $tRoute["callback"][1]], $tRoute["parameters"]);
             $tInstance->postrender->invoke();

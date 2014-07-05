@@ -24,7 +24,7 @@ abstract class GeneratorBase
 {
     /** @type array       $annotations        annotations to be processed */
     public $annotations;
-    /** @type mixed       $applicationConfig  application config */
+    /** @type mixed       $applicationConfig  application configuration */
     public $applicationConfig;
     /** @type string      $outputPath         output path for generated files */
     public $outputPath;

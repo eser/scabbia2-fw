@@ -28,6 +28,12 @@ abstract class Controller
 {
     use BindableContainer;
 
+    /** @type array $routeInfo routing information */
+    public $routeInfo;
+    /** @type mixed $applicationConfig application configuration */
+    public $applicationConfig;
+    /** @type mixed $moduleConfig module configuration */
+    public $moduleConfig;
     /** @type string $view the default view file */
     public $view = null;
     /** @type string $outputFormat the default output format */

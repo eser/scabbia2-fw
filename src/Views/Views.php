@@ -27,7 +27,7 @@ class Views
 {
     /** @type array $engines set of engines */
     public static $engines = [
-        ".view.php" => "Scabbia\\Views\\ViewEngineBase"
+        ".view.php" => ["Scabbia\\Views\\ViewEngineBase", null]
     ];
 
 
@@ -36,13 +36,17 @@ class Views
      *
      * @param string $uFilename filename
      *
-     * @return string|null the class name for the view engine
+     * @return object|null the instance for the view engine
      */
     public static function findViewEngine($uFilename)
     {
-        foreach (self::$engines as $tEngineKey => $tEngineClass) {
+        foreach (self::$engines as $tEngineKey => &$tEngine) {
             if (substr($uFilename, -strlen($tEngineKey)) === $tEngineKey) {
-                return $tEngineClass;
+                if ($tEngine[1] === null) {
+                    $tEngine[1] = new $tEngine[0] ();
+                }
+
+                return $tEngine[1];
             }
         }
 
@@ -52,25 +56,25 @@ class Views
     /**
      * Renders a view
      *
-     * @param string $uView  view file
-     * @param mixed  $uModel view model
+     * @param string $uView       view file
+     * @param mixed  $uModel      view model
+     * @param mixed  $uController controller instance
      *
      * @throws Exception if any render engine is not associated with the extension
      * @return void
      */
-    public static function viewFile($uView, $uModel = null)
+    public static function viewFile($uView, $uModel = null, $uController = null)
     {
         $tViewFilePath = Core::findResource($uView);
         $tViewFileInfo = pathinfo($tViewFilePath);
 
-        $tViewEngineClass = self::findViewEngine($tViewFilePath);
+        $tViewEngine = self::findViewEngine($tViewFilePath);
 
-        if ($tViewEngineClass === null) {
+        if ($tViewEngine === null) {
             // TODO exception
             throw new Exception("");
         }
 
-        $tViewEngineInstance = new $tViewEngineClass ();
-        $tViewEngineInstance->render("{$tViewFileInfo["dirname"]}/", $tViewFileInfo["basename"], $uModel);
+        $tViewEngine->render("{$tViewFileInfo["dirname"]}/", $tViewFileInfo["basename"], $uModel, $uController);
     }
 }

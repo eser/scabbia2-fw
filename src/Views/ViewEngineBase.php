@@ -24,6 +24,11 @@ namespace Scabbia\Views;
  */
 class ViewEngineBase
 {
+    /** @type mixed $model model for the current view */
+    public $model;
+    /** @type object|null $controller controller for the current view */
+    public $controller;
+
     /**
      * Initializes a view engine
      *
@@ -39,11 +44,15 @@ class ViewEngineBase
      * @param string $tTemplatePath path of the template file
      * @param string $tTemplateFile filename of the template file
      * @param mixed  $uModel        model object
+     * @param mixed  $uController   controller instance
      *
      * @return void
      */
-    public function render($tTemplatePath, $tTemplateFile, $uModel = null)
+    public function render($tTemplatePath, $tTemplateFile, $uModel = null, $uController = null)
     {
+        $this->model = $uModel;
+        $this->controller = $uController;
+
         if ($uModel !== null && is_array($uModel)) {
             extract($uModel, EXTR_SKIP | EXTR_REFS);
         }

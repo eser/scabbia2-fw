@@ -53,13 +53,14 @@ class Generator extends GeneratorBase
      */
     public function processFile($uPath, $uFileContents, $uTokens)
     {
-        $tViewEngineClass = Views::findViewEngine($uPath);
+        $tViewEngine = Views::findViewEngine($uPath);
 
-        if ($tViewEngineClass === null) {
+        if ($tViewEngine === null) {
             return;
         }
 
         // TODO compile view
+        $tViewEngineClass = get_class($tViewEngine);
         echo "View {$uPath} => {$tViewEngineClass}" . PHP_EOL;
     }
 

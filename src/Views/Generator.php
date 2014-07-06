@@ -61,7 +61,7 @@ class Generator extends GeneratorBase
 
         // TODO compile view
         $tViewEngineClass = get_class($tViewEngine);
-        echo "View {$uPath} => {$tViewEngineClass}" . PHP_EOL;
+        echo "View {$uPath} => {$tViewEngineClass}\n";
     }
 
     /**

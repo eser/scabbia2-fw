@@ -99,13 +99,13 @@ class Generator extends GeneratorBase
     {
         $tContent = "";
         foreach ($this->files as $tFileKey => $tFileContent) {
-            $tContent .= "# {$tFileKey}" . PHP_EOL;
+            $tContent .= "# {$tFileKey}\n";
 
             foreach ($tFileContent as $tLine) {
                 $tContent .= $tLine;
             }
 
-            $tContent .= PHP_EOL . PHP_EOL;
+            $tContent .= "\n\n";
         }
 
         FileSystem::write(

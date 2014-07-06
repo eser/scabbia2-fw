@@ -45,8 +45,7 @@ class Application extends ApplicationBase
      */
     public function getRequestMethod()
     {
-        // TODO not implemented
-        return null;
+        return "GET";
     }
 
     /**
@@ -56,8 +55,7 @@ class Application extends ApplicationBase
      */
     public function getRequestPathInfo()
     {
-        // TODO not implemented
-        return null;
+        return "/";
     }
 
     /**
@@ -67,8 +65,7 @@ class Application extends ApplicationBase
      */
     public function getQueryParameters()
     {
-        // TODO not implemented
-        return null;
+        return [];
     }
 
     /**
@@ -78,8 +75,7 @@ class Application extends ApplicationBase
      */
     public function getPostParameters()
     {
-        // TODO not implemented
-        return null;
+        return [];
     }
 
     /**
@@ -94,7 +90,11 @@ class Application extends ApplicationBase
      */
     public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters, array $uPostParameters)
     {
-        //
+        // TODO get command line arguments
+        // TODO determine module
+        // TODO fire begin events
+        // TODO execute application
+        // TODO fire end events
     }
 
     /**
@@ -104,7 +104,6 @@ class Application extends ApplicationBase
      */
     public function generateRequestFromGlobals()
     {
-        // $this->generateRequest("GET", "home/index", $_GET, $_POST);
         $this->generateRequest(
             $this->getRequestMethod(),
             $this->getRequestPathInfo(),

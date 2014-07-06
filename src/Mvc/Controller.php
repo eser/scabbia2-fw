@@ -71,7 +71,11 @@ abstract class Controller
 
         $uModel["controller"] = $this;
 
-        $tNamespace = $this->applicationConfig["modules"][$this->routeInfo["module"]]["namespace"];
-        Views::viewFile("{$tNamespace}\\Views\\{$uView}", $uModel);
+        if (strncmp($uView, "\\", 1) === 0) {
+            Views::viewFile($uView, $uModel);
+        } else {
+            $tNamespace = $this->applicationConfig["modules"][$this->routeInfo["module"]]["namespace"];
+            Views::viewFile("{$tNamespace}\\Views\\{$uView}", $uModel);
+        }
     }
 }

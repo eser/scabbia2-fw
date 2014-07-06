@@ -27,9 +27,27 @@ class Views
 {
     /** @type array $engines set of engines */
     public static $engines = [
-        "php" => "self::renderPhpFile"
+        ".view.php" => "Scabbia\\Views\\ViewEngineBase"
     ];
 
+
+    /**
+     * Finds the associated view engine for a filename
+     *
+     * @param string $uFilename filename
+     *
+     * @return string|null the class name for the view engine
+     */
+    public static function findViewEngine($uFilename)
+    {
+        foreach (self::$engines as $tEngineKey => $tEngineClass) {
+            if (substr($uFilename, -strlen($tEngineKey)) === $tEngineKey) {
+                return $tEngineClass;
+            }
+        }
+
+        return null;
+    }
 
     /**
      * Renders a view
@@ -38,40 +56,21 @@ class Views
      * @param mixed  $uModel view model
      *
      * @throws Exception if any render engine is not associated with the extension
+     * @return void
      */
     public static function viewFile($uView, $uModel = null)
     {
         $tViewFilePath = Core::findResource($uView);
         $tViewFileInfo = pathinfo($tViewFilePath);
 
-        if (!isset(self::$engines[$tViewFileInfo["extension"]])) {
+        $tViewEngineClass = self::findViewEngine($tViewFilePath);
+
+        if ($tViewEngineClass === null) {
             // TODO exception
             throw new Exception("");
         }
 
-        call_user_func(
-            self::$engines[$tViewFileInfo["extension"]],
-            "{$tViewFileInfo["dirname"]}/",
-            $tViewFileInfo["basename"],
-            $uModel
-        );
-    }
-
-    /**
-     * Renders plain PHP file for using them as a template format
-     *
-     * @param string $tTemplatePath path of the template file
-     * @param string $tTemplateFile filename of the template file
-     * @param mixed  $uModel        model object
-     *
-     * @return void
-     */
-    public static function renderPhpFile($tTemplatePath, $tTemplateFile, $uModel = null)
-    {
-        if ($uModel !== null && is_array($uModel)) {
-            extract($uModel, EXTR_SKIP | EXTR_REFS);
-        }
-
-        include "{$tTemplatePath}{$tTemplateFile}";
+        $tViewEngineInstance = new $tViewEngineClass ();
+        $tViewEngineInstance->render("{$tViewFileInfo["dirname"]}/", $tViewFileInfo["basename"], $uModel);
     }
 }

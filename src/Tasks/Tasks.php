@@ -17,6 +17,7 @@ use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Helpers\Runtime;
 use Scabbia\Interfaces\Console;
+use Scabbia\Objects\CommandInterpreter;
 use Scabbia\Yaml\Parser;
 use RuntimeException;
 
@@ -80,6 +81,8 @@ class Tasks
     public static function execute(array $uTasks)
     {
         // TODO use interpreter
+        // $tCommandInterpreter = new CommandInterpreter("Scabbia", "Scabbia Command Line Tool");
+
         $tTaskName = trim(array_shift($uTasks));
 
         if (isset(self::$tasks[$tTaskName])) {

@@ -16,13 +16,13 @@ namespace Scabbia\Objects;
 use Scabbia\Interfaces\IInterface;
 
 /**
- * Command Line Interpreter
+ * Command Interpreter
  *
  * @package     Scabbia\Objects
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-class Interpreter
+class CommandInterpreter
 {
     const PARAMETER = 0;
     const PARAMETER_REQUIRED = 1;
@@ -40,7 +40,7 @@ class Interpreter
      * @param string $uTitle       title of interpreter
      * @param string $uDescription description for the interpreter
      *
-     * @return Interpreter
+     * @return CommandInterpreter
      */
     public function __construct($uTitle, $uDescription)
     {

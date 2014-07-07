@@ -17,6 +17,7 @@ use Scabbia\Tasks\TaskBase;
 use Scabbia\Config\Config;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
+use Scabbia\Objects\CommandInterpreter;
 use Scabbia\Yaml\Parser;
 use ReflectionClass;
 use RuntimeException;
@@ -43,15 +44,15 @@ class GenerateTask extends TaskBase
 
 
     /**
-     * Registers the tasks itself to an interpreter instance
+     * Registers the tasks itself to a command interpreter instance
      *
-     * @param Interpreter $uInterpreter interpreter to be registered at
+     * @param CommandInterpreter $uCommandInterpreter interpreter to be registered at
      *
      * @return void
      */
-    public static function registerToInterpreter(Interpreter $uInterpreter)
+    public static function registerToCommandInterpreter(CommandInterpreter $uCommandInterpreter)
     {
-        $uInterpreter->addCommand(
+        $uCommandInterpreter->addCommand(
             "generate",
             "Calls all generators registered to your project",
             [

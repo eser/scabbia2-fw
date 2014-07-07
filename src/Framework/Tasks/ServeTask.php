@@ -14,6 +14,7 @@
 namespace Scabbia\Framework\Tasks;
 
 use Scabbia\Framework\Core;
+use Scabbia\Objects\CommandInterpreter;
 use Scabbia\Tasks\TaskBase;
 
 /**
@@ -26,15 +27,15 @@ use Scabbia\Tasks\TaskBase;
 class ServeTask extends TaskBase
 {
     /**
-     * Registers the tasks itself to an interpreter instance
+     * Registers the tasks itself to a command interpreter instance
      *
-     * @param Interpreter $uInterpreter interpreter to be registered at
+     * @param CommandInterpreter $uCommandInterpreter interpreter to be registered at
      *
      * @return void
      */
-    public static function registerToInterpreter(Interpreter $uInterpreter)
+    public static function registerToCommandInterpreter(CommandInterpreter $uCommandInterpreter)
     {
-        $uInterpreter->addCommand(
+        $uCommandInterpreter->addCommand(
             "serve",
             "Runs built-in PHP server",
             [

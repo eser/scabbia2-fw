@@ -45,6 +45,15 @@ abstract class GeneratorBase
     }
 
     /**
+     * Initializes generator
+     *
+     * @return void
+     */
+    public function initialize()
+    {
+    }
+
+    /**
      * Processes a file
      *
      * @param string $uPath         file path

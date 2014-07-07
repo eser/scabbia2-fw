@@ -11,7 +11,7 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Framework;
+namespace Scabbia\Framework\Tasks;
 
 use Scabbia\Framework\Core;
 use Scabbia\Tasks\TaskBase;
@@ -19,7 +19,7 @@ use Scabbia\Tasks\TaskBase;
 /**
  * Task class for "php scabbia serve"
  *
- * @package     Scabbia\Framework
+ * @package     Scabbia\Framework\Tasks
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */

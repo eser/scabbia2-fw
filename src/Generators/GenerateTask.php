@@ -118,6 +118,10 @@ class GenerateTask extends TaskBase
             $this->interface->writeColor("white", "- [{$tFolder[2]}] \\{$tFolder[0]} => {$tFolder[1]}");
         }
 
+        foreach ($this->generators as $tGenerator) {
+            $tGenerator->initialize();
+        }
+
         // -- process files
         $this->result = [];
         foreach ($tFolders as $tPath) {
@@ -134,11 +138,11 @@ class GenerateTask extends TaskBase
             $tGenerator->processAnnotations($this->result);
         }
 
-        Core::popComposerPaths();
-
         foreach ($this->generators as $tGenerator) {
             $tGenerator->finalize();
         }
+
+        Core::popComposerPaths();
 
         $this->interface->writeColor("yellow", "done.");
 

@@ -192,6 +192,7 @@ class Core
     public static function runApplication($uApplicationConfig, $uWritablePath)
     {
         // MD include compilation file for the application if it exists
+        // FIXME is it needed to be loaded before Core and ApplicationBase?
         if (file_exists($tCompiledFile = "{$uWritablePath}/compiled.php")) {
             require $tCompiledFile;
         }

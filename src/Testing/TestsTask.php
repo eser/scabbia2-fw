@@ -26,6 +26,22 @@ use Scabbia\Testing\Testing;
 class TestsTask extends TaskBase
 {
     /**
+     * Registers the tasks itself to an interpreter instance
+     *
+     * @param Interpreter $uInterpreter interpreter to be registered at
+     *
+     * @return void
+     */
+    public static function registerToInterpreter(Interpreter $uInterpreter)
+    {
+        $uInterpreter->addCommand(
+            "tests",
+            "Starts unit tests",
+            []
+        );
+    }
+
+    /**
      * Initializes the tests task
      *
      * @param mixed      $uConfig    configuration

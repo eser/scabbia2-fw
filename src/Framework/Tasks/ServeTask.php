@@ -25,6 +25,25 @@ use Scabbia\Tasks\TaskBase;
  */
 class ServeTask extends TaskBase
 {
+    /**
+     * Registers the tasks itself to an interpreter instance
+     *
+     * @param Interpreter $uInterpreter interpreter to be registered at
+     *
+     * @return void
+     */
+    public static function registerToInterpreter(Interpreter $uInterpreter)
+    {
+        $uInterpreter->addCommand(
+            "serve",
+            "Runs built-in PHP server",
+            [
+                // type, name, description
+                [Console::OPTION, "--host", "Binding host address"],
+                [Console::OPTION, "--port", "Binding port number"]
+            ]
+        );
+    }
 
     /**
      * Initializes the serve task

@@ -79,6 +79,7 @@ class Tasks
      */
     public static function execute(array $uTasks)
     {
+        // TODO use interpreter
         $tTaskName = trim(array_shift($uTasks));
 
         if (isset(self::$tasks[$tTaskName])) {

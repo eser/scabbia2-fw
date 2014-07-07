@@ -27,6 +27,21 @@ use Boris\Boris;
  */
 class ConsoleTask extends TaskBase
 {
+    /**
+     * Registers the tasks itself to an interpreter instance
+     *
+     * @param Interpreter $uInterpreter interpreter to be registered at
+     *
+     * @return void
+     */
+    public static function registerToInterpreter(Interpreter $uInterpreter)
+    {
+        $uInterpreter->addCommand(
+            "console",
+            "Launches a REPL command interface",
+            []
+        );
+    }
 
     /**
      * Initializes the console task

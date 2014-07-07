@@ -43,6 +43,25 @@ class GenerateTask extends TaskBase
 
 
     /**
+     * Registers the tasks itself to an interpreter instance
+     *
+     * @param Interpreter $uInterpreter interpreter to be registered at
+     *
+     * @return void
+     */
+    public static function registerToInterpreter(Interpreter $uInterpreter)
+    {
+        $uInterpreter->addCommand(
+            "generate",
+            "Calls all generators registered to your project",
+            [
+                // type, name, description
+                [Console::OPTION_FLAG, "--clean", ""]
+            ]
+        );
+    }
+
+    /**
      * Initializes the generate task
      *
      * @param mixed      $uConfig    configuration

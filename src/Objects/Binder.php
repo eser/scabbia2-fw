@@ -22,6 +22,8 @@ use Scabbia\Helpers\FileSystem;
  * @package     Scabbia\Objects
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.5.0
+ *
+ * @todo get rid of Core:: dependencies
  */
 class Binder
 {

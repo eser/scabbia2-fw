@@ -14,17 +14,17 @@
 namespace Scabbia\Framework\Tasks;
 
 use Scabbia\Framework\Core;
-use Scabbia\Helpers\FileSystem;
+use Scabbia\Interfaces\IInterface;
 use Scabbia\Tasks\TaskBase;
 
 /**
- * Task class for "php scabbia clean"
+ * Task class for "php scabbia help"
  *
  * @package     Scabbia\Framework\Tasks
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-class CleanTask extends TaskBase
+class HelpTask extends TaskBase
 {
     /**
      * Registers the tasks itself to an interpreter instance
@@ -36,19 +36,19 @@ class CleanTask extends TaskBase
     public static function registerToInterpreter(Interpreter $uInterpreter)
     {
         $uInterpreter->addCommand(
-            "clean",
-            "Cleans the writable cache",
+            "help",
+            "Displays this help",
             []
         );
     }
 
     /**
-     * Initializes the clean task
+     * Initializes the serve task
      *
      * @param mixed      $uConfig    configuration
      * @param IInterface $uInterface interface class
      *
-     * @return CleanTask
+     * @return HelpTask
      */
     public function __construct($uConfig, $uInterface)
     {
@@ -64,11 +64,7 @@ class CleanTask extends TaskBase
      */
     public function executeTask(array $uParameters)
     {
-        $tPath = Core::$basepath . "/writable/cache";
-        FileSystem::garbageCollect($tPath, ["dotFiles" => false]);
-
-        $this->interface->writeColor("yellow", "done.");
-
+        // TODO call interpreter->help();
         return 0;
     }
 }

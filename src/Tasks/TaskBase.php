@@ -13,6 +13,8 @@
 
 namespace Scabbia\Tasks;
 
+use Scabbia\Objects\Interpreter;
+
 /**
  * Default methods needed for implementation of a task
  *
@@ -29,6 +31,17 @@ abstract class TaskBase
     /** @type IInterface      $interface   output class */
     public $interface;
 
+
+    /**
+     * Registers the tasks itself to an interpreter instance
+     *
+     * @param Interpreter $uInterpreter interpreter to be registered at
+     *
+     * @return void
+     */
+    public static function registerToInterpreter(Interpreter $uInterpreter)
+    {
+    }
 
     /**
      * Initializes a task

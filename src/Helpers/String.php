@@ -20,6 +20,8 @@ namespace Scabbia\Helpers;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.0.0
  *
+ * @scabbia-compile
+ *
  * @todo pluralize, singularize
  * @todo split Text functions into another file
  * @todo alternator, camel2underscore, underscore2camel

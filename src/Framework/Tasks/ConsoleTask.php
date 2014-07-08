@@ -24,6 +24,7 @@ use Boris\Boris;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  *
+ * @scabbia-task console
  * @todo only pass annotations requested by generator
  */
 class ConsoleTask extends TaskBase

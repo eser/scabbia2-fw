@@ -23,6 +23,8 @@ use Scabbia\Tasks\TaskBase;
  * @package     Scabbia\Framework\Tasks
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
+ *
+ * @scabbia-task serve
  */
 class ServeTask extends TaskBase
 {

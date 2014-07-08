@@ -23,6 +23,8 @@ use Scabbia\Helpers\String;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.0.0
  *
+ * @scabbia-compile
+ *
  * @todo form open
  * @todo form fields
  * @todo form csrf protection

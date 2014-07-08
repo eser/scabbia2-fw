@@ -23,6 +23,8 @@ use Scabbia\Helpers\FileSystem;
  * @package     Scabbia\Documentor
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
+ *
+ * @scabbia-generator
  */
 class Generator extends GeneratorBase
 {

@@ -11,24 +11,30 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Views;
+namespace Scabbia\Config;
 
+use Scabbia\Config\Config;
+use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
-use Scabbia\Views\Views;
+use Scabbia\Helpers\FileSystem;
 
 /**
  * Generator
  *
- * @package     Scabbia\Views
+ * @package     Scabbia\Config
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  *
  * @scabbia-generator
+ *
+ * @todo FIXME include application configuration from project.yml ?
  */
 class Generator extends GeneratorBase
 {
     /** @type array $annotations set of annotations */
     public $annotations = [];
+    /** @type Config $unifiedConfig unified configuration */
+    public $unifiedConfig;
 
 
     /**
@@ -42,6 +48,8 @@ class Generator extends GeneratorBase
     public function __construct($uApplicationConfig, $uOutputPath)
     {
         parent::__construct($uApplicationConfig, $uOutputPath);
+
+        $this->unifiedConfig = new Config();
     }
 
     /**
@@ -64,15 +72,12 @@ class Generator extends GeneratorBase
      */
     public function processFile($uPath, $uFileContents, $uTokens)
     {
-        $tViewEngine = Views::findViewEngine($uPath);
-
-        if ($tViewEngine === null) {
+        if (substr($uPath, -11) !== ".config.yml") {
             return;
         }
 
-        // TODO compile view
-        $tViewEngineClass = get_class($tViewEngine);
-        echo "View {$uPath} => {$tViewEngineClass}\n";
+        $this->unifiedConfig->add($uPath);
+        echo "Config {$uPath}\n";
     }
 
     /**
@@ -93,5 +98,9 @@ class Generator extends GeneratorBase
      */
     public function finalize()
     {
+        FileSystem::writePhpFile(
+            Core::translateVariables($this->outputPath . "/unified-config.php"),
+            $this->unifiedConfig->get()
+        );
     }
 }

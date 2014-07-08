@@ -22,6 +22,8 @@ use Exception;
  * @package     Scabbia\Helpers
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.0.0
+ *
+ * @scabbia-compile
  */
 class FileSystem
 {

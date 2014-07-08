@@ -20,6 +20,8 @@ namespace Scabbia\Helpers;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.0.0
  *
+ * @scabbia-compile
+ *
  * @todo improve humanize (fuzzy span)
  */
 class Date

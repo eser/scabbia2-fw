@@ -16,6 +16,7 @@ namespace Scabbia\Config;
 use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
+use Scabbia\Yaml\Dumper;
 use Scabbia\Yaml\Parser;
 
 /**
@@ -94,6 +95,16 @@ class Config
         }
 
         return $this->content;
+    }
+
+    /**
+     * Gets the YAML representation of configuration stack
+     *
+     * @return string YAML
+     */
+    public function dump()
+    {
+        return Dumper::dump($this->get(), 1);
     }
 
     /**

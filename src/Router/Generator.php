@@ -26,6 +26,8 @@ use Exception;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  *
+ * @scabbia-generator
+ *
  * Routing related code based on the nikic's FastRoute solution:
  * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  */

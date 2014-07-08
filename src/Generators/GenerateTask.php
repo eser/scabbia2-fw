@@ -138,20 +138,20 @@ class GenerateTask extends TaskBase
             $this->interface->writeColor("white", "- [{$tFolder[2]}] \\{$tFolder[0]} => {$tFolder[1]}");
         }
 
-        foreach ($this->generators as $tGenerator) {
-            $tGenerator->initialize();
-        }
-
         // -- process files
         $this->result = [];
         foreach ($tFolders as $tPath) {
             FileSystem::getFilesWalk(
                 $tPath[1],
-                "*.php",
+                "*.*",
                 true,
                 [&$this, "processFile"],
                 $tPath[0]
             );
+        }
+
+        foreach ($this->generators as $tGenerator) {
+            $tGenerator->initialize();
         }
 
         foreach ($this->generators as $tGenerator) {
@@ -219,6 +219,10 @@ class GenerateTask extends TaskBase
 
         foreach ($this->generators as $tGenerator) {
             $tGenerator->processFile($uFile, $tFileContents, $tTokens);
+        }
+
+        if (substr($uFile, -4) !== ".php") {
+            return;
         }
 
         $tBuffer = "";
@@ -351,6 +355,8 @@ class GenerateTask extends TaskBase
         if (strlen($tDocComment) > 0) {
             $tClassAnnotations["class"] = $this->parseAnnotations($tDocComment);
             $tCount++;
+        } else {
+            $tClassAnnotations["class"] = [];
         }
 
         // methods

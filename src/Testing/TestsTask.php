@@ -23,6 +23,8 @@ use Scabbia\Testing\Testing;
  * @package     Scabbia\Testing
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
+ *
+ * @scabbia-task tests
  */
 class TestsTask extends TaskBase
 {

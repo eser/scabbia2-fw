@@ -24,6 +24,8 @@ use Exception;
  * @package     Scabbia\CodeCompiler
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
+ *
+ * @scabbia-generator
  */
 class Generator extends GeneratorBase
 {
@@ -105,6 +107,7 @@ class Generator extends GeneratorBase
                 throw new Exception("");
             }
 
+            // TODO add checking class_exists for php files
             $tCompilationContent .= $this->minifyPhpSource(FileSystem::read($tFilePath));
         }
 

@@ -191,11 +191,12 @@ class Core
      */
     public static function runApplication($uApplicationConfig, $uWritablePath)
     {
-        // MD include compilation file for the application if it exists
+        // MD include compilation file for the application
         // FIXME is it needed to be loaded before Core and ApplicationBase?
-        if (file_exists($tCompiledFile = "{$uWritablePath}/compiled.php")) {
-            require $tCompiledFile;
-        }
+        require "{$uWritablePath}/compiled.php";
+
+        // MD add configuration entries too
+        $uApplicationConfig += require "{$uWritablePath}/unified-config.php";
 
         // MD push framework variables to undo application's own variable definitions
         $tPaths = self::pushComposerPaths($uApplicationConfig);

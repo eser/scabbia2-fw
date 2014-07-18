@@ -53,7 +53,7 @@ abstract class UnitTestFixture
                 continue;
             }
 
-            $this->testUnit("{$tMe->name}->{$tMethod->name}()", [&$this, $tMethod->name]);
+            $this->testUnit("{$tMe->name}->{$tMethod->name}()", [$this, $tMethod->name]);
         }
     }
 

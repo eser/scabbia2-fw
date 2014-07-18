@@ -145,7 +145,7 @@ class GenerateTask extends TaskBase
                 $tPath[1],
                 "*.*",
                 true,
-                [&$this, "processFile"],
+                [$this, "processFile"],
                 $tPath[0]
             );
         }

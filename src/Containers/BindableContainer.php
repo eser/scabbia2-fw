@@ -51,10 +51,7 @@ trait BindableContainer
         }
 
         if (!isset(BindableContainer::$loadedObjects[$uClass])) {
-            BindableContainer::$loadedObjects[$uClass] = call_user_func_array(
-                [new ReflectionClass($uClass), "newInstance"],
-                $uParameters
-            );
+            BindableContainer::$loadedObjects[$uClass] = (new ReflectionClass($uClass))->newInstanceArgs($uParameters);
         }
 
         return BindableContainer::$loadedObjects[$uClass];
@@ -97,11 +94,12 @@ trait BindableContainer
      */
     public function __get($uName)
     {
-        // if (!array_key_exists($uName, $this->sharedBindings)) {
-        //     return null;
-        // }
+        if (!array_key_exists($uName, static::$sharedBindings)) {
+            return null;
+        }
 
-        $tSharedBinding = (array)$this->sharedBindings[$uName];
+        $tSharedBinding = (array)static::$sharedBindings[$uName];
+
         if (count($tSharedBinding) === 1) {
             $tReturn = BindableContainer::load($tSharedBinding[0]);
         } else {

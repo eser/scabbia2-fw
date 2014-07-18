@@ -13,6 +13,8 @@
 
 namespace Scabbia\Containers;
 
+// use ReflectionClass;
+
 /**
  * IocContainer
  *
@@ -22,50 +24,39 @@ namespace Scabbia\Containers;
  */
 trait IocContainer
 {
-    /** @type array $parameters parameters */
-    public $parameters = [];
-    /** @type array $parameters parameters */
+    /** @type array $serviceParameters service parameters */
+    public $serviceParameters = [];
+    /** @type array $serviceDefinitions ioc definitions */
     protected $serviceDefinitions = [];
-    /** @type array $parameters parameters */
-    protected $sharedInstances = [];
+    /** @type array $sharedServiceObjects shared service objects */
+    protected $sharedServiceObjects = [];
 
 
     /**
      * Sets a service definition
      *
-     * @param string   $uService          name of the service
+     * @param string   $uName             name of the service
      * @param callable $uCallback         callback
      * @param bool     $uIsSharedInstance is it a shared instance
      *
      * @return void
      */
-    public function setService($uService, /* callable */ $uCallback, $uIsSharedInstance = true)
+    public function setService($uName, /* callable */ $uCallback, $uIsSharedInstance = true)
     {
-        $this->serviceDefinitions[$uService] = [$uCallback, $uIsSharedInstance];
+        $this->serviceDefinitions[$uName] = [$uCallback, $uIsSharedInstance];
     }
 
     /**
-     * Gets a service definition
+     * Sets a shared service object
      *
-     * @param string $uService name of the service
+     * @param string   $uName             name of the service
+     * @param mixed    $uObject           object instance
      *
-     * @return mixed service object
+     * @return void
      */
-    public function getService($uService)
+    public function setSharedServiceObject($uName, $uObject)
     {
-        return $this->serviceDefinitions[$uService][0];
-    }
-
-    /**
-     * Checks if a service definition exists
-     *
-     * @param string $uService name of the service
-     *
-     * @return bool true if service definition exists
-     */
-    public function hasService($uService)
-    {
-        return isset($this->serviceDefinitions[$uService]);
+        $this->sharedServiceObjects[$uName] = $uObject;
     }
 
     /**
@@ -77,19 +68,19 @@ trait IocContainer
      */
     public function __get($uName)
     {
-        // if (!array_key_exists($uName, $this->serviceDefinitions)) {
-        //     return null;
-        // }
-
-        if (array_key_exists($uName, $this->sharedInstances)) {
-            return $this->sharedInstances[$uName];
+        if (array_key_exists($uName, $this->sharedServiceObjects)) {
+            return $this->sharedServiceObjects[$uName];
         }
 
         $tService = $this->serviceDefinitions[$uName];
-        $tReturn = call_user_func($tService[0], $this->parameters);
+        // if (is_a($tService[0], "Closure")) {
+            $tReturn = call_user_func($tService[0], $this->serviceParameters);
+        // } else {
+        //     $tReturn = (new ReflectionClass($tService[0]))->newInstanceArgs($this->serviceParameters);
+        // }
 
         if ($tService[1] === true) {
-            $this->sharedInstances[$uName] = $tReturn;
+            $this->sharedServiceObjects[$uName] = $tReturn;
         }
 
         return $tReturn;

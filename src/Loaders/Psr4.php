@@ -95,7 +95,7 @@ class Psr4
      */
     public function register($uPrepend = false)
     {
-        spl_autoload_register([&$this, "loadClass"], true, $uPrepend);
+        spl_autoload_register([$this, "loadClass"], true, $uPrepend);
     }
 
     /**
@@ -105,7 +105,7 @@ class Psr4
      */
     public function unregister()
     {
-        spl_autoload_unregister([&$this, "loadClass"]);
+        spl_autoload_unregister([$this, "loadClass"]);
     }
 
     /**

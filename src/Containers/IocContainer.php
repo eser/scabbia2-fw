@@ -13,7 +13,7 @@
 
 namespace Scabbia\Containers;
 
-// use ReflectionClass;
+use ReflectionClass;
 
 /**
  * IocContainer
@@ -28,59 +28,78 @@ trait IocContainer
     public $serviceParameters = [];
     /** @type array $serviceDefinitions ioc definitions */
     protected $serviceDefinitions = [];
-    /** @type array $sharedServiceObjects shared service objects */
-    protected $sharedServiceObjects = [];
+    /** @type array $serviceInstances shared service objects */
+    protected $serviceInstances = [];
 
 
     /**
      * Sets a service definition
      *
-     * @param string   $uName             name of the service
-     * @param callable $uCallback         callback
-     * @param bool     $uIsSharedInstance is it a shared instance
+     * @param string|array  $uName             name of the service
+     * @param callable      $uCallback         callback
+     * @param bool          $uIsSharedInstance is it a shared instance
      *
      * @return void
      */
     public function setService($uName, /* callable */ $uCallback, $uIsSharedInstance = true)
     {
-        $this->serviceDefinitions[$uName] = [$uCallback, $uIsSharedInstance];
+        foreach ((array)$tNames as $tName) {
+            $this->serviceDefinitions[$tName] = [$uCallback, $uIsSharedInstance ? $tNames : false];
+        }
     }
 
     /**
      * Sets a shared service object
      *
-     * @param string   $uName             name of the service
-     * @param mixed    $uObject           object instance
+     * @param string|array  $uName             name of the service
+     * @param mixed         $uObject           object instance
      *
      * @return void
      */
-    public function setSharedServiceObject($uName, $uObject)
+    public function setServiceInstance($uName, $uObject)
     {
-        $this->sharedServiceObjects[$uName] = $uObject;
+        foreach ((array)$uName as $tName) {
+            $this->serviceInstances[$uName] = $uObject;
+        }
     }
 
     /**
-     * Magic method for inversion of control containers
+     * Checks if service is defined
+     *
+     * @param string        $uName             name of the service
+     *
+     * @return bool
+     */
+    public function hasService($uName)
+    {
+        return isset($this->serviceInstances[$uName]) || isset($this->serviceDefinitions[$tName]);
+    }
+
+    /**
+     * Gets the service instance if there is one, otherwise creates a service
+     * and returns it
      *
      * @param string $uName name of the service
      *
      * @return mixed the service instance
      */
-    public function __get($uName)
+    public function getService($uName)
     {
-        if (array_key_exists($uName, $this->sharedServiceObjects)) {
-            return $this->sharedServiceObjects[$uName];
+        if (array_key_exists($uName, $this->serviceInstances)) {
+            return $this->serviceInstances[$uName];
         }
 
         $tService = $this->serviceDefinitions[$uName];
-        // if (is_a($tService[0], "Closure")) {
+        if (is_a($tService[0], "Closure")) {
             $tReturn = call_user_func($tService[0], $this->serviceParameters);
-        // } else {
-        //     $tReturn = (new ReflectionClass($tService[0]))->newInstanceArgs($this->serviceParameters);
-        // }
+        } else {
+            $tReturn = (new ReflectionClass($tService[0]))->newInstanceArgs($this->serviceParameters);
+        }
 
-        if ($tService[1] === true) {
-            $this->sharedServiceObjects[$uName] = $tReturn;
+        if ($tService[1] !== false) {
+            foreach ($tService[1] as $tName) {
+                $this->serviceInstances[$tName] = $tReturn;
+            }
         }
 
         return $tReturn;

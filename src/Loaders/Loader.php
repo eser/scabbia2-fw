@@ -16,13 +16,13 @@ namespace Scabbia\Loaders;
 use InvalidArgumentException;
 
 /**
- * Composer Autoloader Class
+ * Loader Autoloader Class
  *
  * @package     Scabbia\Loaders
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-class Composer
+class Loader
 {
     // PSR-4
     protected $prefixLengthsPsr4 = [];
@@ -37,29 +37,17 @@ class Composer
 
 
     /**
-     * Initializes Composer autoloader and registers it
+     * Initializes the autoloader and registers it
      *
-     * @param string $uComposerPath the path of composer files installed in
+     * @param string|null $uComposerPath the path of composer files installed in
      *
-     * @return Composer the instance
+     * @return Loader the instance
      */
-    public static function init($uComposerPath)
+    public static function init($uComposerPath = null)
     {
         $tInstance = new static();
-
-        $tMap = require "{$uComposerPath}/autoload_namespaces.php";
-        foreach ($tMap as $tNamespace => $tPath) {
-            $tInstance->set($tNamespace, $tPath);
-        }
-
-        $tMap = require "{$uComposerPath}/autoload_psr4.php";
-        foreach ($tMap as $tNamespace => $tPath) {
-            $tInstance->setPsr4($tNamespace, $tPath);
-        }
-
-        $tClassMap = require "{$uComposerPath}/autoload_classmap.php";
-        if ($tClassMap) {
-            $tInstance->addClassMap($tClassMap);
+        if ($uComposerPath !== null) {
+            $tInstance->importFromComposer($uComposerPath);
         }
 
         $tInstance->register(true);
@@ -136,6 +124,31 @@ class Composer
     public function getClassMap()
     {
         return $this->classMap;
+    }
+
+    /**
+     * Imports all settings from composer directory
+     *
+     * @param string|null $uComposerPath the path of composer files installed in
+     *
+     * @return void
+     */
+    public function importFromComposer($uComposerPath)
+    {
+        $tMap = require "{$uComposerPath}/autoload_namespaces.php";
+        foreach ($tMap as $tNamespace => $tPath) {
+            $this->set($tNamespace, $tPath);
+        }
+
+        $tMap = require "{$uComposerPath}/autoload_psr4.php";
+        foreach ($tMap as $tNamespace => $tPath) {
+            $this->setPsr4($tNamespace, $tPath);
+        }
+
+        $tClassMap = require "{$uComposerPath}/autoload_classmap.php";
+        if ($tClassMap) {
+            $this->addClassMap($tClassMap);
+        }
     }
 
     /**
@@ -300,7 +313,7 @@ class Composer
     public function loadClass($uClass)
     {
         if ($tFile = $this->findFile($uClass)) {
-            composerIncludeFile($tFile);
+            loaderIncludeFile($tFile);
 
             return true;
         }
@@ -408,7 +421,7 @@ class Composer
  *
  * Prevents access to $this/self from included files
  */
-function composerIncludeFile($uFile)
+function loaderIncludeFile($uFile)
 {
     include $uFile;
 }

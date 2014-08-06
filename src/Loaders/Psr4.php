@@ -59,7 +59,7 @@ namespace Scabbia\Loaders;
  *
  * @package     Scabbia\Loaders
  * @author      Eser Ozvataf <eser@sent.com>
- * @since       1.0.0
+ * @since       2.0.0
  */
 class Psr4
 {
@@ -111,10 +111,10 @@ class Psr4
     /**
      * Adds a base directory for a namespace prefix
      *
-     * @param string $uPrefix   the namespace prefix
-     * @param string $uBasePath a base directory for class files in the namespace
-     * @param bool   $uPrepend  if true, prepend the base directory to the stack instead of appending it; this causes
-     *                          it to be searched first rather than last
+     * @param string       $uPrefix   the namespace prefix
+     * @param string|array $uBasePath a base directory for class files in the namespace
+     * @param bool         $uPrepend  if true, prepend the base directory to the stack instead of appending it; this
+     *                                causes it to be searched first rather than last
      *
      * @return void
      */
@@ -123,19 +123,21 @@ class Psr4
         // normalize namespace prefix
         $uPrefix = trim($uPrefix, "\\") . "\\";
 
-        // normalize the base directory with a trailing separator
-        $uBasePath = rtrim($uBasePath, "/" . DIRECTORY_SEPARATOR) . "/";
-
         // initialize the namespace prefix array
         if (isset($this->prefixes[$uPrefix]) === false) {
             $this->prefixes[$uPrefix] = [];
         }
 
-        // retain the base directory for the namespace prefix
         if ($uPrepend) {
-            array_unshift($this->prefixes[$uPrefix], $uBasePath);
+            $this->prefixes[$uPrefix] = array_merge(
+                (array)$uBasePath,
+                $this->prefixes[$uPrefix]
+            );
         } else {
-            array_push($this->prefixes[$uPrefix], $uBasePath);
+            $this->prefixes[$uPrefix] = array_merge(
+                $this->prefixes[$uPrefix],
+                (array)$uBasePath
+            );
         }
     }
 

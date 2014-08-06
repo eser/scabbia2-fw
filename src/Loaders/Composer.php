@@ -260,7 +260,7 @@ class Composer
     public function set($uPrefix, $uPaths)
     {
         if (!$uPrefix) {
-            $this->fallbackDirsPsr0 = (array) $uPaths;
+            $this->fallbackDirsPsr0 = (array)$uPaths;
         } else {
             $this->prefixesPsr0[$uPrefix[0]][$uPrefix] = (array)$uPaths;
         }
@@ -293,13 +293,13 @@ class Composer
     /**
      * Loads the given class or interface
      *
-     * @param  string    $class The name of the class
+     * @param  string    $uClass The name of the class
      *
      * @return bool true if loaded, false otherwise
      */
-    public function loadClass($class)
+    public function loadClass($uClass)
     {
-        if ($tFile = $this->findFile($class)) {
+        if ($tFile = $this->findFile($uClass)) {
             composerIncludeFile($tFile);
 
             return true;

@@ -45,14 +45,16 @@ class Config
     /**
      * Loads a configuration file
      *
-     * @param string $uPath path of configuration file to be loaded
+     * @param string|array $uPath path of configuration file to be loaded
      *
      * @return mixed
      */
     public static function load($uPath)
     {
         $tInstance = new static();
-        $tInstance->add($uPath);
+        foreach ((array)$uPath as $tPath) {
+            $tInstance->add($tPath);
+        }
 
         return $tInstance;
     }

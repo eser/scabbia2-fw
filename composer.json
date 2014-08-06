@@ -8,7 +8,9 @@
         "scabbia",
         "scabbia2",
         "scabbiafw",
-        "framework"
+        "framework",
+        "lightstack",
+        "stack"
     ],
     "homepage": "http://www.scabbiafw.com/",
     "license": "Apache-2.0",
@@ -21,11 +23,11 @@
     "require": {
         "php": ">=5.5.0",
         "psr/log": "1.0.0",
-        "d11wtq/boris": "1.0.*"
+        "scabbiafw/scabbia2-lightstack": "dev-master"
     },
     "suggest": {
         "ext-curl": "ext/curl for http communication",
-        "ext-mbstring": "ext/json for multibyte string manipulation",
+        "ext-mbstring": "ext/mbstring for multibyte string manipulation",
         "ext-tokenizer": "ext/tokenizer for lexical analysis"
     },
     "autoload": {

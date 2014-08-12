@@ -6,6 +6,7 @@
 
 [![Build Status](https://travis-ci.org/scabbiafw/scabbia2-fw.png?branch=master)](https://travis-ci.org/scabbiafw/scabbia2-fw)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-fw/badges/quality-score.png?s=ea455753b50c686880c35dce99fd5058a28da810)](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-fw/)
+[![Code consistency](http://squizlabs.github.io/PHP_CodeSniffer/analysis/scabbiafw/scabbia2-fw/grade.svg)](http://squizlabs.github.io/PHP_CodeSniffer/analysis/scabbiafw/scabbia2-fw)
 [![Total Downloads](https://poser.pugx.org/scabbiafw/scabbia2-fw/downloads.png)](https://packagist.org/packages/scabbiafw/scabbia2-fw)
 [![License](https://poser.pugx.org/scabbiafw/scabbia2-fw/license.png)](https://packagist.org/packages/scabbiafw/scabbia2-fw)
 

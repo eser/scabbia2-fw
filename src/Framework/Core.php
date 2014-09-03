@@ -223,7 +223,7 @@ class Core
      */
     public static function pushComposerPaths($uApplicationConfig)
     {
-        // register psr-0 source paths to composer.
+        // register PSR-0 source paths to composer.
         if (ApplicationBase::$current !== null) {
             $tPaths = ApplicationBase::$current->paths;
         } else {
@@ -235,7 +235,7 @@ class Core
             $tPaths[] = self::translateVariables($tPath);
         }
 
-        self::$composerAutoloader->set(false, $tPaths);
+        self::$composerAutoloader->setPsr4(false, $tPaths);
 
         return $tPaths;
     }
@@ -248,9 +248,9 @@ class Core
     public static function popComposerPaths()
     {
         if (ApplicationBase::$current !== null) {
-            self::$composerAutoloader->set(false, ApplicationBase::$current->paths);
+            self::$composerAutoloader->setPsr4(false, ApplicationBase::$current->paths);
         } else {
-            self::$composerAutoloader->set(false, []);
+            self::$composerAutoloader->setPsr4(false, []);
         }
     }
 

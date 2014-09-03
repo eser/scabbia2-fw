@@ -82,13 +82,14 @@ class Loader
      *
      * @return array
      */
-    public function getPrefixes()
+    public function getPrefixesPsr0()
     {
         return call_user_func_array("array_merge", $this->prefixesPsr0);
     }
 
     /**
      * Gets prefixes for PSR-4
+     *
      * @return array
      */
     public function getPrefixesPsr4()
@@ -101,7 +102,7 @@ class Loader
      *
      * @return array
      */
-    public function getFallbackDirs()
+    public function getFallbackDirsPsr0()
     {
         return $this->fallbackDirsPsr0;
     }
@@ -137,7 +138,7 @@ class Loader
     {
         $tMap = require "{$uComposerPath}/autoload_namespaces.php";
         foreach ($tMap as $tNamespace => $tPath) {
-            $this->set($tNamespace, $tPath);
+            $this->setPsr0($tNamespace, $tPath);
         }
 
         $tMap = require "{$uComposerPath}/autoload_psr4.php";
@@ -175,7 +176,7 @@ class Loader
      *
      * @return void
      */
-    public function add($uPrefix, $uPaths, $uPrepend = false)
+    public function addPsr0($uPrefix, $uPaths, $uPrepend = false)
     {
         if (!$uPrefix) {
             if ($uPrepend) {
@@ -196,10 +197,7 @@ class Loader
         $tFirst = $uPrefix[0];
         if (!isset($this->prefixesPsr0[$tFirst][$uPrefix])) {
             $this->prefixesPsr0[$tFirst][$uPrefix] = (array)$uPaths;
-
-            return;
-        }
-        if ($uPrepend) {
+        } elseif ($uPrepend) {
             $this->prefixesPsr0[$tFirst][$uPrefix] = array_merge(
                 (array)$uPaths,
                 $this->prefixesPsr0[$tFirst][$uPrefix]
@@ -240,11 +238,13 @@ class Loader
             }
         } elseif (!isset($this->prefixDirsPsr4[$uPrefix])) {
             // Register directories for a new namespace.
-            $length = strlen($uPrefix);
-            if ($uPrefix[$length - 1] !== "\\") {
+            $tLength = strlen($uPrefix);
+
+            if ($uPrefix[$tLength - 1] !== "\\") {
                 throw new InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.");
             }
-            $this->prefixLengthsPsr4[$uPrefix[0]][$uPrefix] = $length;
+
+            $this->prefixLengthsPsr4[$uPrefix[0]][$uPrefix] = $tLength;
             $this->prefixDirsPsr4[$uPrefix] = (array)$uPaths;
         } elseif ($uPrepend) {
             // Prepend directories for an already registered namespace.
@@ -270,7 +270,7 @@ class Loader
      *
      * @return void
      */
-    public function set($uPrefix, $uPaths)
+    public function setPsr0($uPrefix, $uPaths)
     {
         if (!$uPrefix) {
             $this->fallbackDirsPsr0 = (array)$uPaths;
@@ -295,9 +295,11 @@ class Loader
             $this->fallbackDirsPsr4 = (array)$uPaths;
         } else {
             $tLength = strlen($uPrefix);
+
             if ($uPrefix[$tLength - 1] !== "\\") {
                 throw new InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.");
             }
+
             $this->prefixLengthsPsr4[$uPrefix[0]][$uPrefix] = $tLength;
             $this->prefixDirsPsr4[$uPrefix] = (array)$uPaths;
         }
@@ -367,10 +369,10 @@ class Loader
 
         $tFirst = $uClass[0];
         if (isset($this->prefixLengthsPsr4[$tFirst])) {
-            foreach ($this->prefixLengthsPsr4[$tFirst] as $prefix => $length) {
+            foreach ($this->prefixLengthsPsr4[$tFirst] as $prefix => $tLength) {
                 if (strpos($uClass, $prefix) === 0) {
                     foreach ($this->prefixDirsPsr4[$prefix] as $tDirectory) {
-                        if (file_exists($tFile = "{$tDirectory}/" . substr($tLogicalPathPsr4, $length))) {
+                        if (file_exists($tFile = "{$tDirectory}/" . substr($tLogicalPathPsr4, $tLength))) {
                             return $tFile;
                         }
                     }

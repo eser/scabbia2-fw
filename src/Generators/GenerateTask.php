@@ -190,14 +190,14 @@ class GenerateTask extends TaskBase
             $tFolders[] = ["", $dir, "PSR-4"];
         }
 
-        foreach (Core::$composerAutoloader->getPrefixes() as $dirs) {
+        foreach (Core::$composerAutoloader->getPrefixesPsr0() as $dirs) {
             foreach ($dirs as $dir) {
                 $tFolders[] = ["", $dir, "PSR-0"];
             }
         }
 
         // PSR-0 fallback dirs
-        foreach (Core::$composerAutoloader->getFallbackDirs() as $dir) {
+        foreach (Core::$composerAutoloader->getFallbackDirsPsr0() as $dir) {
             $tFolders[] = ["", $dir, "PSR-0"];
         }
 

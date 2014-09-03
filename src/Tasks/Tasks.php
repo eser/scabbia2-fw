@@ -56,13 +56,13 @@ class Tasks
             ]
         );
 
-        // register psr-0 source paths to composer.
+        // register PSR-0 source paths to composer.
         $tPaths = [];
         foreach ($tTasksConfig["sources"] as $tPath) {
             $tPaths[] = Core::translateVariables($tPath);
         }
 
-        Core::$composerAutoloader->set(false, $tPaths);
+        Core::$composerAutoloader->setPsr4(false, $tPaths);
 
         // register tasks
         foreach ($tTasksConfig["tasks"] as $tTaskKey => $tTask) {

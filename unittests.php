@@ -12,14 +12,14 @@
  */
 
 // include the loader class
-require __DIR__ . "/src/Loaders/Psr4.php";
+require __DIR__ . "/src/Loaders/Loader.php";
 
 // instantiate and register the loader
-$tLoader = \Scabbia\Loaders\Psr4::init();
+$tLoader = \Scabbia\Loaders\Loader::init();
 
 // register the base directories for the namespace prefix
-$tLoader->addNamespace("Scabbia\\", __DIR__ . "/src/");
-$tLoader->addNamespace("Scabbia\\Tests\\", __DIR__ . "/tests/");
+$tLoader->addPsr4("Scabbia\\", __DIR__ . "/src/");
+$tLoader->addPsr4("Scabbia\\Tests\\", __DIR__ . "/tests/");
 
 use Scabbia\Interfaces\Console;
 use Scabbia\Testing\TestsTask;

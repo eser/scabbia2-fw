@@ -32,6 +32,8 @@ class Tasks
 {
     /** @type object $tasks the tasks read from tasks file */
     public static $tasks = [];
+    /** @type array $config tasks configuration */
+    public static $config = null;
 
 
     /**
@@ -45,7 +47,7 @@ class Tasks
     {
         // load tasks.yml
         $tTasksYamlPath = FileSystem::combinePaths(Core::$basepath, Core::translateVariables($uTasksConfigPath));
-        $tTasksConfig = Core::cachedRead(
+        self::$$config = Core::cachedRead(
             $tTasksYamlPath,
             function () use ($tTasksYamlPath) {
                 $tParser = new Parser();
@@ -57,7 +59,7 @@ class Tasks
         );
 
         // register tasks
-        foreach ($tTasksConfig["tasks"] as $tTaskKey => $tTask) {
+        foreach (self::$$config["tasks"] as $tTaskKey => $tTask) {
             self::$tasks[$tTaskKey] = $tTask;
         }
     }
@@ -73,7 +75,7 @@ class Tasks
     public static function execute(array $uTasks)
     {
         // register source paths to loader.
-        Core::pushSourcePaths($tTasksConfig);
+        Core::pushSourcePaths(self::$$config);
 
         // TODO use interpreter
         // $tCommandInterpreter = new CommandInterpreter("Scabbia", "Scabbia Command Line Tool");

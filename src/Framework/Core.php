@@ -250,9 +250,9 @@ class Core
             }
 
             if ($tNamespace === "default") {
-                self::$loader->setPsr4(false, $tTranslatedPaths);
+                self::$loader->addPsr4(false, $tTranslatedPaths, true);
             } else {
-                self::$loader->setPsr4($tNamespace, $tTranslatedPaths);
+                self::$loader->addPsr4($tNamespace, $tTranslatedPaths, true);
             }
         }
     }

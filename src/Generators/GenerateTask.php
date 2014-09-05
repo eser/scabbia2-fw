@@ -141,13 +141,15 @@ class GenerateTask extends TaskBase
         // -- process files
         $this->result = [];
         foreach ($tFolders as $tPath) {
-            FileSystem::getFilesWalk(
-                $tPath[1],
-                "*.*",
-                true,
-                [$this, "processFile"],
-                $tPath[0]
-            );
+            if (file_exists($tPath[1])) {
+                FileSystem::getFilesWalk(
+                    $tPath[1],
+                    "*.*",
+                    true,
+                    [$this, "processFile"],
+                    $tPath[0]
+                );
+            }
         }
 
         foreach ($this->generators as $tGenerator) {
@@ -179,26 +181,47 @@ class GenerateTask extends TaskBase
         $tFolders = [];
 
         // PSR-4 lookup
-        foreach (Core::$loader->getPrefixesPsr4() as $prefix => $dirs) {
-            foreach ($dirs as $dir) {
-                $tFolders[] = [$prefix, $dir, "PSR-4"];
+        foreach (Core::$loader->getPrependedPrefixesPsr4() as $tPrefix => $tDirs) {
+            foreach ($tDirs as $tDir) {
+                $tFolders[] = [$tPrefix, $tDir, "PSR-4"];
+            }
+        }
+
+        foreach (Core::$loader->getPrefixesPsr4() as $tPrefix => $tDirs) {
+            foreach ($tDirs as $tDir) {
+                $tFolders[] = [$tPrefix, $tDir, "PSR-4"];
             }
         }
 
         // PSR-4 fallback dirs
-        foreach (Core::$loader->getFallbackDirsPsr4() as $dir) {
-            $tFolders[] = ["", $dir, "PSR-4"];
+        foreach (Core::$loader->getPrependedFallbackDirsPsr4() as $tDir) {
+            $tFolders[] = ["", $tDir, "PSR-4"];
         }
 
-        foreach (Core::$loader->getPrefixesPsr0() as $dirs) {
-            foreach ($dirs as $dir) {
-                $tFolders[] = ["", $dir, "PSR-0"];
+        foreach (Core::$loader->getFallbackDirsPsr4() as $tDir) {
+            $tFolders[] = ["", $tDir, "PSR-4"];
+        }
+
+        // PSR-0 lookup
+        foreach (Core::$loader->getPrependedPrefixesPsr0() as $tDirs) {
+            foreach ($tDirs as $tDir) {
+                $tFolders[] = ["", $tDir, "PSR-0"];
+            }
+        }
+
+        foreach (Core::$loader->getPrefixesPsr0() as $tDirs) {
+            foreach ($tDirs as $tDir) {
+                $tFolders[] = ["", $tDir, "PSR-0"];
             }
         }
 
         // PSR-0 fallback dirs
-        foreach (Core::$loader->getFallbackDirsPsr0() as $dir) {
-            $tFolders[] = ["", $dir, "PSR-0"];
+        foreach (Core::$loader->getPrependedFallbackDirsPsr0() as $tDir) {
+            $tFolders[] = ["", $tDir, "PSR-0"];
+        }
+
+        foreach (Core::$loader->getFallbackDirsPsr0() as $tDir) {
+            $tFolders[] = ["", $tDir, "PSR-0"];
         }
 
         return $tFolders;

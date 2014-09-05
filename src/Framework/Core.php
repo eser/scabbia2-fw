@@ -16,6 +16,7 @@ namespace Scabbia\Framework;
 use Scabbia\Framework\ApplicationBase;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Config\Config;
+use Scabbia\Loaders\Loader;
 
 /**
  * Core framework functionality
@@ -26,8 +27,8 @@ use Scabbia\Config\Config;
  */
 class Core
 {
-    /** @type object $composerAutoloader the instance of the composer's autoloader class */
-    public static $composerAutoloader = null;
+    /** @type object $loader the instance of the autoloader class */
+    public static $loader = null;
     /** @type string $basepath the base directory which framework runs in */
     public static $basepath = null;
     /** @type array $variable array of framework variables */
@@ -44,17 +45,17 @@ class Core
     /**
      * Initializes the framework to be ready to boot
      *
-     * @param object $uComposerAutoloader The instance of the composer's autoloader class
+     * @param Loader $uLoader The instance of the autoloader class
      *
      * @return void
      */
-    public static function init($uComposerAutoloader)
+    public static function init(Loader $uLoader)
     {
         // MD set default encoding to UTF-8
         mb_internal_encoding("UTF-8");
 
-        // MD assign composer autoloader to Core::$composerAutoloader
-        self::$composerAutoloader = $uComposerAutoloader;
+        // MD assign autoloader to Core::$loader
+        self::$loader = $uLoader;
 
         // MD determine basepath
         if (self::$basepath === null) {
@@ -199,59 +200,71 @@ class Core
         $uApplicationConfig += require "{$uWritablePath}/unified-config.php";
 
         // MD push framework variables to undo application's own variable definitions
-        $tPaths = self::pushComposerPaths($uApplicationConfig);
+        self::pushSourcePaths($uApplicationConfig);
         self::$runningApplications[] = [ApplicationBase::$current, self::$variables];
 
         // MD construct the application class
         $tApplicationType = $uApplicationConfig["type"];
-        $tApplication = new $tApplicationType ($uApplicationConfig, $tPaths, $uWritablePath);
+        $tApplication = new $tApplicationType ($uApplicationConfig, $uWritablePath);
 
         ApplicationBase::$current = $tApplication;
         $tApplication->generateRequestFromGlobals();
 
         // MD pop framework variables
         list(ApplicationBase::$current, self::$variables) = array_pop(self::$runningApplications);
-        self::popComposerPaths();
+        self::popSourcePaths();
     }
 
     /**
-     * Pushes composer paths into stack
+     * Pushes source paths into loader's stack
      *
-     * @param mixed  $uApplicationConfig the application configuration
-     *
-     * @return array array of source paths
-     */
-    public static function pushComposerPaths($uApplicationConfig)
-    {
-        // register PSR-0 source paths to composer.
-        if (ApplicationBase::$current !== null) {
-            $tPaths = ApplicationBase::$current->paths;
-        } else {
-            $tPaths = [];
-        }
-
-        foreach ($uApplicationConfig["sources"] as $tPath) {
-            // FIXME in_array may be placed here to check for paths against duplication, but it's a rare case.
-            $tPaths[] = self::translateVariables($tPath);
-        }
-
-        self::$composerAutoloader->setPsr4(false, $tPaths);
-
-        return $tPaths;
-    }
-
-    /**
-     * Pops composer paths in stack
+     * @param mixed  $uConfig the configuration
      *
      * @return void
      */
-    public static function popComposerPaths()
+    public static function pushSourcePaths($uConfig)
     {
-        if (ApplicationBase::$current !== null) {
-            self::$composerAutoloader->setPsr4(false, ApplicationBase::$current->paths);
-        } else {
-            self::$composerAutoloader->setPsr4(false, []);
+        if (!isset($uConfig["autoload"])) {
+            return;
         }
+
+        if (isset($uConfig["codepools"])) {
+            $tCodepools = (array)$uConfig["codepools"];
+        } else {
+            $tCodepools = ["local", "core"];
+        }
+
+        self::$loader->push();
+
+        foreach ($uConfig["autoload"] as $tNamespace => $tPaths) {
+            // FIXME in_array may be placed here to check for paths against duplication, but it's a rare case.
+            $tTranslatedPaths = [];
+            foreach ((array)$tPaths as $tPath) {
+                foreach ($tCodepools as $tCodepool) {
+                    $tTranslatedPaths[] = str_replace(
+                        "{codepool}",
+                        $tCodepool,
+                        self::translateVariables($tPath)
+                    );
+                }
+            }
+
+            if ($tNamespace === "default") {
+                self::$loader->setPsr4(false, $tTranslatedPaths);
+            } else {
+                self::$loader->setPsr4($tNamespace, $tTranslatedPaths);
+            }
+        }
+    }
+
+    /**
+     * Pops source paths in loader's stack
+     *
+     * @return void
+     */
+    public static function popSourcePaths()
+    {
+        self::$loader->pop();
     }
 
     /**
@@ -295,7 +308,7 @@ class Core
      */
     public static function findResource($uPath)
     {
-        return self::$composerAutoloader->findFileWithExtension($uPath, "");
+        return self::$loader->findFileWithExtension($uPath, "");
     }
 
     /**

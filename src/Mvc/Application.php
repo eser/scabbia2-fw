@@ -17,6 +17,7 @@ use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\String;
 use Scabbia\Router\Router;
+use Scabbia\LightStack\RequestInterface;
 use Exception;
 
 /**
@@ -32,14 +33,13 @@ class Application extends ApplicationBase
      * Initializes an application
      *
      * @param mixed  $uConfig       application config
-     * @param array  $uPaths        paths include source files
      * @param string $uWritablePath writable output folder
      *
      * @return Application
      */
-    public function __construct($uConfig, $uPaths, $uWritablePath)
+    public function __construct($uConfig, $uWritablePath)
     {
-        parent::__construct($uConfig, $uPaths, $uWritablePath);
+        parent::__construct($uConfig, $uWritablePath);
 
         // remote host
         if (isset($_SERVER["HTTP_CLIENT_IP"])) {
@@ -173,12 +173,11 @@ class Application extends ApplicationBase
      * @param string $uMethod          method
      * @param string $uPathInfo        pathinfo
      * @param array  $uQueryParameters query parameters
-     * @param array  $uPostParameters  post parameters
      *
      * @throws Exception if routing fails
-     * @return void
+     * @return RequestInterface request object
      */
-    public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters, array $uPostParameters)
+    public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters)
     {
         $tRoute = Router::dispatch($uMethod, $uPathInfo);
 
@@ -194,8 +193,7 @@ class Application extends ApplicationBase
             "method"          => $uMethod,
             "module"          => $tModule,
             "pathinfo"        => $uPathInfo,
-            "queryParameters" => $uQueryParameters,
-            "postParameters"  => $uPostParameters
+            "queryParameters" => $uQueryParameters
         ];
 
         $this->events->invoke("requestBegin", $tRoute);
@@ -229,15 +227,27 @@ class Application extends ApplicationBase
     /**
      * Generates request from globals
      *
-     * @return void
+     * @return RequestInterface request object
      */
     public function generateRequestFromGlobals()
     {
-        $this->generateRequest(
+        return $this->generateRequest(
             $this->getRequestMethod(),
             $this->getRequestPathInfo(),
-            $this->getQueryParameters(),
-            $this->getPostParameters()
+            $this->getQueryParameters()
         );
+    }
+
+    /**
+     * Processes a request
+     *
+     * @param RequestInterface $uRequest        request object
+     * @param bool             $uIsSubRequest   whether is a sub-request or not
+     *
+     * @return ResponseInterface response object
+     */
+    public function processRequest(RequestInterface $uRequest, $uIsSubRequest)
+    {
+        // TODO move generate request code here
     }
 }

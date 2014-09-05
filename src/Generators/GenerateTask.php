@@ -130,7 +130,7 @@ class GenerateTask extends TaskBase
         }
 
         // -- scan composer maps
-        Core::pushComposerPaths($uApplicationConfig[$tApplicationKey]);
+        Core::pushSourcePaths($uApplicationConfig[$tApplicationKey]);
         $tFolders = $this->scanComposerMaps();
 
         $this->interface->writeColor("green", "Composer Maps:");
@@ -162,7 +162,7 @@ class GenerateTask extends TaskBase
             $tGenerator->finalize();
         }
 
-        Core::popComposerPaths();
+        Core::popSourcePaths();
 
         $this->interface->writeColor("yellow", "done.");
 
@@ -179,25 +179,25 @@ class GenerateTask extends TaskBase
         $tFolders = [];
 
         // PSR-4 lookup
-        foreach (Core::$composerAutoloader->getPrefixesPsr4() as $prefix => $dirs) {
+        foreach (Core::$loader->getPrefixesPsr4() as $prefix => $dirs) {
             foreach ($dirs as $dir) {
                 $tFolders[] = [$prefix, $dir, "PSR-4"];
             }
         }
 
         // PSR-4 fallback dirs
-        foreach (Core::$composerAutoloader->getFallbackDirsPsr4() as $dir) {
+        foreach (Core::$loader->getFallbackDirsPsr4() as $dir) {
             $tFolders[] = ["", $dir, "PSR-4"];
         }
 
-        foreach (Core::$composerAutoloader->getPrefixesPsr0() as $dirs) {
+        foreach (Core::$loader->getPrefixesPsr0() as $dirs) {
             foreach ($dirs as $dir) {
                 $tFolders[] = ["", $dir, "PSR-0"];
             }
         }
 
         // PSR-0 fallback dirs
-        foreach (Core::$composerAutoloader->getFallbackDirsPsr0() as $dir) {
+        foreach (Core::$loader->getFallbackDirsPsr0() as $dir) {
             $tFolders[] = ["", $dir, "PSR-0"];
         }
 

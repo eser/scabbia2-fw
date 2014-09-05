@@ -56,14 +56,6 @@ class Tasks
             ]
         );
 
-        // register PSR-0 source paths to composer.
-        $tPaths = [];
-        foreach ($tTasksConfig["sources"] as $tPath) {
-            $tPaths[] = Core::translateVariables($tPath);
-        }
-
-        Core::$composerAutoloader->setPsr4(false, $tPaths);
-
         // register tasks
         foreach ($tTasksConfig["tasks"] as $tTaskKey => $tTask) {
             self::$tasks[$tTaskKey] = $tTask;
@@ -80,6 +72,9 @@ class Tasks
      */
     public static function execute(array $uTasks)
     {
+        // register source paths to loader.
+        Core::pushSourcePaths($tTasksConfig);
+
         // TODO use interpreter
         // $tCommandInterpreter = new CommandInterpreter("Scabbia", "Scabbia Command Line Tool");
 
@@ -113,8 +108,10 @@ class Tasks
 
         if ($tClass !== null) {
             $tInstance = new $tClass ($tConfig, $tOutput);
-            return $tInstance->executeTask($uTasks);
+            $tReturnCode = $tInstance->executeTask($uTasks);
         } else {
+            $tReturnCode = 0;
+
             foreach ($tCallbacks as $tCallback) {
                 $tReturn = call_user_func_array(
                     Runtime::callbacks($tCallback),
@@ -122,11 +119,14 @@ class Tasks
                 );
 
                 if ($tReturn !== null && $tReturn !== 0) {
-                    return $tReturn;
+                    $tReturnCode = $tReturn;
+                    break;
                 }
             }
         }
 
-        return 0;
+        Core::popSourcePaths();
+
+        return $tReturnCode;
     }
 }

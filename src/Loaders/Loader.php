@@ -34,6 +34,7 @@ class Loader
     protected $fallbackDirsPsr0 = [];
 
     protected $classMap = [];
+    protected $pushStack = [];
 
 
     /**
@@ -416,6 +417,46 @@ class Loader
             }
         }
     }
+
+    /**
+     * Pushes current paths into stack
+     *
+     * @return void
+     */
+    public function push()
+    {
+        $this->pushStack[] = [
+            "prefixLengthsPsr4" => $this->prefixLengthsPsr4,
+            "prefixDirsPsr4" => $this->prefixDirsPsr4,
+            "fallbackDirsPsr4" => $this->fallbackDirsPsr4,
+
+            "prefixesPsr0" => $this->prefixesPsr0,
+            "fallbackDirsPsr0" => $this->fallbackDirsPsr0,
+
+            "classMap" => $this->classMap
+        ];
+    }
+
+    /**
+     * Pops previous paths from stack
+     *
+     * @return void
+     */
+    public function pop()
+    {
+        $tPopped = array_pop($this->pushStack);
+        // TODO throw exception if $tPopped === false
+
+        $this->prefixLengthsPsr4 = $tPopped["prefixLengthsPsr4"];
+        $this->prefixDirsPsr4 = $tPopped["prefixDirsPsr4"];
+        $this->fallbackDirsPsr4 = $tPopped["fallbackDirsPsr4"];
+
+        $this->prefixesPsr0 = $tPopped["prefixesPsr0"];
+        $this->fallbackDirsPsr0 = $tPopped["fallbackDirsPsr0"];
+
+        $this->classMap = $tPopped["classMap"];
+    }
+
 }
 
 /**

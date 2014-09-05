@@ -13,6 +13,9 @@
 
 namespace Scabbia\Framework;
 
+use Scabbia\LightStack\ApplicationInterface;
+use Scabbia\LightStack\RequestInterface;
+use Scabbia\LightStack\ResponseInterface;
 use Scabbia\Events\Events;
 
 /**
@@ -22,7 +25,7 @@ use Scabbia\Events\Events;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
-abstract class ApplicationBase
+abstract class ApplicationBase implements ApplicationInterface
 {
     /** @type ApplicationBase $current current application instance */
     public static $current = null;
@@ -30,8 +33,6 @@ abstract class ApplicationBase
     public $config;
     /** @type Events          $events events */
     public $events;
-    /** @type array           $paths paths include source files */
-    public $paths;
     /** @type string          $writablePath writable output folder */
     public $writablePath;
     /** @type bool            $development the development flag of application is on or off */
@@ -42,14 +43,12 @@ abstract class ApplicationBase
      * Initializes an application
      *
      * @param mixed  $uConfig        application config
-     * @param array  $uPaths         paths include source files
      * @param string $uWritablePath  writable output folder
      *
      * @return ApplicationBase
      */
-    public function __construct($uConfig, $uPaths, $uWritablePath)
+    public function __construct($uConfig, $uWritablePath)
     {
-        $this->paths = $uPaths;
         $this->writablePath = $uWritablePath;
 
         $this->config = $uConfig;
@@ -72,49 +71,30 @@ abstract class ApplicationBase
     }
 
     /**
-     * Gets request method
-     *
-     * @return array
-     */
-    abstract public function getRequestMethod();
-
-    /**
-     * Gets request path info
-     *
-     * @return array
-     */
-    abstract public function getRequestPathInfo();
-
-    /**
-     * Gets query parameters
-     *
-     * @return array
-     */
-    abstract public function getQueryParameters();
-
-    /**
-     * Gets post parameters
-     *
-     * @return array
-     */
-    abstract public function getPostParameters();
-
-    /**
      * Generates request
      *
      * @param string $uMethod          method
      * @param string $uPathInfo        pathinfo
      * @param array  $uQueryParameters query parameters
-     * @param array  $uPostParameters  post parameters
      *
-     * @return void
+     * @return RequestInterface request object
      */
-    abstract public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters, array $uPostParameters);
+    abstract public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters);
 
     /**
      * Generates request from globals
      *
-     * @return void
+     * @return RequestInterface request object
      */
     abstract public function generateRequestFromGlobals();
+
+    /**
+     * Processes a request
+     *
+     * @param RequestInterface $uRequest        request object
+     * @param bool             $uIsSubRequest   whether is a sub-request or not
+     *
+     * @return ResponseInterface response object
+     */
+    abstract public function processRequest(RequestInterface $uRequest, $uIsSubRequest);
 }

@@ -114,18 +114,17 @@ class Delegate
     /**
      * Invokes the event-chain execution
      *
+     * @param array $uArgs arguments
+     *
      * @return bool whether the execution is broken or not
      */
-    public function invoke()
+    public function invoke(...$uArgs)
     {
         if ($this->callbacks !== null) {
-            $tArgs = func_get_args();
-
             foreach ($this->callbacks as $tCallback) {
-                $tEventArgs = $tArgs;
                 // array_unshift($tEventArgs, $tCallback[1]);
 
-                if (call_user_func_array($tCallback[0], $tEventArgs) === $this->expectedReturn) {
+                if (call_user_func($tCallback[0], ...$uArgs) === $this->expectedReturn) {
                     return false;
                 }
             }

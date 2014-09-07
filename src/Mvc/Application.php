@@ -210,7 +210,7 @@ class Application extends ApplicationBase
             }
 
             $tInstance->prerender->invoke();
-            call_user_func_array([&$tInstance, $tRoute["callback"][1]], $tRoute["parameters"]);
+            call_user_func([&$tInstance, $tRoute["callback"][1]], ...$tRoute["parameters"]);
             $tInstance->postrender->invoke();
             // pop previously pushed variables
         } elseif ($tRoute["status"] === Router::METHOD_NOT_ALLOWED) {

@@ -27,15 +27,17 @@ class Arrays
     /**
      * Flattens given parameters into an array
      *
+     * @param array $uValues values
+     *
      * @return array flatten array
      */
-    public static function flat()
+    public static function flat(...$uValues)
     {
         $tArray = [];
 
-        foreach (func_get_args() as $tValue) {
+        foreach ($uValues as $tValue) {
             if (is_array($tValue)) {
-                foreach (call_user_func_array("self::flat", $tValue) as $tValue2) {
+                foreach (call_user_func("self::flat", ...$tValue) as $tValue2) {
                     $tArray[] = $tValue2;
                 }
 
@@ -87,15 +89,16 @@ class Arrays
     /**
      * Gets the specified elements in array
      *
-     * @param array $uArray array
+     * @param array $uArray    array
+     * @param array $uElements elements
      *
      * @return array array of extracted elements
      */
-    public static function getArray(array $uArray)
+    public static function getArray(array $uArray, ...$uElements)
     {
         $tReturn = [];
 
-        foreach (array_slice(func_get_args(), 1) as $tElement) {
+        foreach ($uElements as $tElement) {
             $tReturn[$tElement] = isset($uArray[$tElement]) ? $uArray[$tElement] : null;
         }
 
@@ -130,15 +133,16 @@ class Arrays
     /**
      * Accesses child elements by path notation
      *
-     * @param array $uArray array
+     * @param array $uArray    array
+     * @param array $uElements elements
      *
      * @return array array of extracted elements
      */
-    public static function getArrayPath(array $uArray)
+    public static function getArrayPath(array $uArray, ...$uElements)
     {
         $tReturn = [];
 
-        foreach (array_slice(func_get_args(), 1) as $tElement) {
+        foreach ($uElements as $tElement) {
             $tVariable = $uArray;
 
             foreach (explode("/", $tElement) as $tKey) {
@@ -327,18 +331,18 @@ class Arrays
      * Extracts specified columns from the array
      *
      * @param array $uArray         array
+     * @param array $uKeys          keys
      *
      * @return array values of the specified column from a multi-dimensional array
      */
-    public static function columns(array $uArray)
+    public static function columns(array $uArray, ...$uKeys)
     {
         $tReturn = [];
-        $tKeys = array_slice(func_get_args(), 1);
 
         foreach ($uArray as $tRow) {
             $tReturnRow = [];
 
-            foreach ($tKeys as $tKey) {
+            foreach ($uKeys as $tKey) {
                 if (isset($tRow[$tKey])) {
                     $tReturnRow[$tKey] = $tRow[$tKey];
                 }
@@ -461,11 +465,12 @@ class Arrays
     /**
      * Combines two or more arrays
      *
+     * @param array $uArgs arguments
+     *
      * @return array combined array
      */
-    public static function combine2()
+    public static function combine2(...$uArgs)
     {
-        $uArgs = func_get_args();
         $tArray = [];
 
         for ($i = 0; true; $i++) {

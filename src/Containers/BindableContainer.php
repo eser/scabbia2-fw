@@ -51,7 +51,7 @@ trait BindableContainer
         }
 
         if (!isset(BindableContainer::$loadedObjects[$uClass])) {
-            BindableContainer::$loadedObjects[$uClass] = (new ReflectionClass($uClass))->newInstanceArgs($uParameters);
+            BindableContainer::$loadedObjects[$uClass] = new $uClass (...$uParameters);
         }
 
         return BindableContainer::$loadedObjects[$uClass];

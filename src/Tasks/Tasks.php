@@ -115,9 +115,9 @@ class Tasks
             $tReturnCode = 0;
 
             foreach ($tCallbacks as $tCallback) {
-                $tReturn = call_user_func_array(
+                $tReturn = call_user_func(
                     Runtime::callbacks($tCallback),
-                    $uTasks
+                    ...$uTasks
                 );
 
                 if ($tReturn !== null && $tReturn !== 0) {

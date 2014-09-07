@@ -41,9 +41,9 @@ abstract class FacadeBase
     public static function __callStatic($uMethod, $uParameters)
     {
         if (isset(static::$callbackMap[$uMethod])) {
-            return call_user_func_array(
+            return call_user_func(
                 Runtime::callbacks(static::$callbackMap[$uMethod]),
-                $uParameters
+                ...$uParameters
             );
         }
 

@@ -93,7 +93,7 @@ trait IocContainer
         if (is_a($tService[0], "Closure")) {
             $tReturn = call_user_func($tService[0], $this->serviceParameters);
         } else {
-            $tReturn = (new ReflectionClass($tService[0]))->newInstanceArgs($this->serviceParameters);
+            $tReturn = new $tService[0] (...$this->serviceParameters);
         }
 
         if ($tService[1] !== false) {

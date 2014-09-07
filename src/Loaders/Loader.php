@@ -85,7 +85,7 @@ class Loader
      */
     public function getPrefixesPsr0()
     {
-        return call_user_func_array("array_merge", $this->prefixesPsr0[1]);
+        return call_user_func("array_merge", ...$this->prefixesPsr0[1]);
     }
 
     /**
@@ -95,7 +95,7 @@ class Loader
      */
     public function getPrependedPrefixesPsr0()
     {
-        return call_user_func_array("array_merge", $this->prefixesPsr0[0]);
+        return call_user_func("array_merge", ...$this->prefixesPsr0[0]);
     }
 
     /**

@@ -78,11 +78,13 @@ class String
     /**
      * Checks arguments in order and returns the value of the first expression that is not-null
      *
+     * @param array $uValues values
+     *
      * @return mixed first non-null expression in parameter list.
      */
-    public static function coalesce()
+    public static function coalesce(...$uValues)
     {
-        foreach (func_get_args() as $tValue) {
+        foreach ($uValues as $tValue) {
             if ($tValue !== null) {
                 if (is_array($tValue)) {
                     if (isset($tValue[0][$tValue[1]]) && $tValue[0][$tValue[1]] !== null) {
@@ -129,12 +131,13 @@ class String
      *
      * @param mixed $uValue  original value
      * @param mixed $uFilter filter
+     * @param array $uArgs   arguments
      *
      * @return mixed final output
      *
      * @todo recursive filtering option
      */
-    public static function filter($uValue, $uFilter)
+    public static function filter($uValue, $uFilter, ...$uArgs)
     {
         if ($uFilter === self::FILTER_VALIDATE_BOOLEAN) {
             if ($uValue === true || $uValue === "true" || $uValue === 1 || $uValue === "1" ||
@@ -157,28 +160,23 @@ class String
             return self::xss($uValue);
         }
 
-        $uArgs = func_get_args();
-
         if (is_callable($uFilter, true)) {
-            $uArgs[1] = $uValue;
-            return call_user_func_array($uFilter, array_slice($uArgs, 1));
+            return call_user_func($uFilter, $uValue, ...$uArgs);
         }
 
-        return call_user_func_array("filter_var", $uArgs);
+        return call_user_func("filter_var", ...$uArgs);
     }
 
     /**
      * Replaces placeholders given in string and formats them
      *
      * @param string $uString original string with placeholders
+     * @param array  $uArgs   arguments
      *
      * @return string final replaced output
      */
-    public static function format($uString)
+    public static function format($uString, ...$uArgs)
     {
-        $uArgs = func_get_args();
-        array_shift($uArgs);
-
         if (count($uArgs) > 0 && is_array($uArgs[0])) {
             $uArgs = $uArgs[0];
         }
@@ -264,7 +262,7 @@ class String
                     }
 
                     if ($tFunc !== null) {
-                        $tString = call_user_func_array(self::substr($tFunc, 1), $tBrackets[$tLastItem]);
+                        $tString = call_user_func(self::substr($tFunc, 1), ...$tBrackets[$tLastItem]);
                     } else {
                         $tString = implode(", ", $tBrackets[$tLastItem]);
                     }

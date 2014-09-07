@@ -360,15 +360,17 @@ class FileSystem
     /**
      * Combines given paths into a single path string
      *
+     * @param array $uPaths paths
+     *
      * @return null|string combined path
      */
-    public static function combinePaths()
+    public static function combinePaths(...$uPaths)
     {
         $tCombinedPath = null;
         $tTrimChars = (strncasecmp(PHP_OS, "WIN", 3) === 0) ? "\\/" : "/";
 
-        for ($tPaths = func_get_args(), $i = count($tPaths) - 1; $i >= 0; $i--) {
-            $tPath = $tPaths[$i];
+        for ($i = count($uPaths) - 1; $i >= 0; $i--) {
+            $tPath = $uPaths[$i];
 
             if (($tPathLength = strlen($tPath)) === 0) {
                 continue;

@@ -51,9 +51,6 @@ class Core
      */
     public static function init(Loader $uLoader)
     {
-        // MD set default encoding to UTF-8
-        mb_internal_encoding("UTF-8");
-
         // MD assign autoloader to Core::$loader
         self::$loader = $uLoader;
 

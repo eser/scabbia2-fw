@@ -72,7 +72,7 @@ class String
      */
     public static function getEncoding()
     {
-        return mb_preferred_mime_name(mb_internal_encoding());
+        return ini_get("default_charset");
     }
 
     /**
@@ -731,7 +731,7 @@ class String
      */
     public static function escapeHtml($uString)
     {
-        return htmlspecialchars($uString, ENT_COMPAT | ENT_HTML5, mb_internal_encoding());
+        return htmlspecialchars($uString, ENT_COMPAT | ENT_HTML5);
     }
 
     /**

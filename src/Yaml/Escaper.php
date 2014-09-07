@@ -157,7 +157,7 @@ class Escaper
      */
     public function unescapeCharacter($value)
     {
-        $tEncoding = mb_internal_encoding();
+        $tEncoding = ini_get("default_charset");
         $tChar = $value[1];
 
         if ($tChar === "0") {

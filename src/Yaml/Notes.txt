@@ -1,4 +1,4 @@
-Portions of this code are from Symfony YAML Component under the MIT license.
+Some parts of this code are taken from Symfony YAML Component under the MIT license.
 
 (c) Fabien Potencier <fabien@symfony.com>
 

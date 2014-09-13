@@ -35,6 +35,7 @@ namespace Scabbia\Yaml;
  *
  * @package     Scabbia\Yaml
  * @author      Matthew Lewinski <matthew@lewinski.org>
+ * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
 class Escaper

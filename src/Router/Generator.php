@@ -297,7 +297,7 @@ class Generator extends GeneratorBase
             $tChunkSize = ceil($tRegexToRoutesMapCount / $tNumParts);
 
             $tChunks = array_chunk($this->regexToRoutesMap, $tChunkSize, true);
-            $tVariableRouteData = array_map([__CLASS__, "processChunk"], $tChunks);
+            $tVariableRouteData = array_map([$this, "processChunk"], $tChunks);
         }
 
         return [
@@ -314,7 +314,7 @@ class Generator extends GeneratorBase
      *
      * @return array chunked
      */
-    public function processChunk(array $uRegexToRoutesMap)
+    protected function processChunk(array $uRegexToRoutesMap)
     {
         $tRouteMap = [];
         $tRegexes = [];

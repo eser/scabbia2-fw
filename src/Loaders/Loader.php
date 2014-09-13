@@ -16,9 +16,16 @@ namespace Scabbia\Loaders;
 use InvalidArgumentException;
 
 /**
- * Loader Autoloader Class
+ * Loader implements a PSR-4 and PSR-4 class loader
+ *
+ * See https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
+ * See https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
+ *
+ * This class is loosely based on the Symfony UniversalClassLoader.
  *
  * @package     Scabbia\Loaders
+ * @author      Fabien Potencier <fabien@symfony.com>
+ * @author      Jordi Boggiano <j.boggiano@seld.be>
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
@@ -188,9 +195,7 @@ class Loader
         }
 
         $tClassMap = require "{$uComposerPath}/autoload_classmap.php";
-        if ($tClassMap) {
-            $this->addClassMap($tClassMap);
-        }
+        $this->addClassMap($tClassMap);
     }
 
     /**
@@ -200,10 +205,18 @@ class Loader
      */
     public function addClassMap(array $uClassMap)
     {
-        if ($this->classMap) {
-            $this->classMap = array_merge($this->classMap, $uClassMap);
-        } else {
-            $this->classMap = $uClassMap;
+        $this->classMap = array_merge($this->classMap, $uClassMap);
+    }
+
+    /**
+     * @param array $uAliasMap alias to original class map
+     *
+     * @return void
+     */
+    public function addAlias(array $uAliasMap)
+    {
+        foreach ($uAliasMap as $uKey => $uValue) {
+            class_alias($uValue, $uKey, true);
         }
     }
 

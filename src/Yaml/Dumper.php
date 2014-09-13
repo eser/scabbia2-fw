@@ -36,6 +36,7 @@ use Scabbia\Yaml\Inline;
  *
  * @package     Scabbia\Yaml
  * @author      Fabien Potencier <fabien@symfony.com>
+ * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
 class Dumper

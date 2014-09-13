@@ -1,0 +1,14 @@
+Some parts of this code are taken from FastRoute under the Flask license (modified version of BSD-3-Clause).
+
+(c) Nikita Popov <nikic@php.net>
+
+For the full copyright and license information, please view the LICENSE-Flask
+file that was distributed with this source code.
+
+Modifications made:
+- Scabbia Framework code styles applied.
+- Completely implemented to Scabbia2's own generator-based system.
+
+Latest commit applied:
+https://github.com/nikic/FastRoute/commit/7dc9a43cb856debc22fe158a1144018e16f7a637
+7dc9a43cb856debc22fe158a1144018e16f7a637

@@ -1,0 +1,18 @@
+Some parts of this code are taken from Composer under the MIT license.
+
+(c) Nils Adermann <naderman@naderman.de>
+(c) Jordi Boggiano <j.boggiano@seld.be>
+
+For the full copyright and license information, please view the LICENSE-MIT
+file that was distributed with this source code.
+
+Modifications made:
+- Scabbia Framework code styles applied.
+- Added push/pop configuration.
+- Loading/Importing composer files are now optional.
+- Finding resources with extensions is now possible.
+- Added prepended paths for overriding vendor resources.
+
+Latest commit applied:
+https://github.com/composer/composer/commit/d79f2b0fd33ee9b89f3d9f1969f43dc3d570a33a
+d79f2b0fd33ee9b89f3d9f1969f43dc3d570a33a

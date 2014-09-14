@@ -41,6 +41,33 @@ class Core
     public static $runningApplications = [];
 
 
+    /**
+     * Constructor to prevent new instances of Core class
+     *
+     * @return Core
+     */
+    final private function __construct()
+    {
+    }
+
+    /**
+     * Clone method to prevent duplication of Core class
+     *
+     * @return Core
+     */
+    final private function __clone()
+    {
+    }
+
+    /**
+     * Unserialization method to prevent restoration of Core class
+     *
+     * @return Core
+     */
+    final private function __wakeup()
+    {
+    }
+
     // MD ## Core::init method
     /**
      * Initializes the framework to be ready to boot

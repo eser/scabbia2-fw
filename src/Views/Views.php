@@ -32,6 +32,33 @@ class Views
 
 
     /**
+     * Constructor to prevent new instances of Views class
+     *
+     * @return Views
+     */
+    final private function __construct()
+    {
+    }
+
+    /**
+     * Clone method to prevent duplication of Views class
+     *
+     * @return Views
+     */
+    final private function __clone()
+    {
+    }
+
+    /**
+     * Unserialization method to prevent restoration of views class
+     *
+     * @return Views
+     */
+    final private function __wakeup()
+    {
+    }
+
+    /**
      * Finds the associated view engine for a filename
      *
      * @param string $uFilename filename

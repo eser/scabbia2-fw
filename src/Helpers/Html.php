@@ -76,6 +76,33 @@ class Html
 
 
     /**
+     * Constructor to prevent new instances of Html class
+     *
+     * @return Html
+     */
+    final private function __construct()
+    {
+    }
+
+    /**
+     * Clone method to prevent duplication of Html class
+     *
+     * @return Html
+     */
+    final private function __clone()
+    {
+    }
+
+    /**
+     * Unserialization method to prevent restoration of Html class
+     *
+     * @return Html
+     */
+    final private function __wakeup()
+    {
+    }
+
+    /**
      * Sets the default variables
      *
      * @param array $uDefaults variables to be set

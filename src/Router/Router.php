@@ -54,6 +54,33 @@ REGEX;
 
 
     /**
+     * Constructor to prevent new instances of Router class
+     *
+     * @return Router
+     */
+    final private function __construct()
+    {
+    }
+
+    /**
+     * Clone method to prevent duplication of Router class
+     *
+     * @return Router
+     */
+    final private function __clone()
+    {
+    }
+
+    /**
+     * Unserialization method to prevent restoration of Router class
+     *
+     * @return Router
+     */
+    final private function __wakeup()
+    {
+    }
+
+    /**
      * The dispatch method
      *
      * @param string $uMethod   http method

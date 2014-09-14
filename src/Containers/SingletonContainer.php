@@ -53,26 +53,29 @@ trait SingletonContainer
     }
 
     /**
-     * Default clone functionality for the class
+     * Constructor to prevent new instances of this class
      *
-     * @throws Exception always, since it is a singleton object
-     * @return void
+     * @return SingletonContainer
      */
-    public function __clone()
+    final private function __construct()
     {
-        // TODO exception
-        throw new Exception("Cloning " . __CLASS__ . " is not allowed.");
     }
 
     /**
-     * Default unserialization functionality for the class
+     * Clone method to prevent duplication of this class
      *
-     * @throws Exception always, since it is a singleton object
-     * @return void
+     * @return SingletonContainer
      */
-    public function __wakeup()
+    final private function __clone()
     {
-        // TODO exception
-        throw new Exception("Unserializing " . __CLASS__ . " is not allowed.");
+    }
+
+    /**
+     * Unserialization method to prevent restoration of this class
+     *
+     * @return SingletonContainer
+     */
+    final private function __wakeup()
+    {
     }
 }

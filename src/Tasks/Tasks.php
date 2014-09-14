@@ -37,6 +37,33 @@ class Tasks
 
 
     /**
+     * Constructor to prevent new instances of Tasks class
+     *
+     * @return Tasks
+     */
+    final private function __construct()
+    {
+    }
+
+    /**
+     * Clone method to prevent duplication of Tasks class
+     *
+     * @return Tasks
+     */
+    final private function __clone()
+    {
+    }
+
+    /**
+     * Unserialization method to prevent restoration of Tasks class
+     *
+     * @return Tasks
+     */
+    final private function __wakeup()
+    {
+    }
+
+    /**
      * Loads the tasks file.
      *
      * @param string $uTasksConfigPath The path of tasks configuration file

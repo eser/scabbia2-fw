@@ -54,6 +54,33 @@ class Date
 
 
     /**
+     * Constructor to prevent new instances of Date class
+     *
+     * @return Date
+     */
+    final private function __construct()
+    {
+    }
+
+    /**
+     * Clone method to prevent duplication of Date class
+     *
+     * @return Date
+     */
+    final private function __clone()
+    {
+    }
+
+    /**
+     * Unserialization method to prevent restoration of Date class
+     *
+     * @return Date
+     */
+    final private function __wakeup()
+    {
+    }
+
+    /**
      * Sets the default variables
      *
      * @param array $uDefaults variables to be set

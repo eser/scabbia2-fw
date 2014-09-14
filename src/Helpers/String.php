@@ -37,6 +37,33 @@ class String
 
 
     /**
+     * Constructor to prevent new instances of String class
+     *
+     * @return String
+     */
+    final private function __construct()
+    {
+    }
+
+    /**
+     * Clone method to prevent duplication of String class
+     *
+     * @return String
+     */
+    final private function __clone()
+    {
+    }
+
+    /**
+     * Unserialization method to prevent restoration of String class
+     *
+     * @return String
+     */
+    final private function __wakeup()
+    {
+    }
+
+    /**
      * Default variables for Html utility set
      *
      * @type array $defaults array of default variables

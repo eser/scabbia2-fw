@@ -74,9 +74,9 @@ class Testing
                 }
 
                 if (count($tFails) === 0) {
-                    $uInterface->write("[OK] {$tTestName}");
+                    $uInterface->write(sprintf("[OK] %s", $tTestName));
                 } else {
-                    $uInterface->writeColor("red", "[FAIL] {$tTestName}");
+                    $uInterface->writeColor("red", sprintf("[FAIL] %s", $tTestName));
                     $uInterface->writeArray($tFails);
                 }
             }

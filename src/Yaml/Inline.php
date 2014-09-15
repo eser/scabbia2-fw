@@ -50,11 +50,12 @@ class Inline
      * Converts a YAML string to a PHP array
      *
      * @param string  $value                  A YAML string
+     * @param array   $references             Mapping of variable names to values
      *
      * @throws ParseException If the YAML is not valid
      * @return array A PHP array representing the YAML string
      */
-    public static function parse($value)
+    public static function parse($value, $references = [])
     {
         $value = trim($value);
 
@@ -64,13 +65,13 @@ class Inline
 
         $i = 0;
         if ($value[0] === "[") {
-            $result = self::parseSequence($value, $i);
+            $result = self::parseSequence($value, $i, $references);
             ++$i;
         } elseif ($value[0] === "{") {
-            $result = self::parseMapping($value, $i);
+            $result = self::parseMapping($value, $i, $references);
             ++$i;
         } else {
-            $result = self::parseScalar($value, null, ["\"", "'"], $i);
+            $result = self::parseScalar($value, null, ["\"", "'"], $i, true, $references);
         }
 
         // some comments are allowed at the end
@@ -89,6 +90,7 @@ class Inline
      * @param array  $stringDelimiters
      * @param int    &$i
      * @param bool   $evaluate
+     * @param array  $references
      *
      * @throws ParseException When malformed inline YAML string is parsed
      * @return string A YAML string
@@ -98,7 +100,8 @@ class Inline
         $delimiters = null,
         array $stringDelimiters = array("\"", "'"),
         &$i = 0,
-        $evaluate = true
+        $evaluate = true,
+        $references = []
     ) {
         if (in_array($scalar[$i], $stringDelimiters)) {
             // quoted scalar
@@ -131,7 +134,7 @@ class Inline
         }
 
         if ($evaluate) {
-            return self::evaluateScalar($output);
+            return self::evaluateScalar($output, $references);
         }
 
         return $output;
@@ -171,11 +174,12 @@ class Inline
      *
      * @param string $sequence
      * @param int    &$i
+     * @param array  $references
      *
      * @throws ParseException When malformed inline YAML string is parsed
      * @return string A YAML string
      */
-    protected static function parseSequence($sequence, &$i = 0)
+    protected static function parseSequence($sequence, &$i = 0, $references = [])
     {
         $output = [];
         $len = strlen($sequence);
@@ -185,20 +189,21 @@ class Inline
         while ($i < $len) {
             if ($sequence[$i] === "[") {
                 // nested sequence
-                $output[] = self::parseSequence($sequence, $i);
+                $output[] = self::parseSequence($sequence, $i, $references);
             } elseif ($sequence[$i] === "{") {
                 // nested mapping
-                $output[] = self::parseMapping($sequence, $i);
+                $output[] = self::parseMapping($sequence, $i, $references);
             } elseif ($sequence[$i] === "]") {
                 return $output;
             } elseif ($sequence[$i] !== "," && $sequence[$i] !== " ") {
                 $isQuoted = in_array($sequence[$i], ["\"", "'"]);
-                $value = self::parseScalar($sequence, [",", "]"], ["\"", "'"], $i);
+                $value = self::parseScalar($sequence, [",", "]"], ["\"", "'"], $i, true, $references);
 
-                if (!$isQuoted && strpos($value, ": ") !== false) {
+                // the value can be an array if a reference has been resolved to an array var
+                if (!is_array($value) && !$isQuoted && strpos($value, ": ") !== false) {
                     // embedded mapping?
                     try {
-                        $value = self::parseMapping("{" . $value . "}");
+                        $value = self::parseMapping("{" . $value . "}", 0, $references);
                     } catch (\InvalidArgumentException $e) {
                         // no, it's not
                     }
@@ -219,11 +224,12 @@ class Inline
      *
      * @param string $mapping
      * @param int    &$i
+     * @param array  $references
      *
      * @throws ParseException When malformed inline YAML string is parsed
      * @return string A YAML string
      */
-    protected static function parseMapping($mapping, &$i = 0)
+    protected static function parseMapping($mapping, &$i = 0, $references = [])
     {
         $output = [];
         $len = strlen($mapping);
@@ -246,14 +252,14 @@ class Inline
             while ($i < $len) {
                 if ($mapping[$i] === "[") {
                     // nested sequence
-                    $output[$key] = self::parseSequence($mapping, $i);
+                    $output[$key] = self::parseSequence($mapping, $i, $references);
                     $done = true;
                 } elseif ($mapping[$i] === "{") {
                     // nested mapping
-                    $output[$key] = self::parseMapping($mapping, $i);
+                    $output[$key] = self::parseMapping($mapping, $i, $references);
                     $done = true;
                 } elseif ($mapping[$i] !== ":" && $mapping[$i] !== " ") {
-                    $output[$key] = self::parseScalar($mapping, [",", "}"], ["\"", "'"], $i);
+                    $output[$key] = self::parseScalar($mapping, [",", "}"], ["\"", "'"], $i, true, $references);
                     $done = true;
                     --$i;
                 }
@@ -273,13 +279,29 @@ class Inline
      * Evaluates scalars and replaces magic values
      *
      * @param string $scalar
+     * @param array  $references
      *
+     * @throws ParseException when reference does not exist
      * @return string A YAML string
      */
-    protected static function evaluateScalar($scalar)
+    protected static function evaluateScalar($scalar, $references = [])
     {
         $scalar = trim($scalar);
         $scalarLower = strtolower($scalar);
+
+        if (strpos($scalar, "*") === 0) {
+            if (($pos = strpos($scalar, "#")) !== false) {
+                $value = substr($scalar, 1, $pos - 2);
+            } else {
+                $value = substr($scalar, 1);
+            }
+
+            if (!array_key_exists($value, $references)) {
+                throw new ParseException(sprintf("Reference \"%s\" does not exist.", $value));
+            }
+
+            return $references[$value];
+        }
 
         if ($scalarLower === "null" || $scalar === "" || $scalar === "~") {
             return null;
@@ -292,9 +314,9 @@ class Inline
 
             if (strpos($scalar, "!str") === 0) {
                 return (string)substr($scalar, 5);
-            } elseif (strpos($scalar, '! ') === 0) {
+            } elseif (strpos($scalar, "! ") === 0) {
                 return intval(self::parseScalar(substr($scalar, 2)));
-            } elseif (strpos($scalar, '!!php/object:') === 0) {
+            } elseif (strpos($scalar, "!!php/object:") === 0) {
                 return unserialize(substr($scalar, 13));
             } elseif (ctype_digit($scalar)) {
                 $raw = $scalar;
@@ -308,9 +330,9 @@ class Inline
                 return $scalar[1] == "0" ? octdec($scalar) : (((string)$raw == (string)$cast) ? $cast : $raw);
             } elseif (is_numeric($scalar)) {
                 return $scalar[0] . $scalar[1] == "0x" ? hexdec($scalar) : floatval($scalar);
-            } elseif (strcasecmp($scalar, ".inf") === 0 || strcasecmp($scalar, ".NaN") === 0) {
+            } elseif ($scalarLower === ".inf" || $scalarLower === ".nan") {
                 return -log(0);
-            } elseif (strcasecmp($scalar, "-.inf") === 0) {
+            } elseif ($scalarLower === "-.inf") {
                 return log(0);
             } elseif (preg_match("/^(-|\\+)?[0-9,]+(\\.[0-9]+)?$/", $scalar)) {
                 return floatval(str_replace(",", "", $scalar));

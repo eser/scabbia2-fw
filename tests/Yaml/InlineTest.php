@@ -197,6 +197,39 @@ class InlineTest extends UnitTestFixture
     }
 
     /**
+     * @dataProvider getDataForParseReferences
+     */
+    public function testParseReferences($yaml, $expected)
+    {
+        $this->assertSame($expected, Inline::parse($yaml, false, false, ["var" => "var-value"]));
+    }
+
+    public function getDataForParseReferences()
+    {
+        return [
+            "scalar" => ["*var", "var-value"],
+            "list" => ["[ *var ]", ["var-value"]],
+            "list-in-list" => ["[[ *var ]]", [["var-value"]]],
+            "map-in-list" => ["[ { key: *var } ]", [["key" => "var-value"]]],
+            "embedded-mapping-in-list" => ["[ key: *var ]", [["key" => "var-value"]]],
+            "map" => ["{ key: *var }", ["key" => "var-value"]],
+            "list-in-map" => ["{ key: [*var] }", ["key" => ["var-value"]]],
+            "map-in-map" => ["{ foo: { bar: *var } }", ["foo" => ["bar" => "var-value"]]]
+        ];
+    }
+
+    public function testParseMapReferenceInSequence()
+    {
+        $foo = [
+            "a" => "Steve",
+            "b" => "Clark",
+            "c" => "Brian",
+        ];
+
+        $this->assertSame([$foo], Inline::parse("[*foo]", false, false, ["foo" => $foo]));
+    }
+
+    /**
      * Set of test cases for parser
      *
      * @return array

@@ -177,9 +177,11 @@ class Generator extends GeneratorBase
 
         foreach ($uMethods as $tMethod) {
             if (isset($this->staticRoutes[$tRouteStr][$tMethod])) {
-                throw new Exception(
-                    "Cannot register two routes matching \"{$tRouteStr}\" for method \"{$tMethod}\""
-                );
+                throw new Exception(sprintf(
+                    "Cannot register two routes matching \"%s\" for method \"%s\"",
+                    $tRouteStr,
+                    $tMethod
+                ));
             }
         }
 
@@ -191,10 +193,12 @@ class Generator extends GeneratorBase
 
                 $tRoute = $tRoutes[$tMethod];
                 if (preg_match("~^{$tRoute["regex"]}$~", $tRouteStr) === 1) {
-                    throw new Exception(
-                        "Static route \"{$tRouteStr}\" is shadowed by previously defined variable route
-                        \"{$tRoute["regex"]}\" for method \"{$tMethod}\""
-                    );
+                    throw new Exception(sprintf(
+                        "Static route \"%s\" is shadowed by previously defined variable route \"%s\" for method \"%s\"",
+                        $tRouteStr,
+                        $tRoute["regex"],
+                        $tMethod
+                    ));
                 }
             }
 
@@ -242,7 +246,7 @@ class Generator extends GeneratorBase
             list($tVariableName, $tRegexPart) = $tPart;
 
             if (isset($tVariables[$tVariableName])) {
-                throw new Exception("Cannot use the same placeholder \"{$tVariableName}\" twice");
+                throw new Exception(sprintf("Cannot use the same placeholder \"%s\" twice", $tVariableName));
             }
 
             $tVariables[$tVariableName] = $tVariableName;
@@ -253,7 +257,7 @@ class Generator extends GeneratorBase
         foreach ($uMethods as $tMethod) {
             if (isset($this->regexToRoutesMap[$tRegex][$tMethod])) {
                 throw new Exception(
-                    "Cannot register two routes matching \"{$tRegex}\" for method \"{$tMethod}\""
+                    sprintf("Cannot register two routes matching \"%s\" for method \"%s\"", $tRegex, $tMethod)
                 );
             }
         }

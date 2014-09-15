@@ -72,8 +72,8 @@ class ServeTask extends TaskBase
     {
         $tPort = 1984;
 
-        $this->interface->writeColor("yellow", "Built-in server started on port {$tPort}.");
-        $this->interface->writeColor("yellow", "Navigate to http://localhost:{$tPort}/\n");
+        $this->interface->writeColor("yellow", sprintf("Built-in server started on port %d.", $tPort));
+        $this->interface->writeColor("yellow", sprintf("Navigate to http://localhost:%d/\n", $tPort));
         $this->interface->write("Ctrl-C to stop.");
         passthru("\"" . PHP_BINARY . "\" -S localhost:{$tPort} -t \"" . Core::$basepath . "\" index.php");
 

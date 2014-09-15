@@ -103,7 +103,7 @@ class GenerateTask extends TaskBase
         $uApplicationConfig = Config::load($tProjectFile)->get();
 
         if (!isset($uApplicationConfig[$tApplicationKey])) {
-            throw new RuntimeException("invalid configuration - {$tProjectFile}::{$tApplicationKey}");
+            throw new RuntimeException(sprintf("invalid configuration - %s::%s", $tProjectFile, $tApplicationKey));
         }
 
         // TODO is sanitizing $tApplicationKey needed for paths?
@@ -135,7 +135,7 @@ class GenerateTask extends TaskBase
 
         $this->interface->writeColor("green", "Composer Maps:");
         foreach ($tFolders as $tFolder) {
-            $this->interface->writeColor("white", "- [{$tFolder[2]}] \\{$tFolder[0]} => {$tFolder[1]}");
+            $this->interface->writeColor("white", sprintf("- [%s] \\%s => %s", $tFolder[2], $tFolder[0], $tFolder[1]));
         }
 
         // -- process files
@@ -307,7 +307,11 @@ class GenerateTask extends TaskBase
                 if ($tLastClassDerivedFrom !== null && !class_exists($tLastClassDerivedFrom)) {
                     $tSkip = true;
                     // TODO throw exception instead.
-                    echo "\"{$tLastClass}\" derived from \"{$tLastClassDerivedFrom}\", but it could not be found.\n";
+                    echo sprintf(
+                        "\"%s\" derived from \"%s\", but it could not be found.\n",
+                        $tLastClass,
+                        $tLastClassDerivedFrom
+                    );
                 }
 
                 if (!$tSkip) {

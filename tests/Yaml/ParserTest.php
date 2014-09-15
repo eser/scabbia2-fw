@@ -654,4 +654,30 @@ EOT
             $this->parser->parse($yaml)
         );
     }
+
+    public function testReferenceResolvingInInlineStrings()
+    {
+        $this->assertEquals([
+            "var" => "var-value",
+            "scalar" => "var-value",
+            "list" => ["var-value"],
+            "list_in_list" => [["var-value"]],
+            "map_in_list" => [["key" => "var-value"]],
+            "embedded_mapping" => [["key" => "var-value"]],
+            "map" => ["key" => "var-value"],
+            "list_in_map" => ["key" => ["var-value"]],
+            "map_in_map" => ["foo" => ["bar" => "var-value"]],
+        ], Yaml::parse(<<<EOF
+var:  &var var-value
+scalar: *var
+list: [ *var ]
+list_in_list: [[ *var ]]
+map_in_list: [ { key: *var } ]
+embedded_mapping: [ key: *var ]
+map: { key: *var }
+list_in_map: { key: [*var] }
+map_in_map: { foo: { bar: *var } }
+EOF
+        ));
+    }
 }

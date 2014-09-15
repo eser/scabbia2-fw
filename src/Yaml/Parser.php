@@ -155,14 +155,14 @@ class Parser
                 "|[^ '\"\\[\\{].*?) *\\:(\\s+(?P<value>.+?))?\\s*$#u",
                 $this->currentLine,
                 $values
-            ) && strpos($values["key"], " #") === false) {
+            ) && (strpos($values["key"], " #") === false || in_array($values["key"][0], ["\"", "'"]))) {
                 if ($context && $context === "sequence") {
                     throw new ParseException("You cannot define a mapping item when in a sequence");
                 }
                 $context = "mapping";
 
                 // force correct settings
-                Inline::parse(null);
+                Inline::parse(null, $this->refs);
                 try {
                     $key = Inline::parseScalar($values["key"]);
                 } catch (ParseException $e) {
@@ -256,7 +256,7 @@ class Parser
                 $lineCount = count($this->lines);
                 if ($lineCount === 1 || ($lineCount === 2 && strlen($this->lines[1]) === 0)) {
                     try {
-                        $value = Inline::parse($this->lines[0]);
+                        $value = Inline::parse($this->lines[0], $this->refs);
                     } catch (ParseException $e) {
                         $e->setParsedLine($this->getRealCurrentLineNb() + 1);
                         $e->setSnippet($this->currentLine);
@@ -461,7 +461,7 @@ class Parser
         }
 
         try {
-            return Inline::parse($value);
+            return Inline::parse($value, $this->refs);
         } catch (ParseException $e) {
             $e->setParsedLine($this->getRealCurrentLineNb() + 1);
             $e->setSnippet($this->currentLine);

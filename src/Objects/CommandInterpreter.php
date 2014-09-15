@@ -71,11 +71,11 @@ class CommandInterpreter
      */
     public function help($uInterface)
     {
-        $uInterface->write("{$this->title}\n");
-        $uInterface->write("{$this->description}\n");
+        $uInterface->write(sprintf("%s\n", $this->title));
+        $uInterface->write(sprintf("%s\n", $this->description));
 
         foreach ($this->commands as $tCommandKey => $tCommand) {
-            $uInterface->write("- {$tCommandKey}: {$tCommand[0]}\n");
+            $uInterface->write(sprintf("- %s: %s\n", $tCommandKey, $tCommand[0]));
         }
     }
 
@@ -161,7 +161,7 @@ class CommandInterpreter
         $tParameters = [];
 
         if (!isset($this->commands[$uCommandKey])) {
-            throw new Exception("command not found - {$uCommandKey}");
+            throw new Exception(sprintf("command not found - %s", $uCommandKey));
         }
 
         foreach ($this->commands[$uCommandKey][1] as $tOption) {
@@ -170,7 +170,7 @@ class CommandInterpreter
             } elseif ($tOption[0] === Console::PARAMETER_REQUIRED) {
                 $tParameters[$tOption[1]] = array_shift($uCommandParameters);
                 if ($tParameters[$tOption[1]] === false) {
-                    throw new Exception("{$tOption[1]} parameter required for command {$uCommandKey}");
+                    throw new Exception(sprintf("%s parameter required for command %s", $tOption[1], $uCommandKey));
                 }
             } elseif ($tOption[0] === Console::OPTION ||
                 $tOption[0] === Console::OPTION_MULTIPLE ||
@@ -180,7 +180,7 @@ class CommandInterpreter
         }
 
         if (count($uCommandOptions) > 0) {
-            throw new Exception("Invalid options used - " . implode($uCommandOptions, ", "));
+            throw new Exception(sprintf("Invalid options used - %s", implode($uCommandOptions, ", ")));
         }
 
         return $tParameters;

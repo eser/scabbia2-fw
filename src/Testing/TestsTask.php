@@ -76,7 +76,7 @@ class TestsTask extends TaskBase
             $tCoverage = "unknown";
         }
 
-        $this->interface->writeColor("green", "Code Coverage = {$tCoverage}");
+        $this->interface->writeColor("green", sprintf("Code Coverage = %s", $tCoverage));
         $this->interface->writeColor("yellow", "done.");
 
         return $tExitCode;

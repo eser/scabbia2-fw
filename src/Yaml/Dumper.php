@@ -61,15 +61,13 @@ class Dumper
             $isAHash = array_keys($input) !== range(0, count($input) - 1);
 
             foreach ($input as $key => $value) {
-                $willBeInlined = ($inline - 1 <= 0) || !is_array($value) || count($value) === 0;
+                $willBeInlined = (($inline - 1 <= 0) || !is_array($value) || count($value) === 0);
 
-                $output .= sprintf(
-                    "%s%s%s%s",
-                    $prefix,
-                    $isAHash ? self::dumpInline($key) . ":" : "-",
-                    $willBeInlined ? " " : "\n",
-                    self::dump($value, $inline - 1, $willBeInlined ? 0 : $indentation)
-                ) . ($willBeInlined ? "\n" : "");
+                $output .= $prefix .
+                    ($isAHash ? self::dumpInline($key) . ":" : "-") .
+                    ($willBeInlined ? " " : "\n") .
+                    self::dump($value, $inline - 1, ($willBeInlined ? 0 : $indentation)) .
+                    ($willBeInlined ? "\n" : "");
             }
         }
 
@@ -155,15 +153,15 @@ class Dumper
                 $output[] = self::dumpInline($val);
             }
 
-            return sprintf("[%s]", implode(", ", $output));
+            return "[" . implode(", ", $output) . "]";
         }
 
         // mapping
         $output = [];
         foreach ($value as $key => $val) {
-            $output[] = sprintf("%s: %s", self::dumpInline($key), self::dumpInline($val));
+            $output[] = self::dumpInline($key) . ": " . self::dumpInline($val);
         }
 
-        return sprintf("{ %s }", implode(", ", $output));
+        return "{ " . implode(", ", $output) . " }";
     }
 }

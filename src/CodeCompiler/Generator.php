@@ -13,6 +13,7 @@
 
 namespace Scabbia\CodeCompiler;
 
+use Scabbia\CodeCompiler\TokenStream;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
@@ -130,23 +131,16 @@ class Generator extends GeneratorBase
         $tLastToken = -1;
         $tOpenStack = [];
 
-        foreach (token_get_all($uInput) as $tToken) {
-            if (is_array($tToken)) {
-                $tTokenId = $tToken[0];
-                $tTokenContent = $tToken[1];
-            } else {
-                $tTokenId = null;
-                $tTokenContent = $tToken;
-            }
-
-            // $tReturn .= PHP_EOL . token_name($tTokenId) . PHP_EOL;
-            if ($tTokenId === T_OPEN_TAG) {
+        $tTokenStream = new TokenStream(token_get_all($uInput));
+        foreach ($tTokenStream as $tToken) {
+            // $tReturn .= PHP_EOL . token_name($tToken[0]) . PHP_EOL;
+            if ($tToken[0] === T_OPEN_TAG) {
                 $tReturn .= "<" . "?php ";
-                $tOpenStack[] = $tTokenId;
-            } elseif ($tTokenId === T_OPEN_TAG_WITH_ECHO) {
+                $tOpenStack[] = $tToken[0];
+            } elseif ($tToken[0] === T_OPEN_TAG_WITH_ECHO) {
                 $tReturn .= "<" . "?php echo ";
-                $tOpenStack[] = $tTokenId;
-            } elseif ($tTokenId === T_CLOSE_TAG) {
+                $tOpenStack[] = $tToken[0];
+            } elseif ($tToken[0] === T_CLOSE_TAG) {
                 $tLastOpen = array_pop($tOpenStack);
 
                 if ($tLastOpen === T_OPEN_TAG_WITH_ECHO) {
@@ -158,9 +152,9 @@ class Generator extends GeneratorBase
                 }
 
                 $tReturn .= "?" . ">";
-            } elseif ($tTokenId === T_COMMENT || $tTokenId === T_DOC_COMMENT) {
+            } elseif ($tToken[0] === T_COMMENT || $tToken[0] === T_DOC_COMMENT) {
                 // skip comments
-            } elseif ($tTokenId === T_WHITESPACE) {
+            } elseif ($tToken[0] === T_WHITESPACE) {
                 if ($tLastToken !== T_WHITESPACE &&
                     $tLastToken !== T_OPEN_TAG &&
                     $tLastToken !== T_OPEN_TAG_WITH_ECHO &&
@@ -169,17 +163,17 @@ class Generator extends GeneratorBase
                 ) {
                     $tReturn .= " ";
                 }
-            } elseif ($tTokenId === null) {
-                $tReturn .= $tTokenContent;
+            } elseif ($tToken[0] === null) {
+                $tReturn .= $tToken[1];
                 if ($tLastToken === T_END_HEREDOC) {
                     $tReturn .= "\n";
-                    $tTokenId = T_WHITESPACE;
+                    $tToken[0] = T_WHITESPACE;
                 }
             } else {
-                $tReturn .= $tTokenContent;
+                $tReturn .= $tToken[1];
             }
 
-            $tLastToken = $tTokenId;
+            $tLastToken = $tToken[0];
         }
 
         while (count($tOpenStack) > 0) {

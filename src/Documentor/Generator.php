@@ -13,6 +13,7 @@
 
 namespace Scabbia\Documentor;
 
+use Scabbia\CodeCompiler\TokenStream;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
@@ -69,18 +70,11 @@ class Generator extends GeneratorBase
     {
         $tDocLines = [];
 
-        foreach ($uTokens as $tToken) {
-            if (is_array($tToken)) {
-                $tTokenId = $tToken[0];
-                $tTokenContent = $tToken[1];
-            } else {
-                $tTokenId = null;
-                $tTokenContent = $tToken;
-            }
-
-            if ($tTokenId === T_COMMENT) {
-                if (strncmp($tTokenContent, "// MD ", 6) === 0) {
-                    $tDocLines[] = substr($tTokenContent, 6);
+        $tTokenStream = new TokenStream(token_get_all($uInput));
+        foreach ($tTokenStream as $tToken) {
+            if ($tToken[0] === T_COMMENT) {
+                if (strncmp($tToken[1], "// MD ", 6) === 0) {
+                    $tDocLines[] = substr($tToken[1], 6);
                 }
             }
         }

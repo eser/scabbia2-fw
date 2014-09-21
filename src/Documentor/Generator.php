@@ -70,7 +70,7 @@ class Generator extends GeneratorBase
     {
         $tDocLines = [];
 
-        $tTokenStream = new TokenStream(token_get_all($uInput));
+        $tTokenStream = new TokenStream($uTokens);
         foreach ($tTokenStream as $tToken) {
             if ($tToken[0] === T_COMMENT) {
                 if (strncmp($tToken[1], "// MD ", 6) === 0) {

@@ -37,7 +37,7 @@ class Arrays
 
         foreach ($uValues as $tValue) {
             if (is_array($tValue)) {
-                foreach (call_user_func("self::flat", ...$tValue) as $tValue2) {
+                foreach (self::flat(...$tValue) as $tValue2) {
                     $tArray[] = $tValue2;
                 }
 

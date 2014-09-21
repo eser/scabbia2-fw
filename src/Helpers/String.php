@@ -191,7 +191,7 @@ class String
             return call_user_func($uFilter, $uValue, ...$uArgs);
         }
 
-        return call_user_func("filter_var", ...$uArgs);
+        return filter_var(...$uArgs);
     }
 
     /**

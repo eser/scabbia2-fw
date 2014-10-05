@@ -203,15 +203,19 @@ class GenerateTask extends TaskBase
         }
 
         // PSR-0 lookup
-        foreach (Core::$loader->getPrependedPrefixesPsr0() as $tDirs) {
-            foreach ($tDirs as $tDir) {
-                $tFolders[] = ["", $tDir, "PSR-0"];
+        foreach (Core::$loader->getPrependedPrefixesPsr0() as $tPrefixes) {
+            foreach ($tPrefixes as $tPrefix => $tDirs) {
+                foreach ($tDirs as $tDir) {
+                    $tFolders[] = [$tPrefix, $tDir, "PSR-0"];
+                }
             }
         }
 
-        foreach (Core::$loader->getPrefixesPsr0() as $tDirs) {
-            foreach ($tDirs as $tDir) {
-                $tFolders[] = ["", $tDir, "PSR-0"];
+        foreach (Core::$loader->getPrefixesPsr0() as $tPrefixes) {
+            foreach ($tPrefixes as $tPrefix => $tDirs) {
+                foreach ($tDirs as $tDir) {
+                    $tFolders[] = [$tPrefix, $tDir, "PSR-0"];
+                }
             }
         }
 

@@ -260,24 +260,29 @@ class Core
 
         self::$loader->push();
 
+        $tPreviousPrependedPaths = self::$loader->getPrependedPrefixesPsr4();
+        $tPreviousPrependedPaths[false] = self::$loader->getPrependedFallbackDirsPsr4();
+
         foreach ($uConfig["autoload"] as $tNamespace => $tPaths) {
-            // FIXME in_array may be placed here to check for paths against duplication, but it's a rare case.
+            $tLoaderNamespace = ($tNamespace !== "default") ? $tNamespace : false;
+
             $tTranslatedPaths = [];
             foreach ((array)$tPaths as $tPath) {
                 foreach ($tCodepools as $tCodepool) {
-                    $tTranslatedPaths[] = str_replace(
+                    $tTranslatedPath = str_replace(
                         "{codepool}",
                         $tCodepool,
                         self::translateVariables($tPath)
                     );
+
+                    if (isset($tPreviousPrependedPaths[$tLoaderNamespace]) &&
+                        !in_array($tTranslatedPath, $tPreviousPrependedPaths[$tLoaderNamespace])) {
+                        $tTranslatedPaths[] = $tTranslatedPath;
+                    }
                 }
             }
 
-            if ($tNamespace === "default") {
-                self::$loader->addPsr4(false, $tTranslatedPaths, true);
-            } else {
-                self::$loader->addPsr4($tNamespace, $tTranslatedPaths, true);
-            }
+            self::$loader->addPsr4($tLoaderNamespace, $tTranslatedPaths, true);
         }
     }
 

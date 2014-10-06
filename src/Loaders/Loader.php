@@ -42,25 +42,39 @@ class Loader
 
     protected $classMap = [];
     protected $pushStack = [];
+    protected $paths = [];
 
 
     /**
      * Initializes the autoloader and registers it
      *
-     * @param string|null $uComposerPath the path of composer files installed in
+     * @param string $uBasePath the path of project files installed in
      *
      * @return Loader the instance
      */
-    public static function init($uComposerPath = null)
+    public static function init($uBasePath)
     {
-        $tInstance = new static();
-        if ($uComposerPath !== null) {
-            $tInstance->importFromComposer($uComposerPath);
-        }
+        $tInstance = new static($uBasePath);
+        $tInstance->importFromComposer();
 
         $tInstance->register(true);
 
         return $tInstance;
+    }
+
+    /**
+     * Initializes a loader
+     *
+     * @param string|null $uBasePath the path of project files installed in
+     *
+     * @return Loader
+     */
+    public function __construct($uBasePath = null)
+    {
+        if ($uBasePath !== null) {
+            $this->paths["base"] = $uBasePath;
+            $this->paths["vendor"] = "$uBasePath/vendor";
+        }
     }
 
     /**
@@ -186,23 +200,23 @@ class Loader
     /**
      * Imports all settings from composer directory
      *
-     * @param string|null $uComposerPath the path of composer files installed in
-     *
      * @return void
      */
-    public function importFromComposer($uComposerPath)
+    public function importFromComposer()
     {
-        $tMap = require "{$uComposerPath}/autoload_namespaces.php";
+        $tComposerPath = $this->paths["vendor"] . "/composer";
+
+        $tMap = require "{$tComposerPath}/autoload_namespaces.php";
         foreach ($tMap as $tNamespace => $tPath) {
             $this->setPsr0($tNamespace, $tPath);
         }
 
-        $tMap = require "{$uComposerPath}/autoload_psr4.php";
+        $tMap = require "{$tComposerPath}/autoload_psr4.php";
         foreach ($tMap as $tNamespace => $tPath) {
             $this->setPsr4($tNamespace, $tPath);
         }
 
-        $tClassMap = require "{$uComposerPath}/autoload_classmap.php";
+        $tClassMap = require "{$tComposerPath}/autoload_classmap.php";
         $this->addClassMap($tClassMap);
     }
 

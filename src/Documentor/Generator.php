@@ -62,16 +62,15 @@ class Generator extends GeneratorBase
      *
      * @param string $uPath         file path
      * @param string $uFileContents contents of file
-     * @param string $uTokens       tokens extracted by tokenizer
+     * @param string $uTokenStream  extracted tokens wrapped with tokenstream
      *
      * @return void
      */
-    public function processFile($uPath, $uFileContents, $uTokens)
+    public function processFile($uPath, $uFileContents, $uTokenStream)
     {
         $tDocLines = [];
 
-        $tTokenStream = new TokenStream($uTokens);
-        foreach ($tTokenStream as $tToken) {
+        foreach ($uTokenStream as $tToken) {
             if ($tToken[0] === T_COMMENT) {
                 if (strncmp($tToken[1], "// MD ", 6) === 0) {
                     $tDocLines[] = substr($tToken[1], 6);

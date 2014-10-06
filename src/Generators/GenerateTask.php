@@ -14,6 +14,7 @@
 namespace Scabbia\Generators;
 
 use Scabbia\Tasks\TaskBase;
+use Scabbia\CodeCompiler\TokenStream;
 use Scabbia\Config\Config;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
@@ -242,10 +243,10 @@ class GenerateTask extends TaskBase
     public function processFile($uFile, $uNamespacePrefix)
     {
         $tFileContents = FileSystem::read($uFile);
-        $tTokens = token_get_all($tFileContents);
+        $tTokenStream = new TokenStream(token_get_all($tFileContents));
 
         foreach ($this->generators as $tGenerator) {
-            $tGenerator->processFile($uFile, $tFileContents, $tTokens);
+            $tGenerator->processFile($uFile, $tFileContents, $tTokenStream);
         }
 
         if (substr($uFile, -4) !== ".php") {
@@ -260,48 +261,40 @@ class GenerateTask extends TaskBase
         $tLastClassDerivedFrom = null;
         $tExpectation = 0; // 1=namespace, 2=class
 
-        foreach ($tTokens as $tToken) {
-            if (is_array($tToken)) {
-                $tTokenId = $tToken[0];
-                $tTokenContent = $tToken[1];
-            } else {
-                $tTokenId = null;
-                $tTokenContent = $tToken;
-            }
-
-            if ($tTokenId === T_WHITESPACE) {
+        foreach ($tTokenStream as $tToken) {
+            if ($tToken[0] === T_WHITESPACE) {
                 continue;
             }
 
             if ($tExpectation === 0) {
-                if ($tTokenId === T_NAMESPACE) {
+                if ($tToken[0] === T_NAMESPACE) {
                     $tBuffer = "";
                     $tExpectation = 1;
                     continue;
                 }
 
-                if ($tTokenId === T_CLASS) {
+                if ($tToken[0] === T_CLASS) {
                     $tExpectation = 2;
                     continue;
                 }
 
-                if ($tTokenId === T_USE) {
+                if ($tToken[0] === T_USE) {
                     $tBuffer = "";
                     $tExpectation = 5;
                     continue;
                 }
             } elseif ($tExpectation === 1) {
-                if ($tTokenId === T_STRING || $tTokenId === T_NS_SEPARATOR) {
-                    $tBuffer .= $tTokenContent;
+                if ($tToken[0] === T_STRING || $tToken[0] === T_NS_SEPARATOR) {
+                    $tBuffer .= $tToken[1];
                 } else {
                     $tLastNamespace = $tBuffer;
                     $tExpectation = 0;
                 }
             } elseif ($tExpectation === 2) {
-                $tLastClass = "{$tLastNamespace}\\{$tTokenContent}";
+                $tLastClass = "{$tLastNamespace}\\{$tToken[1]}";
                 $tExpectation = 3;
             } elseif ($tExpectation === 3) {
-                if ($tTokenId === T_EXTENDS) {
+                if ($tToken[0] === T_EXTENDS) {
                     $tBuffer = "";
                     $tExpectation = 4;
                     continue;
@@ -324,8 +317,8 @@ class GenerateTask extends TaskBase
 
                 $tExpectation = 0;
             } elseif ($tExpectation === 4) {
-                if ($tTokenId === T_STRING || $tTokenId === T_NS_SEPARATOR) {
-                    $tBuffer .= $tTokenContent;
+                if ($tToken[0] === T_STRING || $tToken[0] === T_NS_SEPARATOR) {
+                    $tBuffer .= $tToken[1];
                 } else {
                     $tFound = false;
 
@@ -349,8 +342,8 @@ class GenerateTask extends TaskBase
                     $tExpectation = 3;
                 }
             } elseif ($tExpectation === 5) {
-                if ($tTokenId === T_STRING || $tTokenId === T_NS_SEPARATOR) {
-                    $tBuffer .= $tTokenContent;
+                if ($tToken[0] === T_STRING || $tToken[0] === T_NS_SEPARATOR) {
+                    $tBuffer .= $tToken[1];
                 } else {
                     $tUses[] = $tBuffer;
                     $tExpectation = 0;

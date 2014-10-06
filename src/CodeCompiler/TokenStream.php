@@ -34,6 +34,18 @@ class TokenStream implements Countable, SeekableIterator
 
 
     /**
+     * Creates a new tokenstream instance from a code piece
+     *
+     * @param string $uCode  the string consists of codes to turned into tokens
+     *
+     * @return TokenStream the new instance
+     */
+    public static function fromString($uCode)
+    {
+        return new static(token_get_all($uCode));
+    }
+
+    /**
      * Initializes a token stream
      *
      * @param array $uTokens    set of tokens

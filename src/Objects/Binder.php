@@ -13,7 +13,6 @@
 
 namespace Scabbia\Objects;
 
-use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
 
 /**
@@ -22,19 +21,11 @@ use Scabbia\Helpers\FileSystem;
  * @package     Scabbia\Objects
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.5.0
- *
- * @todo get rid of Core:: dependencies
  */
 class Binder
 {
-    /** @type string name */
-    public $name = null;
-
-    /** @type string cache path */
-    public $cachepath;
-
-    /** @type bool sealed */
-    public $sealed;
+    /** @type array filters */
+    public $filters = [];
 
     /** @type array contents */
     public $contents = [];
@@ -42,27 +33,6 @@ class Binder
     /** @type string output */
     public $output;
 
-
-    /**
-     * Initializes a Binder class instance
-     *
-     * @param string $uName a name for binder
-     *
-     * @return Binder
-     */
-    public function __construct($uName)
-    {
-        $this->name = $uName;
-
-        $this->cachepath = Core::$basepath . "/writable/cache/" . crc32("binder/{$uName}");
-        $tOptions = [
-            "ttl" => 60 * 60
-        ];
-
-        if ($this->sealed = FileSystem::isReadable($this->cachepath, $tOptions)) {
-            $this->output = FileSystem::readSerialize($this->cachepath);
-        }
-    }
 
     /**
      * Adds a content
@@ -74,10 +44,6 @@ class Binder
      */
     public function addContent($uContent, $uMimeType = "text/plain")
     {
-        if ($this->sealed) {
-            return;
-        }
-
         $this->contents[] = ["direct", $uMimeType, $uContent];
     }
 
@@ -91,10 +57,6 @@ class Binder
      */
     public function addCallback($uCallback, $uMimeType = "text/plain")
     {
-        if ($this->sealed) {
-            return;
-        }
-
         $this->contents[] = ["callback", $uMimeType, $uCallback];
     }
 
@@ -107,13 +69,21 @@ class Binder
      */
     public function addFile($uPath)
     {
-        if ($this->sealed) {
-            return;
-        }
+        $tExtension = pathinfo($uPath, PATHINFO_EXTENSION);
+        $this->contents[] = ["file", FileSystem::getMimetype($tExtension), $uPath];
+    }
 
-        $tFilePath = Core::translateVariables($uPath);
-        $tExtension = pathinfo($tFilePath, PATHINFO_EXTENSION);
-        $this->contents[] = ["file", FileSystem::getMimetype($tExtension), $tFilePath];
+    /**
+     * Adds a callback
+     *
+     * @param string   $uMimeType  mimetype to be registered
+     * @param callable $uCallback  callback
+     *
+     * @return void
+     */
+    public function addFilter($uMimeType, $uCallback)
+    {
+        $this->filters[$uMimeType] = $uCallback;
     }
 
     /**
@@ -125,35 +95,32 @@ class Binder
      */
     public function compile($uMimeTypeFilter = null)
     {
-        if ($this->sealed) {
-            return;
-        }
+        if (count($this->contents) > 0) {
+            $this->output = "";
 
-        $this->sealed = true;
-        $this->output = "";
+            foreach ($this->contents as $tContent) {
+                if ($uMimeTypeFilter !== null && $uMimeTypeFilter !== $tContent[1]) {
+                    continue;
+                }
 
-        foreach ($this->contents as $tContent) {
-            if ($uMimeTypeFilter !== null && $uMimeTypeFilter !== $tContent[1]) {
-                continue;
+                if ($tContent[0] === "direct") {
+                    $tOutput = $tContent[2];
+                } elseif ($tContent[0] === "callback") {
+                    $tOutput = call_user_func($tContent[2]);
+                } elseif ($tContent[0] === "file") {
+                    $tOutput = FileSystem::read($tContent[2]);
+                }
+
+                if (isset($this->filters[$tContent[1]])) {
+                    $tOutput = call_user_func($this->filters[$tContent[1]], $tOutput);
+                }
+
+                $this->output .= $tOutput;
             }
 
-            if ($tContent[0] === "direct") {
-                $this->output .= $tContent[2];
-            } elseif ($tContent[0] === "callback") {
-                $this->output .= call_user_func($tContent[2]);
-            } elseif ($tContent[0] === "file") {
-                $this->output .= Core::cachedRead(
-                    $tContent[2],
-                    function () use ($tContent) {
-                        return FileSystem::read($tContent[2]);
-                    },
-                    [
-                        "ttl" => 60 * 60
-                    ]
-                );
-            }
+            $this->contents = [];
         }
 
-        FileSystem::writeSerialize($this->cachepath, $this->output);
+        return $this->output;
     }
 }

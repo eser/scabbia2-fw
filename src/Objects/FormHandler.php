@@ -16,7 +16,7 @@ namespace Scabbia\Objects;
 use Scabbia\Helpers\Arrays;
 
 /**
- * Binder
+ * FormHandler
  *
  * @package     Scabbia\Objects
  * @author      Eser Ozvataf <eser@sent.com>

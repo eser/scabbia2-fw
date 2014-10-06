@@ -13,10 +13,12 @@
 
 namespace Scabbia\CodeCompiler;
 
+use Scabbia\CodeCompiler\Minifier;
 use Scabbia\CodeCompiler\TokenStream;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
+use Scabbia\Objects\Binder;
 use Exception;
 
 /**
@@ -61,13 +63,13 @@ class Generator extends GeneratorBase
     /**
      * Processes a file
      *
-     * @param string $uPath         file path
-     * @param string $uFileContents contents of file
-     * @param string $uTokenStream  extracted tokens wrapped with tokenstream
+     * @param string      $uPath         file path
+     * @param string      $uFileContents contents of file
+     * @param TokenStream $uTokenStream  extracted tokens wrapped with tokenstream
      *
      * @return void
      */
-    public function processFile($uPath, $uFileContents, $uTokenStream)
+    public function processFile($uPath, $uFileContents, TokenStream $uTokenStream)
     {
     }
 
@@ -100,7 +102,17 @@ class Generator extends GeneratorBase
             "Scabbia\\Helpers\\String.php"
         ];
 
-        $tCompilationContent = "";
+        $tMinifier = new Minifier();
+
+        $tBinder = new Binder();
+        $tBinder->addFilter(
+            "application/x-httpd-php",
+            function ($uInput) use ($tMinifier) {
+                $tTokenStream = TokenStream::fromString($uInput);
+                return $tMinifier->minifyPhpSource($tTokenStream);
+            }
+        );
+
         foreach ($tFileNamespaceList as $tFileNamespace) {
             $tFilePath = Core::findResource($tFileNamespace);
             if ($tFilePath === false) {
@@ -109,86 +121,12 @@ class Generator extends GeneratorBase
             }
 
             // TODO add checking class_exists for php files
-            $tCompilationContent .= $this->minifyPhpSource(FileSystem::read($tFilePath));
+            $tBinder->addFile($tFilePath);
         }
 
         FileSystem::write(
             Core::translateVariables($this->outputPath . "/compiled.php"),
-            $tCompilationContent
+            $tBinder->compile()
         );
-    }
-
-    /**
-     * Returns a minified php source
-     *
-     * @param string    $uInput         php source code
-     *
-     * @return array the file content in printable format with comments
-     */
-    public function minifyPhpSource($uInput)
-    {
-        $tReturn = "";
-        $tLastToken = -1;
-        $tOpenStack = [];
-
-        $tTokenStream = new TokenStream(token_get_all($uInput));
-        foreach ($tTokenStream as $tToken) {
-            // $tReturn .= PHP_EOL . token_name($tToken[0]) . PHP_EOL;
-            if ($tToken[0] === T_OPEN_TAG) {
-                $tReturn .= "<" . "?php ";
-                $tOpenStack[] = $tToken[0];
-            } elseif ($tToken[0] === T_OPEN_TAG_WITH_ECHO) {
-                $tReturn .= "<" . "?php echo ";
-                $tOpenStack[] = $tToken[0];
-            } elseif ($tToken[0] === T_CLOSE_TAG) {
-                $tLastOpen = array_pop($tOpenStack);
-
-                if ($tLastOpen === T_OPEN_TAG_WITH_ECHO) {
-                    $tReturn .= "; ";
-                } else {
-                    if ($tLastToken !== T_WHITESPACE) {
-                        $tReturn .= " ";
-                    }
-                }
-
-                $tReturn .= "?" . ">";
-            } elseif ($tToken[0] === T_COMMENT || $tToken[0] === T_DOC_COMMENT) {
-                // skip comments
-            } elseif ($tToken[0] === T_WHITESPACE) {
-                if ($tLastToken !== T_WHITESPACE &&
-                    $tLastToken !== T_OPEN_TAG &&
-                    $tLastToken !== T_OPEN_TAG_WITH_ECHO &&
-                    $tLastToken !== T_COMMENT &&
-                    $tLastToken !== T_DOC_COMMENT
-                ) {
-                    $tReturn .= " ";
-                }
-            } elseif ($tToken[0] === null) {
-                $tReturn .= $tToken[1];
-                if ($tLastToken === T_END_HEREDOC) {
-                    $tReturn .= "\n";
-                    $tToken[0] = T_WHITESPACE;
-                }
-            } else {
-                $tReturn .= $tToken[1];
-            }
-
-            $tLastToken = $tToken[0];
-        }
-
-        while (count($tOpenStack) > 0) {
-            $tLastOpen = array_pop($tOpenStack);
-            if ($tLastOpen === T_OPEN_TAG_WITH_ECHO) {
-                $tReturn .= "; ";
-            } else {
-                if ($tLastToken !== T_WHITESPACE) {
-                    $tReturn .= " ";
-                }
-            }
-
-            $tReturn .= "?" . ">";
-        }
-
-        return $tReturn;
     }
 }

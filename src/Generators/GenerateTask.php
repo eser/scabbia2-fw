@@ -13,14 +13,13 @@
 
 namespace Scabbia\Generators;
 
-use Scabbia\Tasks\TaskBase;
+use Scabbia\CodeCompiler\AnnotationScanner;
 use Scabbia\CodeCompiler\TokenStream;
 use Scabbia\Config\Config;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Objects\CommandInterpreter;
-use Scabbia\Yaml\Parser;
-use ReflectionClass;
+use Scabbia\Tasks\TaskBase;
 use RuntimeException;
 
 /**
@@ -34,14 +33,10 @@ use RuntimeException;
  */
 class GenerateTask extends TaskBase
 {
-    /** @type Parser|null $parser      yaml parser */
-    public $parser = null;
-    /** @type array       $generators  set of generators */
+    /** @type array                   $generators         set of generators */
     public $generators = [];
-    /** @type array       $annotations set of annotations */
-    public $annotations = [];
-    /** @type array       $result      result of generator task */
-    public $result = null;
+    /** @type AnnotationScanner|null  $annotationScanner  annotation scanner */
+    public $annotationScanner = null;
 
 
     /**
@@ -114,6 +109,9 @@ class GenerateTask extends TaskBase
             mkdir($tApplicationWritablePath, 0777, true);
         }
 
+        // initialize annotation scanner
+        $this->annotationScanner = new AnnotationScanner();
+
         // initialize generators read from configuration
         if (isset($this->config["generators"])) {
             foreach ($this->config["generators"] as $tTaskGeneratorClass) {
@@ -123,7 +121,7 @@ class GenerateTask extends TaskBase
                 );
 
                 foreach ($tInstance->annotations as $tAnnotationKey => $tAnnotation) {
-                    $this->annotations[$tAnnotationKey] = $tAnnotation;
+                    $this->annotationScanner->annotations[$tAnnotationKey] = $tAnnotation;
                 }
 
                 $this->generators[$tTaskGeneratorClass] = $tInstance;
@@ -140,7 +138,6 @@ class GenerateTask extends TaskBase
         }
 
         // -- process files
-        $this->result = [];
         foreach ($tFolders as $tPath) {
             if (file_exists($tPath[1])) {
                 FileSystem::getFilesWalk(
@@ -158,7 +155,7 @@ class GenerateTask extends TaskBase
         }
 
         foreach ($this->generators as $tGenerator) {
-            $tGenerator->processAnnotations($this->result);
+            $tGenerator->processAnnotations($this->annotationScanner->result);
         }
 
         foreach ($this->generators as $tGenerator) {
@@ -243,7 +240,7 @@ class GenerateTask extends TaskBase
     public function processFile($uFile, $uNamespacePrefix)
     {
         $tFileContents = FileSystem::read($uFile);
-        $tTokenStream = new TokenStream(token_get_all($tFileContents));
+        $tTokenStream = TokenStream::fromString($tFileContents);
 
         foreach ($this->generators as $tGenerator) {
             $tGenerator->processFile($uFile, $tFileContents, $tTokenStream);
@@ -253,233 +250,6 @@ class GenerateTask extends TaskBase
             return;
         }
 
-        $tBuffer = "";
-
-        $tUses = [];
-        $tLastNamespace = null;
-        $tLastClass = null;
-        $tLastClassDerivedFrom = null;
-        $tExpectation = 0; // 1=namespace, 2=class
-
-        foreach ($tTokenStream as $tToken) {
-            if ($tToken[0] === T_WHITESPACE) {
-                continue;
-            }
-
-            if ($tExpectation === 0) {
-                if ($tToken[0] === T_NAMESPACE) {
-                    $tBuffer = "";
-                    $tExpectation = 1;
-                    continue;
-                }
-
-                if ($tToken[0] === T_CLASS) {
-                    $tExpectation = 2;
-                    continue;
-                }
-
-                if ($tToken[0] === T_USE) {
-                    $tBuffer = "";
-                    $tExpectation = 5;
-                    continue;
-                }
-            } elseif ($tExpectation === 1) {
-                if ($tToken[0] === T_STRING || $tToken[0] === T_NS_SEPARATOR) {
-                    $tBuffer .= $tToken[1];
-                } else {
-                    $tLastNamespace = $tBuffer;
-                    $tExpectation = 0;
-                }
-            } elseif ($tExpectation === 2) {
-                $tLastClass = "{$tLastNamespace}\\{$tToken[1]}";
-                $tExpectation = 3;
-            } elseif ($tExpectation === 3) {
-                if ($tToken[0] === T_EXTENDS) {
-                    $tBuffer = "";
-                    $tExpectation = 4;
-                    continue;
-                }
-
-                $tSkip = false;
-                if ($tLastClassDerivedFrom !== null && !class_exists($tLastClassDerivedFrom)) {
-                    $tSkip = true;
-                    // TODO throw exception instead.
-                    echo sprintf(
-                        "\"%s\" derived from \"%s\", but it could not be found.\n",
-                        $tLastClass,
-                        $tLastClassDerivedFrom
-                    );
-                }
-
-                if (!$tSkip) {
-                    $this->processClass($tLastClass, $uNamespacePrefix);
-                }
-
-                $tExpectation = 0;
-            } elseif ($tExpectation === 4) {
-                if ($tToken[0] === T_STRING || $tToken[0] === T_NS_SEPARATOR) {
-                    $tBuffer .= $tToken[1];
-                } else {
-                    $tFound = false;
-
-                    foreach ($tUses as $tUse) {
-                        $tLength = strlen($tBuffer);
-                        if (strlen($tUse) > $tLength && substr($tUse, -$tLength) === $tBuffer) {
-                            $tLastClassDerivedFrom = $tUse;
-                            $tFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!$tFound) {
-                        if (strpos($tBuffer, "\\") !== false) {
-                            $tLastClassDerivedFrom = $tBuffer;
-                        } else {
-                            $tLastClassDerivedFrom = "{$tLastNamespace}\\{$tBuffer}";
-                        }
-                    }
-
-                    $tExpectation = 3;
-                }
-            } elseif ($tExpectation === 5) {
-                if ($tToken[0] === T_STRING || $tToken[0] === T_NS_SEPARATOR) {
-                    $tBuffer .= $tToken[1];
-                } else {
-                    $tUses[] = $tBuffer;
-                    $tExpectation = 0;
-                }
-            }
-        }
-    }
-
-    /**
-     * Processes classes using reflection to scan annotations
-     *
-     * @param string $uClass            class name
-     * @param string $uNamespacePrefix  namespace prefix
-     *
-     * @return void
-     */
-    public function processClass($uClass, $uNamespacePrefix)
-    {
-        $tClassAnnotations = [
-            // "class" => [],
-
-            "methods" => [],
-            "properties" => [],
-
-            "staticMethods" => [],
-            "staticProperties" => []
-        ];
-        $tCount = 0;
-
-        $tReflection = new ReflectionClass($uClass);
-
-        $tDocComment = $tReflection->getDocComment();
-        if (strlen($tDocComment) > 0) {
-            $tClassAnnotations["class"] = $this->parseAnnotations($tDocComment);
-            $tCount++;
-        } else {
-            $tClassAnnotations["class"] = [];
-        }
-
-        // methods
-        foreach ($tReflection->getMethods() as $tMethodReflection) {
-            // TODO check the correctness of logic
-            if ($tMethodReflection->class !== $uClass) {
-                continue;
-            }
-
-            $tDocComment = $tMethodReflection->getDocComment();
-            if (strlen($tDocComment) > 0) {
-                $tParsedDocComment = $this->parseAnnotations($tDocComment);
-
-                if (count($tParsedDocComment) === 0) {
-                    // nothing
-                } elseif ($tMethodReflection->isStatic()) {
-                    $tClassAnnotations["staticMethods"][$tMethodReflection->name] = $tParsedDocComment;
-                    $tCount++;
-                } else {
-                    $tClassAnnotations["methods"][$tMethodReflection->name] = $tParsedDocComment;
-                    $tCount++;
-                }
-            }
-        }
-
-        // properties
-        foreach ($tReflection->getProperties() as $tPropertyReflection) {
-            // TODO check the correctness of logic
-            if ($tPropertyReflection->class !== $uClass) {
-                continue;
-            }
-
-            $tDocComment = $tPropertyReflection->getDocComment();
-            if (strlen($tDocComment) > 0) {
-                $tParsedAnnotations = $this->parseAnnotations($tDocComment);
-
-                if (count($tParsedAnnotations) === 0) {
-                    // nothing
-                } elseif ($tPropertyReflection->isStatic()) {
-                    $tClassAnnotations["staticProperties"][$tPropertyReflection->name] = $tParsedAnnotations;
-                    $tCount++;
-                } else {
-                    $tClassAnnotations["properties"][$tPropertyReflection->name] = $tParsedAnnotations;
-                    $tCount++;
-                }
-            }
-        }
-
-        if ($tCount > 0) {
-            $this->result[$uClass] = $tClassAnnotations;
-        }
-    }
-
-    /**
-     * Parses the docblock and returns annotations in an array
-     *
-     * @param string $uDocComment docblock which contains annotations
-     *
-     * @return array set of annotations
-     */
-    public function parseAnnotations($uDocComment)
-    {
-        preg_match_all(
-            "/\\*[\\t| ]\\@([^\\n|\\t| ]+)(?:[\\t| ]([^\\n]+))*/",
-            $uDocComment,
-            $tDocCommentLines,
-            PREG_SET_ORDER
-        );
-
-        $tParsedAnnotations = [];
-
-        foreach ($tDocCommentLines as $tDocCommentLine) {
-            if (!isset($this->annotations[$tDocCommentLine[1]])) {
-                continue;
-            }
-
-            $tRegistryItem = $this->annotations[$tDocCommentLine[1]];
-
-            if (!isset($tParsedAnnotations[$tDocCommentLine[1]])) {
-                $tParsedAnnotations[$tDocCommentLine[1]] = [];
-            }
-
-            if (isset($tDocCommentLine[2])) {
-                if ($tRegistryItem["format"] === "yaml") {
-                    if ($this->parser === null) {
-                        $this->parser = new Parser();
-                    }
-
-                    $tLine = $this->parser->parse($tDocCommentLine[2]);
-                } else {
-                    $tLine = $tDocCommentLine[2];
-                }
-            } else {
-                $tLine = "";
-            }
-
-            $tParsedAnnotations[$tDocCommentLine[1]][] = $tLine;
-        }
-
-        return $tParsedAnnotations;
+        $this->annotationScanner->processFile($tTokenStream, $uNamespacePrefix);
     }
 }

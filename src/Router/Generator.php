@@ -13,6 +13,7 @@
 
 namespace Scabbia\Router;
 
+use Scabbia\CodeCompiler\TokenStream;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
@@ -74,13 +75,13 @@ class Generator extends GeneratorBase
     /**
      * Processes a file
      *
-     * @param string $uPath         file path
-     * @param string $uFileContents contents of file
-     * @param string $uTokenStream  extracted tokens wrapped with tokenstream
+     * @param string      $uPath         file path
+     * @param string      $uFileContents contents of file
+     * @param TokenStream $uTokenStream  extracted tokens wrapped with tokenstream
      *
      * @return void
      */
-    public function processFile($uPath, $uFileContents, $uTokenStream)
+    public function processFile($uPath, $uFileContents, TokenStream $uTokenStream)
     {
     }
 

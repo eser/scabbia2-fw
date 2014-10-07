@@ -17,6 +17,7 @@ use Scabbia\CodeCompiler\AnnotationScanner;
 use Scabbia\CodeCompiler\TokenStream;
 use Scabbia\Config\Config;
 use Scabbia\Framework\Core;
+use Scabbia\Loaders\Loader;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Objects\CommandInterpreter;
 use Scabbia\Tasks\TaskBase;
@@ -178,52 +179,32 @@ class GenerateTask extends TaskBase
     {
         $tFolders = [];
 
-        // PSR-4 lookup
-        foreach (Core::$loader->getPrependedPrefixesPsr4() as $tPrefix => $tDirs) {
-            foreach ($tDirs as $tDir) {
-                $tFolders[] = [$tPrefix, $tDir, "PSR-4"];
-            }
-        }
-
-        foreach (Core::$loader->getPrefixesPsr4() as $tPrefix => $tDirs) {
-            foreach ($tDirs as $tDir) {
-                $tFolders[] = [$tPrefix, $tDir, "PSR-4"];
-            }
-        }
-
-        // PSR-4 fallback dirs
-        foreach (Core::$loader->getPrependedFallbackDirsPsr4() as $tDir) {
-            $tFolders[] = ["", $tDir, "PSR-4"];
-        }
-
-        foreach (Core::$loader->getFallbackDirsPsr4() as $tDir) {
-            $tFolders[] = ["", $tDir, "PSR-4"];
-        }
-
-        // PSR-0 lookup
-        foreach (Core::$loader->getPrependedPrefixesPsr0() as $tPrefixes) {
-            foreach ($tPrefixes as $tPrefix => $tDirs) {
+        for ($tLevel = 0; $tLevel < Loader::LEVELS; $tLevel++) {
+            // PSR-4 lookup
+            foreach (Core::$loader->getPrefixesPsr4($tLevel) as $tPrefix => $tDirs) {
                 foreach ($tDirs as $tDir) {
-                    $tFolders[] = [$tPrefix, $tDir, "PSR-0"];
+                    $tFolders[] = [$tPrefix, $tDir, "PSR-4"];
                 }
             }
-        }
 
-        foreach (Core::$loader->getPrefixesPsr0() as $tPrefixes) {
-            foreach ($tPrefixes as $tPrefix => $tDirs) {
-                foreach ($tDirs as $tDir) {
-                    $tFolders[] = [$tPrefix, $tDir, "PSR-0"];
+            // PSR-4 fallback dirs
+            foreach (Core::$loader->getFallbackDirsPsr4($tLevel) as $tDir) {
+                $tFolders[] = ["", $tDir, "PSR-4"];
+            }
+
+            // PSR-0 lookup
+            foreach (Core::$loader->getPrefixesPsr0($tLevel) as $tPrefixes) {
+                foreach ($tPrefixes as $tPrefix => $tDirs) {
+                    foreach ($tDirs as $tDir) {
+                        $tFolders[] = [$tPrefix, $tDir, "PSR-0"];
+                    }
                 }
             }
-        }
 
-        // PSR-0 fallback dirs
-        foreach (Core::$loader->getPrependedFallbackDirsPsr0() as $tDir) {
-            $tFolders[] = ["", $tDir, "PSR-0"];
-        }
-
-        foreach (Core::$loader->getFallbackDirsPsr0() as $tDir) {
-            $tFolders[] = ["", $tDir, "PSR-0"];
+            // PSR-0 fallback dirs
+            foreach (Core::$loader->getFallbackDirsPsr0($tLevel) as $tDir) {
+                $tFolders[] = ["", $tDir, "PSR-0"];
+            }
         }
 
         return $tFolders;

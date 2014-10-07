@@ -31,14 +31,16 @@ use InvalidArgumentException;
  */
 class Loader
 {
+    const LEVELS = 2;
+
     // PSR-4
-    protected $prefixLengthsPsr4 = [[], []];
-    protected $prefixDirsPsr4 = [[], []];
-    protected $fallbackDirsPsr4 = [[], []];
+    protected $prefixLengthsPsr4 = [];
+    protected $prefixDirsPsr4 = [];
+    protected $fallbackDirsPsr4 = [];
 
     // PSR-0
-    protected $prefixesPsr0 = [[], []];
-    protected $fallbackDirsPsr0 = [[], []];
+    protected $prefixesPsr0 = [];
+    protected $fallbackDirsPsr0 = [];
 
     protected $classMap = [];
     protected $pushStack = [];
@@ -75,6 +77,14 @@ class Loader
             $this->paths["base"] = $uBasePath;
             $this->paths["vendor"] = "$uBasePath/vendor";
         }
+
+        for ($tLevel = self::LEVELS; $tLevel > 0; $tLevel--) {
+                $this->prefixLengthsPsr4[] = [];
+                $this->prefixDirsPsr4[] = [];
+                $this->fallbackDirsPsr4[] = [];
+                $this->prefixesPsr0[] = [];
+                $this->fallbackDirsPsr0[] = [];
+        }
     }
 
     /**
@@ -102,89 +112,53 @@ class Loader
     /**
      * Gets prefixes for PSR-0
      *
-     * @return array
-     */
-    public function getPrefixesPsr0()
-    {
-        if (count($this->prefixesPsr0[1]) < 2) {
-            return $this->prefixesPsr0[1];
-        }
-
-        return array_merge(...$this->prefixesPsr0[1]);
-    }
-
-    /**
-     * Gets prepended prefixes for PSR-0
+     * @param int $uLevel priority layer
      *
      * @return array
      */
-    public function getPrependedPrefixesPsr0()
+    public function getPrefixesPsr0($uLevel = 1)
     {
-        if (count($this->prefixesPsr0[0]) < 2) {
-            return $this->prefixesPsr0[0];
+        if (count($this->prefixesPsr0[$uLevel]) < 2) {
+            return $this->prefixesPsr0[$uLevel];
         }
 
-        return array_merge(...$this->prefixesPsr0[0]);
+        return array_merge(...$this->prefixesPsr0[$uLevel]);
     }
 
     /**
      * Gets prefixes for PSR-4
      *
-     * @return array
-     */
-    public function getPrefixesPsr4()
-    {
-        return $this->prefixDirsPsr4[1];
-    }
-
-    /**
-     * Gets prepended prefixes for PSR-4
+     * @param int $uLevel priority layer
      *
      * @return array
      */
-    public function getPrependedPrefixesPsr4()
+    public function getPrefixesPsr4($uLevel = 1)
     {
-        return $this->prefixDirsPsr4[0];
+        return $this->prefixDirsPsr4[$uLevel];
     }
 
     /**
      * Gets fallback directories for PSR-0
      *
-     * @return array
-     */
-    public function getFallbackDirsPsr0()
-    {
-        return $this->fallbackDirsPsr0[1];
-    }
-
-    /**
-     * Gets prepended fallback directories for PSR-0
+     * @param int $uLevel priority layer
      *
      * @return array
      */
-    public function getPrependedFallbackDirsPsr0()
+    public function getFallbackDirsPsr0($uLevel = 1)
     {
-        return $this->fallbackDirsPsr0[0];
+        return $this->fallbackDirsPsr0[$uLevel];
     }
 
     /**
      * Gets fallback directories for PSR-4
      *
-     * @return array
-     */
-    public function getFallbackDirsPsr4()
-    {
-        return $this->fallbackDirsPsr4[1];
-    }
-
-    /**
-     * Gets prepended fallback directories for PSR-4
+     * @param int $uLevel priority layer
      *
      * @return array
      */
-    public function getPrependedFallbackDirsPsr4()
+    public function getFallbackDirsPsr4($uLevel = 1)
     {
-        return $this->fallbackDirsPsr4[0];
+        return $this->fallbackDirsPsr4[$uLevel];
     }
 
     /**
@@ -248,25 +222,23 @@ class Loader
      *
      * @param string       $uPrefix  the prefix
      * @param array|string $uPaths   the PSR-0 root directories
-     * @param bool         $uPrepend whether to prepend the directories
+     * @param int          $uLevel   priority layer
      *
      * @return void
      */
-    public function addPsr0($uPrefix, $uPaths, $uPrepend = false)
+    public function addPsr0($uPrefix, $uPaths, $uLevel = 1)
     {
-        $tIndex = ($uPrepend) ? 0 : 1;
-
         if (!$uPrefix) {
-            $this->fallbackDirsPsr0[$tIndex] = array_merge($this->fallbackDirsPsr0[$tIndex], (array)$uPaths);
+            $this->fallbackDirsPsr0[$uLevel] = array_merge($this->fallbackDirsPsr0[$uLevel], (array)$uPaths);
             return;
         }
 
         $tFirst = $uPrefix[0];
-        if (!isset($this->prefixesPsr0[$tIndex][$tFirst][$uPrefix])) {
-            $this->prefixesPsr0[$tIndex][$tFirst][$uPrefix] = (array)$uPaths;
+        if (!isset($this->prefixesPsr0[$uLevel][$tFirst][$uPrefix])) {
+            $this->prefixesPsr0[$uLevel][$tFirst][$uPrefix] = (array)$uPaths;
         } else {
-            $this->prefixesPsr0[$tIndex][$tFirst][$uPrefix] = array_merge(
-                $this->prefixesPsr0[$tIndex][$tFirst][$uPrefix],
+            $this->prefixesPsr0[$uLevel][$tFirst][$uPrefix] = array_merge(
+                $this->prefixesPsr0[$uLevel][$tFirst][$uPrefix],
                 (array)$uPaths
             );
         }
@@ -278,18 +250,16 @@ class Loader
      *
      * @param string        $uPrefix  the prefix/namespace, with trailing '\\'
      * @param array|string  $uPaths   the PSR-0 base directories
-     * @param bool          $uPrepend whether to prepend the directories
+     * @param int           $uLevel   priority layer
      *
      * @throws InvalidArgumentException
      * @return void
      */
-    public function addPsr4($uPrefix, $uPaths, $uPrepend = false)
+    public function addPsr4($uPrefix, $uPaths, $uLevel = 1)
     {
-        $tIndex = ($uPrepend) ? 0 : 1;
-
         if (!$uPrefix) {
-            $this->fallbackDirsPsr4[$tIndex] = array_merge($this->fallbackDirsPsr4[$tIndex], (array)$uPaths);
-        } elseif (!isset($this->prefixDirsPsr4[$tIndex][$uPrefix])) {
+            $this->fallbackDirsPsr4[$uLevel] = array_merge($this->fallbackDirsPsr4[$uLevel], (array)$uPaths);
+        } elseif (!isset($this->prefixDirsPsr4[$uLevel][$uPrefix])) {
             // Register directories for a new namespace.
             $tLength = strlen($uPrefix);
 
@@ -297,12 +267,12 @@ class Loader
                 throw new InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.");
             }
 
-            $this->prefixLengthsPsr4[$tIndex][$uPrefix[0]][$uPrefix] = $tLength;
-            $this->prefixDirsPsr4[$tIndex][$uPrefix] = (array)$uPaths;
+            $this->prefixLengthsPsr4[$uLevel][$uPrefix[0]][$uPrefix] = $tLength;
+            $this->prefixDirsPsr4[$uLevel][$uPrefix] = (array)$uPaths;
         } else {
             // Append directories for an already registered namespace.
-            $this->prefixDirsPsr4[$tIndex][$uPrefix] = array_merge(
-                $this->prefixDirsPsr4[$tIndex][$uPrefix],
+            $this->prefixDirsPsr4[$uLevel][$uPrefix] = array_merge(
+                $this->prefixDirsPsr4[$uLevel][$uPrefix],
                 (array)$uPaths
             );
         }
@@ -314,18 +284,16 @@ class Loader
      *
      * @param string       $uPrefix  the prefix
      * @param array|string $uPaths   the PSR-0 base directories
-     * @param bool         $uPrepend whether to prepend the directories
+     * @param int          $uLevel   priority layer
      *
      * @return void
      */
-    public function setPsr0($uPrefix, $uPaths, $uPrepend = false)
+    public function setPsr0($uPrefix, $uPaths, $uLevel = 1)
     {
-        $tIndex = ($uPrepend) ? 0 : 1;
-
         if (!$uPrefix) {
-            $this->fallbackDirsPsr0[$tIndex] = (array)$uPaths;
+            $this->fallbackDirsPsr0[$uLevel] = (array)$uPaths;
         } else {
-            $this->prefixesPsr0[$tIndex][$uPrefix[0]][$uPrefix] = (array)$uPaths;
+            $this->prefixesPsr0[$uLevel][$uPrefix[0]][$uPrefix] = (array)$uPaths;
         }
     }
 
@@ -335,17 +303,15 @@ class Loader
      *
      * @param string       $uPrefix  the prefix/namespace, with trailing '\\'
      * @param array|string $uPaths   the PSR-4 base directories
-     * @param bool         $uPrepend whether to prepend the directories
+     * @param int          $uLevel   priority layer
      *
      * @throws InvalidArgumentException
      * @return void
      */
-    public function setPsr4($uPrefix, $uPaths, $uPrepend = false)
+    public function setPsr4($uPrefix, $uPaths, $uLevel = 1)
     {
-        $tIndex = ($uPrepend) ? 0 : 1;
-
         if (!$uPrefix) {
-            $this->fallbackDirsPsr4[$tIndex] = (array)$uPaths;
+            $this->fallbackDirsPsr4[$uLevel] = (array)$uPaths;
         } else {
             $tLength = strlen($uPrefix);
 
@@ -353,8 +319,8 @@ class Loader
                 throw new InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.");
             }
 
-            $this->prefixLengthsPsr4[$tIndex][$uPrefix[0]][$uPrefix] = $tLength;
-            $this->prefixDirsPsr4[$tIndex][$uPrefix] = (array)$uPaths;
+            $this->prefixLengthsPsr4[$uLevel][$uPrefix[0]][$uPrefix] = $tLength;
+            $this->prefixDirsPsr4[$uLevel][$uPrefix] = (array)$uPaths;
         }
     }
 
@@ -431,12 +397,12 @@ class Loader
             $tLogicalPathPsr0 = strtr($uClass, "_", "/") . $uExtension;
         }
 
-        for ($tIndex = 0; $tIndex <= 1; $tIndex++) {
+        for ($tLevel = 0; $tLevel < self::LEVELS; $tLevel++) {
             // PSR-4 lookup
-            if (isset($this->prefixLengthsPsr4[$tIndex][$tFirst])) {
-                foreach ($this->prefixLengthsPsr4[$tIndex][$tFirst] as $prefix => $tLength) {
+            if (isset($this->prefixLengthsPsr4[$tLevel][$tFirst])) {
+                foreach ($this->prefixLengthsPsr4[$tLevel][$tFirst] as $prefix => $tLength) {
                     if (strpos($uClass, $prefix) === 0) {
-                        foreach ($this->prefixDirsPsr4[$tIndex][$prefix] as $tDirectory) {
+                        foreach ($this->prefixDirsPsr4[$tLevel][$prefix] as $tDirectory) {
                             if (file_exists($tFile = "{$tDirectory}/" . substr($tLogicalPathPsr4, $tLength))) {
                                 return $tFile;
                             }
@@ -446,15 +412,15 @@ class Loader
             }
 
             // PSR-4 fallback dirs
-            foreach ($this->fallbackDirsPsr4[$tIndex] as $tDirectory) {
+            foreach ($this->fallbackDirsPsr4[$tLevel] as $tDirectory) {
                 if (file_exists($tFile = "{$tDirectory}/{$tLogicalPathPsr4}")) {
                     return $tFile;
                 }
             }
 
             // PSR-0 lookup
-            if (isset($this->prefixesPsr0[$tIndex][$tFirst])) {
-                foreach ($this->prefixesPsr0[$tIndex][$tFirst] as $prefix => $tDirectories) {
+            if (isset($this->prefixesPsr0[$tLevel][$tFirst])) {
+                foreach ($this->prefixesPsr0[$tLevel][$tFirst] as $prefix => $tDirectories) {
                     if (strpos($uClass, $prefix) === 0) {
                         foreach ($tDirectories as $tDirectory) {
                             if (file_exists($tFile = "{$tDirectory}/{$tLogicalPathPsr0}")) {
@@ -466,7 +432,7 @@ class Loader
             }
 
             // PSR-0 fallback dirs
-            foreach ($this->fallbackDirsPsr0[$tIndex] as $tDirectory) {
+            foreach ($this->fallbackDirsPsr0[$tLevel] as $tDirectory) {
                 if (file_exists($tFile = "{$tDirectory}/{$tLogicalPathPsr0}")) {
                     return $tFile;
                 }

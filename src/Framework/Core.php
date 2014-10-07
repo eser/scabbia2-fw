@@ -260,8 +260,8 @@ class Core
 
         self::$loader->push();
 
-        $tPreviousPrependedPaths = self::$loader->getPrependedPrefixesPsr4();
-        $tPreviousPrependedPaths[false] = self::$loader->getPrependedFallbackDirsPsr4();
+        $tPreviousPrependedPaths = self::$loader->getPrefixesPsr4(0);
+        $tPreviousPrependedPaths[false] = self::$loader->getFallbackDirsPsr4(0);
 
         foreach ($uConfig["autoload"] as $tNamespace => $tPaths) {
             $tLoaderNamespace = ($tNamespace !== "default") ? $tNamespace : false;
@@ -282,7 +282,7 @@ class Core
                 }
             }
 
-            self::$loader->addPsr4($tLoaderNamespace, $tTranslatedPaths, true);
+            self::$loader->addPsr4($tLoaderNamespace, $tTranslatedPaths, 0);
         }
     }
 

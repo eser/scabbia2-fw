@@ -25,6 +25,7 @@ use Scabbia\Loaders\Loader;
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       1.0.0
  */
+// MD-TITLE Core Class
 class Core
 {
     /** @type object $loader the instance of the autoloader class */

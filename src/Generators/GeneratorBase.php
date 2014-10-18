@@ -13,7 +13,7 @@
 
 namespace Scabbia\Generators;
 
-use Scabbia\CodeCompiler\TokenStream;
+use Scabbia\Code\TokenStream;
 
 /**
  * Default methods needed for implementation of a generator
@@ -85,6 +85,15 @@ abstract class GeneratorBase
      * @return void
      */
     public function finalize()
+    {
+    }
+
+    /**
+     * Dumps generated data into file
+     *
+     * @return void
+     */
+    public function dump()
     {
     }
 }

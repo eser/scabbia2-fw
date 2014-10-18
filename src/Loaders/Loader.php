@@ -16,7 +16,7 @@ namespace Scabbia\Loaders;
 use InvalidArgumentException;
 
 /**
- * Loader implements a PSR-4 and PSR-4 class loader
+ * Loader implements a PSR-4 and PSR-0 class loader
  *
  * See https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
  * See https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md

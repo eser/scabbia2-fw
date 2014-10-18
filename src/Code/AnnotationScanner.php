@@ -11,16 +11,16 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\CodeCompiler;
+namespace Scabbia\Code;
 
-use Scabbia\CodeCompiler\TokenStream;
+use Scabbia\Code\TokenStream;
 use Scabbia\Yaml\Parser;
 use ReflectionClass;
 
 /**
  * AnnotationScanner
  *
- * @package     Scabbia\CodeCompiler
+ * @package     Scabbia\Code
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */
@@ -30,7 +30,7 @@ class AnnotationScanner
     public $parser = null;
     /** @type array       $annotations set of annotations */
     public $annotations = [];
-    /** @type array       $result      result of generator task */
+    /** @type array       $result      result of scanning task */
     public $result = [];
 
 

@@ -11,7 +11,7 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\CodeCompiler;
+namespace Scabbia\Code;
 
 use Countable;
 use Exception;
@@ -21,7 +21,7 @@ use OutOfBoundsException;
 /**
  * Generator
  *
- * @package     Scabbia\CodeCompiler
+ * @package     Scabbia\Code
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  */

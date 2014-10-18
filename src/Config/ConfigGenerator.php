@@ -13,14 +13,14 @@
 
 namespace Scabbia\Config;
 
-use Scabbia\CodeCompiler\TokenStream;
+use Scabbia\Code\TokenStream;
 use Scabbia\Config\Config;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
 
 /**
- * Generator
+ * ConfigGenerator
  *
  * @package     Scabbia\Config
  * @author      Eser Ozvataf <eser@sent.com>
@@ -30,7 +30,7 @@ use Scabbia\Helpers\FileSystem;
  *
  * @todo FIXME include application configuration from project.yml ?
  */
-class Generator extends GeneratorBase
+class ConfigGenerator extends GeneratorBase
 {
     /** @type array $annotations set of annotations */
     public $annotations = [];
@@ -39,27 +39,13 @@ class Generator extends GeneratorBase
 
 
     /**
-     * Initializes a generator
-     *
-     * @param mixed  $uApplicationConfig application config
-     * @param string $uOutputPath        output path
-     *
-     * @return Generator
-     */
-    public function __construct($uApplicationConfig, $uOutputPath)
-    {
-        parent::__construct($uApplicationConfig, $uOutputPath);
-
-        $this->unifiedConfig = new Config();
-    }
-
-    /**
      * Initializes generator
      *
      * @return void
      */
     public function initialize()
     {
+        $this->unifiedConfig = new Config();
     }
 
     /**
@@ -82,22 +68,11 @@ class Generator extends GeneratorBase
     }
 
     /**
-     * Processes set of annotations
-     *
-     * @param array $uAnnotations annotations
+     * Dumps generated data into file
      *
      * @return void
      */
-    public function processAnnotations($uAnnotations)
-    {
-    }
-
-    /**
-     * Finalizes generator
-     *
-     * @return void
-     */
-    public function finalize()
+    public function dump()
     {
         FileSystem::writePhpFile(
             Core::translateVariables($this->outputPath . "/unified-config.php"),

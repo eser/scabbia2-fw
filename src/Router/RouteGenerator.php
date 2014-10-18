@@ -13,7 +13,7 @@
 
 namespace Scabbia\Router;
 
-use Scabbia\CodeCompiler\TokenStream;
+use Scabbia\Code\TokenStream;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
@@ -21,7 +21,7 @@ use Scabbia\Router\Router;
 use Exception;
 
 /**
- * Generator
+ * RouteGenerator
  *
  * @package     Scabbia\Router
  * @author      Eser Ozvataf <eser@sent.com>
@@ -32,7 +32,7 @@ use Exception;
  * Routing related code based on the nikic's FastRoute solution:
  * http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
  */
-class Generator extends GeneratorBase
+class RouteGenerator extends GeneratorBase
 {
     /** @type string FILTER_VALIDATE_BOOLEAN a symbolic constant for boolean validation */
     const APPROX_CHUNK_SIZE = 10;
@@ -43,25 +43,12 @@ class Generator extends GeneratorBase
         "route" => ["format" => "yaml"]
     ];
     /** @type array $staticRoutes set of static routes */
-    public $staticRoutes = [];
+    public $staticRoutes;
     /** @type array $regexToRoutesMap map of variable routes */
-    public $regexToRoutesMap = [];
+    public $regexToRoutesMap;
     /** @type array $namedRoutes map of named routes */
-    public $namedRoutes = [];
+    public $namedRoutes;
 
-
-    /**
-     * Initializes a generator
-     *
-     * @param mixed  $uApplicationConfig application config
-     * @param string $uOutputPath        output path
-     *
-     * @return Generator
-     */
-    public function __construct($uApplicationConfig, $uOutputPath)
-    {
-        parent::__construct($uApplicationConfig, $uOutputPath);
-    }
 
     /**
      * Initializes generator
@@ -70,19 +57,9 @@ class Generator extends GeneratorBase
      */
     public function initialize()
     {
-    }
-
-    /**
-     * Processes a file
-     *
-     * @param string      $uPath         file path
-     * @param string      $uFileContents contents of file
-     * @param TokenStream $uTokenStream  extracted tokens wrapped with tokenstream
-     *
-     * @return void
-     */
-    public function processFile($uPath, $uFileContents, TokenStream $uTokenStream)
-    {
+        $this->staticRoutes = [];
+        $this->regexToRoutesMap = [];
+        $this->namedRoutes = [];
     }
 
     /**
@@ -126,17 +103,19 @@ class Generator extends GeneratorBase
                 }
             }
         }
-
-        FileSystem::writePhpFile(Core::translateVariables($this->outputPath . "/routes.php"), $this->getData());
     }
 
     /**
-     * Finalizes generator
+     * Dumps generated data into file
      *
      * @return void
      */
-    public function finalize()
+    public function dump()
     {
+        FileSystem::writePhpFile(
+            Core::translateVariables($this->outputPath . "/routes.php"),
+            $this->getData()
+        );
     }
 
     /**

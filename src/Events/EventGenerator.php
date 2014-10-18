@@ -13,14 +13,14 @@
 
 namespace Scabbia\Events;
 
-use Scabbia\CodeCompiler\TokenStream;
+use Scabbia\Code\TokenStream;
 use Scabbia\Events\Events;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
 
 /**
- * Generator
+ * EventGenerator
  *
  * @package     Scabbia\Events
  * @author      Eser Ozvataf <eser@sent.com>
@@ -28,26 +28,15 @@ use Scabbia\Helpers\FileSystem;
  *
  * @scabbia-generator
  */
-class Generator extends GeneratorBase
+class EventGenerator extends GeneratorBase
 {
     /** @type array $annotations set of annotations */
     public $annotations = [
         "event" => ["format" => "yaml"]
     ];
+    /** @type Events $events set of events */
+    public $events;
 
-
-    /**
-     * Initializes a generator
-     *
-     * @param mixed  $uApplicationConfig application config
-     * @param string $uOutputPath        output path
-     *
-     * @return Generator
-     */
-    public function __construct($uApplicationConfig, $uOutputPath)
-    {
-        parent::__construct($uApplicationConfig, $uOutputPath);
-    }
 
     /**
      * Initializes generator
@@ -56,19 +45,7 @@ class Generator extends GeneratorBase
      */
     public function initialize()
     {
-    }
-
-    /**
-     * Processes a file
-     *
-     * @param string      $uPath         file path
-     * @param string      $uFileContents contents of file
-     * @param TokenStream $uTokenStream  extracted tokens wrapped with tokenstream
-     *
-     * @return void
-     */
-    public function processFile($uPath, $uFileContents, TokenStream $uTokenStream)
-    {
+        $this->events = new Events();
     }
 
     /**
@@ -80,8 +57,6 @@ class Generator extends GeneratorBase
      */
     public function processAnnotations($uAnnotations)
     {
-        $tEvents = new Events();
-
         foreach ($uAnnotations as $tClassKey => $tClass) {
             foreach ($tClass["staticMethods"] as $tMethodKey => $tMethod) {
                 if (!isset($tMethod["event"])) {
@@ -89,7 +64,7 @@ class Generator extends GeneratorBase
                 }
 
                 foreach ($tMethod["event"] as $tEvent) {
-                    $tEvents->register(
+                    $this->events->register(
                         $tEvent["on"],
                         [$tClassKey, $tMethodKey],
                         null,
@@ -98,16 +73,18 @@ class Generator extends GeneratorBase
                 }
             }
         }
-
-        FileSystem::writePhpFile(Core::translateVariables($this->outputPath . "/events.php"), $tEvents->events);
     }
 
     /**
-     * Finalizes generator
+     * Dumps generated data into file
      *
      * @return void
      */
-    public function finalize()
+    public function dump()
     {
+        FileSystem::writePhpFile(
+            Core::translateVariables($this->outputPath . "/events.php"),
+            $this->events->events
+        );
     }
 }

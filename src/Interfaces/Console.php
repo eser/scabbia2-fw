@@ -42,10 +42,10 @@ class Console implements IInterface
             $tChar = "-";
         }
 
-        echo "{$uMessage}\r\n", str_repeat($tChar, strlen($uMessage)), "\r\n";
+        echo $uMessage, PHP_EOL, str_repeat($tChar, strlen($uMessage)), PHP_EOL;
 
         if ($uHeading === 1) {
-            echo "\r\n";
+            echo PHP_EOL;
         }
     }
 
@@ -60,7 +60,7 @@ class Console implements IInterface
     public function writeColor($uColor, $uMessage)
     {
         if (strncasecmp(PHP_OS, "WIN", 3) === 0) {
-            echo "{$uMessage}\r\n";
+            echo $uMessage, PHP_EOL;
             return;
         }
 
@@ -98,7 +98,7 @@ class Console implements IInterface
             $tColor = "[0;37m";
         }
 
-        echo "\033{$tColor}{$uMessage}\033[0m\r\n";
+        echo "\033", $tColor, $uMessage, "\033[0m", PHP_EOL;
     }
 
     /**
@@ -110,7 +110,7 @@ class Console implements IInterface
      */
     public function write($uMessage)
     {
-        echo "{$uMessage}\r\n";
+        echo $uMessage, PHP_EOL;
     }
 
     /**

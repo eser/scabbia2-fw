@@ -24,53 +24,19 @@ use Scabbia\Tasks\TaskBase;
 use RuntimeException;
 
 /**
- * Task class for "php scabbia generate"
+ * GeneratorScanner
  *
  * @package     Scabbia\Generators
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
- *
- * @todo only pass annotations requested by generator
  */
-class GenerateTask extends TaskBase
+class GeneratorScanner
 {
     /** @type array                   $generators         set of generators */
     public $generators = [];
     /** @type AnnotationScanner|null  $annotationScanner  annotation scanner */
     public $annotationScanner = null;
 
-
-    /**
-     * Registers the tasks itself to a command interpreter instance
-     *
-     * @param CommandInterpreter $uCommandInterpreter interpreter to be registered at
-     *
-     * @return void
-     */
-    public static function registerToCommandInterpreter(CommandInterpreter $uCommandInterpreter)
-    {
-        $uCommandInterpreter->addCommand(
-            "generate",
-            "Calls all generators registered to your project",
-            [
-                // type, name, description
-                [Console::OPTION_FLAG, "--clean", ""]
-            ]
-        );
-    }
-
-    /**
-     * Initializes the generate task
-     *
-     * @param mixed      $uConfig    configuration
-     * @param IInterface $uInterface interface class
-     *
-     * @return GenerateTask
-     */
-    public function __construct($uConfig, $uInterface)
-    {
-        parent::__construct($uConfig, $uInterface);
-    }
 
     /**
      * Executes the task
@@ -82,34 +48,6 @@ class GenerateTask extends TaskBase
      */
     public function executeTask(array $uParameters)
     {
-        if (count($uParameters) === 0) {
-            $tProjectFile = "project.yml";
-            $tApplicationKey = "default";
-        } else {
-            $tExploded = explode("/", $uParameters[0], 2);
-            if (count($tExploded) === 1) {
-                $tProjectFile = "project.yml";
-                $tApplicationKey = $tExploded[0];
-            } else {
-                $tProjectFile = $tExploded[0];
-                $tApplicationKey = $tExploded[1];
-            }
-        }
-
-        $tProjectFile = FileSystem::combinePaths(Core::$basepath, Core::translateVariables($tProjectFile));
-        $uApplicationConfig = Config::load($tProjectFile)->get();
-
-        if (!isset($uApplicationConfig[$tApplicationKey])) {
-            throw new RuntimeException(sprintf("invalid configuration - %s::%s", $tProjectFile, $tApplicationKey));
-        }
-
-        // TODO is sanitizing $tApplicationKey needed for paths?
-        $tApplicationWritablePath = Core::$basepath . "/writable/generated/app.{$tApplicationKey}";
-
-        if (!file_exists($tApplicationWritablePath)) {
-            mkdir($tApplicationWritablePath, 0777, true);
-        }
-
         // initialize annotation scanner
         $this->annotationScanner = new AnnotationScanner();
 
@@ -130,13 +68,7 @@ class GenerateTask extends TaskBase
         }
 
         // -- scan composer maps
-        Core::pushSourcePaths($uApplicationConfig[$tApplicationKey]);
         $tFolders = $this->scanComposerMaps();
-
-        $this->interface->writeColor("green", "Composer Maps:");
-        foreach ($tFolders as $tFolder) {
-            $this->interface->writeColor("white", sprintf("- [%s] \\%s => %s", $tFolder[2], $tFolder[0], $tFolder[1]));
-        }
 
         foreach ($this->generators as $tGenerator) {
             $tGenerator->initialize();
@@ -166,12 +98,6 @@ class GenerateTask extends TaskBase
         foreach ($this->generators as $tGenerator) {
             $tGenerator->dump();
         }
-
-        Core::popSourcePaths();
-
-        $this->interface->writeColor("yellow", "done.");
-
-        return 0;
     }
 
     /**

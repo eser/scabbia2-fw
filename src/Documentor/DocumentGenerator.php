@@ -13,13 +13,13 @@
 
 namespace Scabbia\Documentor;
 
-use Scabbia\CodeCompiler\TokenStream;
+use Scabbia\Code\TokenStream;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
 
 /**
- * Generator
+ * DocumentGenerator
  *
  * @package     Scabbia\Documentor
  * @author      Eser Ozvataf <eser@sent.com>
@@ -27,12 +27,12 @@ use Scabbia\Helpers\FileSystem;
  *
  * @scabbia-generator
  */
-class Generator extends GeneratorBase
+class DocumentGenerator extends GeneratorBase
 {
     /** @type array $annotations set of annotations */
     public $annotations = [];
     /** @type array $files set of files */
-    public $files = [];
+    public $files;
 
 
     /**
@@ -55,6 +55,7 @@ class Generator extends GeneratorBase
      */
     public function initialize()
     {
+        $this->files = [];
     }
 
     /**
@@ -69,43 +70,40 @@ class Generator extends GeneratorBase
     public function processFile($uPath, $uFileContents, TokenStream $uTokenStream)
     {
         $tDocLines = [];
+        $tRelativePath = substr($uPath, strlen(Core::$basepath) + 1);
+        $tDocTitle = $tRelativePath;
 
         foreach ($uTokenStream as $tToken) {
             if ($tToken[0] === T_COMMENT) {
+                if (strncmp($tToken[1], "// MD-TITLE ", 12) === 0) {
+                    $tDocTitle = substr($tToken[1], 12);
+                    continue;
+                }
+
                 if (strncmp($tToken[1], "// MD ", 6) === 0) {
                     $tDocLines[] = substr($tToken[1], 6);
+                    continue;
                 }
             }
         }
 
         if (count($tDocLines) > 0) {
-            $this->files[$uPath] = $tDocLines;
+            $this->files[$tRelativePath] = [$tDocTitle, $tDocLines];
         }
     }
 
     /**
-     * Processes set of annotations
-     *
-     * @param array $uAnnotations annotations
+     * Dumps generated data into file
      *
      * @return void
      */
-    public function processAnnotations($uAnnotations)
-    {
-    }
-
-    /**
-     * Finalizes generator
-     *
-     * @return void
-     */
-    public function finalize()
+    public function dump()
     {
         $tContent = "";
         foreach ($this->files as $tFileKey => $tFileContent) {
-            $tContent .= "# {$tFileKey}\n";
+            $tContent .= "# {$tFileContent[0]}\n";
 
-            foreach ($tFileContent as $tLine) {
+            foreach ($tFileContent[1] as $tLine) {
                 $tContent .= $tLine;
             }
 

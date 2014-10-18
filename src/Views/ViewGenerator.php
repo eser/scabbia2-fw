@@ -13,12 +13,12 @@
 
 namespace Scabbia\Views;
 
-use Scabbia\CodeCompiler\TokenStream;
+use Scabbia\Code\TokenStream;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Views\Views;
 
 /**
- * Generator
+ * ViewGenerator
  *
  * @package     Scabbia\Views
  * @author      Eser Ozvataf <eser@sent.com>
@@ -26,33 +26,11 @@ use Scabbia\Views\Views;
  *
  * @scabbia-generator
  */
-class Generator extends GeneratorBase
+class ViewGenerator extends GeneratorBase
 {
     /** @type array $annotations set of annotations */
     public $annotations = [];
 
-
-    /**
-     * Initializes a generator
-     *
-     * @param mixed  $uApplicationConfig application config
-     * @param string $uOutputPath        output path
-     *
-     * @return Generator
-     */
-    public function __construct($uApplicationConfig, $uOutputPath)
-    {
-        parent::__construct($uApplicationConfig, $uOutputPath);
-    }
-
-    /**
-     * Initializes generator
-     *
-     * @return void
-     */
-    public function initialize()
-    {
-    }
 
     /**
      * Processes a file
@@ -74,25 +52,5 @@ class Generator extends GeneratorBase
         // TODO compile view
         $tViewEngineClass = get_class($tViewEngine);
         echo sprintf("View %s => %s\n", $uPath, $tViewEngineClass);
-    }
-
-    /**
-     * Processes set of annotations
-     *
-     * @param array $uAnnotations annotations
-     *
-     * @return void
-     */
-    public function processAnnotations($uAnnotations)
-    {
-    }
-
-    /**
-     * Finalizes generator
-     *
-     * @return void
-     */
-    public function finalize()
-    {
     }
 }

@@ -11,10 +11,10 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\CodeCompiler;
+namespace Scabbia\Code;
 
-use Scabbia\CodeCompiler\Minifier;
-use Scabbia\CodeCompiler\TokenStream;
+use Scabbia\Code\Minifier;
+use Scabbia\Code\TokenStream;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
@@ -22,34 +22,23 @@ use Scabbia\Objects\Binder;
 use Exception;
 
 /**
- * Generator
+ * CompileGenerator
  *
- * @package     Scabbia\CodeCompiler
+ * @package     Scabbia\Code
  * @author      Eser Ozvataf <eser@sent.com>
  * @since       2.0.0
  *
  * @scabbia-generator
  */
-class Generator extends GeneratorBase
+class CompileGenerator extends GeneratorBase
 {
     /** @type array $annotations set of annotations */
-    public $annotations = [];
-    /** @type array $files set of files */
-    public $files = [];
+    public $annotations = [
+        "scabbia-compile" => ["format" => "yaml"]
+    ];
+    /** @type array $classes set of classes */
+    public $classes;
 
-
-    /**
-     * Initializes a generator
-     *
-     * @param mixed  $uApplicationConfig application config
-     * @param string $uOutputPath        output path
-     *
-     * @return Generator
-     */
-    public function __construct($uApplicationConfig, $uOutputPath)
-    {
-        parent::__construct($uApplicationConfig, $uOutputPath);
-    }
 
     /**
      * Initializes generator
@@ -58,19 +47,7 @@ class Generator extends GeneratorBase
      */
     public function initialize()
     {
-    }
-
-    /**
-     * Processes a file
-     *
-     * @param string      $uPath         file path
-     * @param string      $uFileContents contents of file
-     * @param TokenStream $uTokenStream  extracted tokens wrapped with tokenstream
-     *
-     * @return void
-     */
-    public function processFile($uPath, $uFileContents, TokenStream $uTokenStream)
-    {
+        $this->classes = [];
     }
 
     /**
@@ -82,26 +59,20 @@ class Generator extends GeneratorBase
      */
     public function processAnnotations($uAnnotations)
     {
+        foreach ($uAnnotations as $tClass => $tAnnotation) {
+            if (isset($tAnnotation["class"]["scabbia-compile"])) {
+                $this->classes[] = $tClass;
+            }
+        }
     }
 
     /**
-     * Finalizes generator
+     * Dumps generated data into file
      *
-     * @throws Exception if one of the files in the namespace list does not exist
      * @return void
      */
-    public function finalize()
+    public function dump()
     {
-        // TODO read from configuration
-        $tFileNamespaceList = [
-            "Scabbia\\Helpers\\Arrays.php",
-            "Scabbia\\Helpers\\Date.php",
-            // "Scabbia\\Helpers\\FileSystem.php",
-            "Scabbia\\Helpers\\Html.php",
-            "Scabbia\\Helpers\\Runtime.php",
-            "Scabbia\\Helpers\\String.php"
-        ];
-
         $tMinifier = new Minifier();
 
         $tBinder = new Binder();
@@ -113,20 +84,23 @@ class Generator extends GeneratorBase
             }
         );
 
-        foreach ($tFileNamespaceList as $tFileNamespace) {
-            $tFilePath = Core::findResource($tFileNamespace);
+        foreach ($this->classes as $tClass) {
+            $tFilePath = Core::$loader->findFile($tClass);
             if ($tFilePath === false) {
                 // TODO exception
                 throw new Exception("");
             }
 
-            // TODO add checking class_exists for php files
+            // $tBinder->addContent("<" . "?php if (!class_exists(\"{$tClass}\", false)) { ?" . ">");
             $tBinder->addFile($tFilePath);
+            // $tBinder->addContent("<" . "?php } ?" . ">");
         }
+
+        $tContent = str_replace(" ?" . "><" . "?php ", " ", $tBinder->compile());
 
         FileSystem::write(
             Core::translateVariables($this->outputPath . "/compiled.php"),
-            $tBinder->compile()
+            $tContent
         );
     }
 }

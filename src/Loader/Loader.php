@@ -45,8 +45,35 @@ class Loader
     protected $classMap = [];
     protected $pushStack = [];
 
-    public $paths = [];
+    /** @type string $basepath the base directory which framework runs in */
+    public $basepath = null;
+    /** @type string $vendorpath the vendor directory for 3rd party components */
+    public $vendorpath = null;
 
+
+    /**
+     * Initializes the framework
+     *
+     * @param string $uBasePath the path of project files installed in
+     *
+     * @return void
+     */
+    public static function initFramework($uBasePath, $uProjectFiles)
+    {
+        $tInstance = static::init($uBasePath);
+
+        // MD - initializes the autoloader and framework variables.
+        \Scabbia\Framework\Core::init($tInstance);
+
+        // MD - read the application definitions from project.yml file and cache
+        // MD - its content into cache/project.yml.php
+        foreach ((array)$uProjectFiles as $tProjectFile) {
+            \Scabbia\Framework\Core::loadProject($tProjectFile);
+        }
+
+        // MD - pick which application is going to run
+        \Scabbia\Framework\Core::pickApplication();
+    }
 
     /**
      * Initializes the autoloader and registers it
@@ -75,8 +102,8 @@ class Loader
     public function __construct($uBasePath = null)
     {
         if ($uBasePath !== null) {
-            $this->paths["base"] = $uBasePath;
-            $this->paths["vendor"] = "$uBasePath/vendor";
+            $this->basepath = $uBasePath;
+            $this->vendorpath = "{$uBasePath}/vendor";
         }
 
         for ($tLevel = self::LEVELS; $tLevel > 0; $tLevel--) {
@@ -179,7 +206,7 @@ class Loader
      */
     public function importFromComposer()
     {
-        $tComposerPath = $this->paths["vendor"] . "/composer";
+        $tComposerPath = $this->vendorpath . "/composer";
 
         $tMap = require "{$tComposerPath}/autoload_namespaces.php";
         foreach ($tMap as $tNamespace => $tPath) {

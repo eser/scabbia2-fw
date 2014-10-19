@@ -73,7 +73,7 @@ class Tasks
     public static function load($uTasksConfigPath)
     {
         // load tasks.yml
-        $tTasksYamlPath = FileSystem::combinePaths(Core::$basepath, Core::translateVariables($uTasksConfigPath));
+        $tTasksYamlPath = FileSystem::combinePaths(Core::$loader->basepath, Core::translateVariables($uTasksConfigPath));
         self::$config = Core::cachedRead(
             $tTasksYamlPath,
             function () use ($tTasksYamlPath) {
@@ -101,9 +101,6 @@ class Tasks
      */
     public static function execute(array $uTasks)
     {
-        // register source paths to loader.
-        Core::pushSourcePaths(self::$config);
-
         // TODO use interpreter
         // $tCommandInterpreter = new CommandInterpreter("Scabbia", "Scabbia Command Line Tool");
 
@@ -153,8 +150,6 @@ class Tasks
                 }
             }
         }
-
-        Core::popSourcePaths();
 
         return $tReturnCode;
     }

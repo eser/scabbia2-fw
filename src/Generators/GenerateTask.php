@@ -96,7 +96,7 @@ class GenerateTask extends TaskBase
             }
         }
 
-        $tProjectFile = FileSystem::combinePaths(Core::$basepath, Core::translateVariables($tProjectFile));
+        $tProjectFile = FileSystem::combinePaths(Core::$loader->basepath, Core::translateVariables($tProjectFile));
         $uApplicationConfig = Config::load($tProjectFile)->get();
 
         if (!isset($uApplicationConfig[$tApplicationKey])) {
@@ -104,7 +104,7 @@ class GenerateTask extends TaskBase
         }
 
         // TODO is sanitizing $tApplicationKey needed for paths?
-        $tApplicationWritablePath = Core::$basepath . "/var/generated/app.{$tApplicationKey}";
+        $tApplicationWritablePath = Core::$loader->basepath . "/var/generated/app.{$tApplicationKey}";
 
         if (!file_exists($tApplicationWritablePath)) {
             mkdir($tApplicationWritablePath, 0777, true);

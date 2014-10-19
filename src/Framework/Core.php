@@ -30,8 +30,6 @@ class Core
 {
     /** @type object $loader the instance of the autoloader class */
     public static $loader = null;
-    /** @type string $basepath the base directory which framework runs in */
-    public static $basepath = null;
     /** @type array $variable array of framework variables */
     public static $variables = [];
     /** @type array $variablesPlaceholderCache cache for framework variables which will be used for translation */
@@ -81,10 +79,11 @@ class Core
     {
         // MD assign autoloader to Core::$loader
         self::$loader = $uLoader;
-        self::$basepath = self::$loader->paths["base"];
-        self::$variables["basepath"] = &self::$basepath;
 
         // MD determine environment variables
+        // basepath
+        self::$variables["basepath"] = &self::$loader->basepath;
+
         // secure
         if (isset($_SERVER["HTTPS"]) &&
             ((string)$_SERVER["HTTPS"] === "1" || strcasecmp($_SERVER["HTTPS"], "on") === 0)) {
@@ -139,6 +138,8 @@ class Core
         }
 
         self::updateVariablesCache();
+
+        self::$projectConfiguration = new Config();
     }
 
     // MD ## Core::loadProject method
@@ -151,14 +152,9 @@ class Core
      */
     public static function loadProject($uProjectConfigPath)
     {
-        // MD create a new project configuration stack if it does not exist
-        if (self::$projectConfiguration === null) {
-            self::$projectConfiguration = new Config();
-        }
-
         // MD add configuration file to project configuration stack
         self::$projectConfiguration->add(
-            FileSystem::combinePaths(Core::$basepath, self::translateVariables($uProjectConfigPath))
+            FileSystem::combinePaths(Core::$loader->basepath, self::translateVariables($uProjectConfigPath))
         );
     }
 
@@ -189,8 +185,8 @@ class Core
 
             // MD - if selected application fits all test conditions, run it
             if ($tTargetApplication !== false) {
-                $tApplicationWritablePath = self::$basepath . "/var/generated/app.{$tTargetApplication}";
-                self::runApplication($tApplicationConfig, $tApplicationWritablePath);
+                $tApplicationWritablePath = self::$loader->basepath . "/var/generated/app.{$tTargetApplication}";
+                self::pushApplication($tApplicationConfig, $tApplicationWritablePath);
             }
         }
     }
@@ -199,12 +195,31 @@ class Core
     /**
      * Runs an application
      *
+     * @return void
+     */
+    public static function runApplication()
+    {
+        foreach (self::$runningApplications as $tApplicationInfo) {
+            if ($tApplicationInfo[0] !== null) {
+                $tApplicationInfo[0]->generateRequestFromGlobals();
+            }
+        }
+
+        if (ApplicationBase::$current !== null) {
+            ApplicationBase::$current->generateRequestFromGlobals();
+        }
+    }
+
+    // MD ## Core::pushApplication method
+    /**
+     * Push an application
+     *
      * @param mixed  $uApplicationConfig the application configuration
      * @param string $uWritablePath      writable output folder
      *
      * @return void
      */
-    public static function runApplication($uApplicationConfig, $uWritablePath)
+    public static function pushApplication($uApplicationConfig, $uWritablePath)
     {
         // MD include compilation file for the application
         // FIXME is it needed to be loaded before Core and ApplicationBase?
@@ -222,8 +237,16 @@ class Core
         $tApplication = new $tApplicationType ($uApplicationConfig, $uWritablePath);
 
         ApplicationBase::$current = $tApplication;
-        $tApplication->generateRequestFromGlobals();
+    }
 
+    // MD ## Core::popApplication method
+    /**
+     * Pops an application
+     *
+     * @return void
+     */
+    public static function popApplication()
+    {
         // MD pop framework variables
         list(ApplicationBase::$current, self::$variables) = array_pop(self::$runningApplications);
         self::popSourcePaths();
@@ -342,7 +365,7 @@ class Core
      */
     public static function cachedRead($uPath, $uDefaultValue, array $uOptions = [])
     {
-        $tCacheFile = self::$basepath . "/var/cache/" . crc32(realpath($uPath));
+        $tCacheFile = self::$loader->basepath . "/var/cache/" . crc32(realpath($uPath));
 
         return FileSystem::readFromCacheFile(
             $tCacheFile,

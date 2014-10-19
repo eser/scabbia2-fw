@@ -57,8 +57,10 @@ class Application extends ApplicationBase
             Core::$variables["http-method"] = strtolower($_SERVER["X-HTTP-METHOD-OVERRIDE"]);
         } elseif (isset($_POST["_method"])) {
             Core::$variables["http-method"] = strtolower($_POST["_method"]);
-        } else {
+        } elseif (isset($_SERVER["REQUEST_METHOD"])) {
             Core::$variables["http-method"] = strtolower($_SERVER["REQUEST_METHOD"]);
+        } else {
+            Core::$variables["http-method"] = "GET";
         }
 
         // http requested with

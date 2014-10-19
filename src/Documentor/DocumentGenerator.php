@@ -70,7 +70,7 @@ class DocumentGenerator extends GeneratorBase
     public function processFile($uPath, $uFileContents, TokenStream $uTokenStream)
     {
         $tDocLines = [];
-        $tRelativePath = substr($uPath, strlen(Core::$basepath) + 1);
+        $tRelativePath = substr($uPath, strlen(Core::$loader->basepath) + 1);
         $tDocTitle = $tRelativePath;
 
         foreach ($uTokenStream as $tToken) {

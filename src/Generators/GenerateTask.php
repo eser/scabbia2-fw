@@ -104,7 +104,7 @@ class GenerateTask extends TaskBase
         }
 
         // TODO is sanitizing $tApplicationKey needed for paths?
-        $tApplicationWritablePath = Core::$basepath . "/writable/generated/app.{$tApplicationKey}";
+        $tApplicationWritablePath = Core::$basepath . "/var/generated/app.{$tApplicationKey}";
 
         if (!file_exists($tApplicationWritablePath)) {
             mkdir($tApplicationWritablePath, 0777, true);

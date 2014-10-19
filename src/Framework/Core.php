@@ -189,7 +189,7 @@ class Core
 
             // MD - if selected application fits all test conditions, run it
             if ($tTargetApplication !== false) {
-                $tApplicationWritablePath = self::$basepath . "/writable/generated/app.{$tTargetApplication}";
+                $tApplicationWritablePath = self::$basepath . "/var/generated/app.{$tTargetApplication}";
                 self::runApplication($tApplicationConfig, $tApplicationWritablePath);
             }
         }
@@ -342,7 +342,7 @@ class Core
      */
     public static function cachedRead($uPath, $uDefaultValue, array $uOptions = [])
     {
-        $tCacheFile = self::$basepath . "/writable/cache/" . crc32(realpath($uPath));
+        $tCacheFile = self::$basepath . "/var/cache/" . crc32(realpath($uPath));
 
         return FileSystem::readFromCacheFile(
             $tCacheFile,

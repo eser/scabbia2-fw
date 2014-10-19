@@ -67,7 +67,7 @@ class CleanTask extends TaskBase
      */
     public function executeTask(array $uParameters)
     {
-        $tPath = Core::$basepath . "/writable/cache";
+        $tPath = Core::$basepath . "/var/cache";
         FileSystem::garbageCollect($tPath, ["dotFiles" => false]);
 
         $this->interface->writeColor("yellow", "done.");

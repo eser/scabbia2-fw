@@ -83,12 +83,12 @@ class GenerateTask extends TaskBase
     public function executeTask(array $uParameters)
     {
         if (count($uParameters) === 0) {
-            $tProjectFile = "project.yml";
+            $tProjectFile = "etc/project.yml";
             $tApplicationKey = "default";
         } else {
             $tExploded = explode("/", $uParameters[0], 2);
             if (count($tExploded) === 1) {
-                $tProjectFile = "project.yml";
+                $tProjectFile = "etc/project.yml";
                 $tApplicationKey = $tExploded[0];
             } else {
                 $tProjectFile = $tExploded[0];

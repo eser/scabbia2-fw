@@ -11,7 +11,7 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
-namespace Scabbia\Loaders;
+namespace Scabbia\Loader;
 
 use InvalidArgumentException;
 
@@ -23,7 +23,7 @@ use InvalidArgumentException;
  *
  * This class is loosely based on the Symfony UniversalClassLoader.
  *
- * @package     Scabbia\Loaders
+ * @package     Scabbia\Loader
  * @author      Fabien Potencier <fabien@symfony.com>
  * @author      Jordi Boggiano <j.boggiano@seld.be>
  * @author      Eser Ozvataf <eser@sent.com>
@@ -44,7 +44,8 @@ class Loader
 
     protected $classMap = [];
     protected $pushStack = [];
-    protected $paths = [];
+
+    public $paths = [];
 
 
     /**

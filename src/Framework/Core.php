@@ -16,7 +16,7 @@ namespace Scabbia\Framework;
 use Scabbia\Framework\ApplicationBase;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Config\Config;
-use Scabbia\Loaders\Loader;
+use Scabbia\Loader\Loader;
 
 /**
  * Core framework functionality
@@ -81,19 +81,8 @@ class Core
     {
         // MD assign autoloader to Core::$loader
         self::$loader = $uLoader;
-
-        // MD determine basepath
-        if (self::$basepath === null) {
-            $tScriptDirectory = pathinfo($_SERVER["SCRIPT_FILENAME"], PATHINFO_DIRNAME);
-
-            if ($tScriptDirectory !== ".") {
-                self::$basepath = FileSystem::combinePaths(getcwd(), $tScriptDirectory);
-            } else {
-                self::$basepath = getcwd();
-            }
-
-            self::$variables["basepath"] = &self::$basepath;
-        }
+        self::$basepath = self::$loader->paths["base"];
+        self::$variables["basepath"] = &self::$basepath;
 
         // MD determine environment variables
         // secure

@@ -17,7 +17,7 @@ use Scabbia\Code\AnnotationScanner;
 use Scabbia\Code\TokenStream;
 use Scabbia\Config\Config;
 use Scabbia\Framework\Core;
-use Scabbia\Loaders\Loader;
+use Scabbia\Loader\Loader;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Objects\CommandInterpreter;
 use Scabbia\Tasks\TaskBase;

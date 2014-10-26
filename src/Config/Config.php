@@ -83,7 +83,7 @@ class Config
         foreach ($this->paths as $tPath) {
             $tConfigPath = Core::translateVariables($tPath[0]);
             $tConfigContent = Core::cachedRead(
-                $tConfigPath,
+                "file." . realpath($tConfigPath),
                 function () use ($tConfigPath) {
                     $tParser = new Parser();
                     return $tParser->parse(FileSystem::read($tConfigPath));

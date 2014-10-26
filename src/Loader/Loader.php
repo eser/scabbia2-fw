@@ -507,6 +507,41 @@ class Loader
         $this->classMap = $tPopped["classMap"];
     }
 
+    /**
+     * Gets the composer folders
+     *
+     * @return Iterator composer folders in [prefix, folder, standard]
+     */
+    public function getComposerFolders()
+    {
+        for ($tLevel = 0; $tLevel < self::LEVELS; $tLevel++) {
+            // PSR-4 lookup
+            foreach ($this->prefixDirsPsr4[$tLevel] as $tPrefix => $tDirs) {
+                foreach ($tDirs as $tDir) {
+                    yield $tFolders[] = [$tPrefix, $tDir, "PSR-4"];
+                }
+            }
+
+            // PSR-4 fallback dirs
+            foreach ($this->fallbackDirsPsr4[$tLevel] as $tDir) {
+                yield ["", $tDir, "PSR-4"];
+            }
+
+            // PSR-0 lookup
+            foreach ($this->prefixesPsr0[$tLevel] as $tPrefixes) {
+                foreach ($tPrefixes as $tPrefix => $tDirs) {
+                    foreach ($tDirs as $tDir) {
+                        yield [$tPrefix, $tDir, "PSR-0"];
+                    }
+                }
+            }
+
+            // PSR-0 fallback dirs
+            foreach ($this->fallbackDirsPsr0[$tLevel] as $tDir) {
+                yield ["", $tDir, "PSR-0"];
+            }
+        }
+    }
 }
 
 /**

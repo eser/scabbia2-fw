@@ -131,7 +131,7 @@ class GenerateTask extends TaskBase
 
         // -- scan composer maps
         Core::pushSourcePaths($uApplicationConfig[$tApplicationKey]);
-        $tFolders = $this->scanComposerMaps();
+        $tFolders = iterator_to_array(Core::$loader->getComposerFolders(), false);
 
         $this->interface->writeColor("green", "Composer Maps:");
         foreach ($tFolders as $tFolder) {
@@ -175,46 +175,6 @@ class GenerateTask extends TaskBase
     }
 
     /**
-     * Scans the folders mapped in composer
-     *
-     * @return void
-     */
-    public function scanComposerMaps()
-    {
-        $tFolders = [];
-
-        for ($tLevel = 0; $tLevel < Loader::LEVELS; $tLevel++) {
-            // PSR-4 lookup
-            foreach (Core::$loader->getPrefixesPsr4($tLevel) as $tPrefix => $tDirs) {
-                foreach ($tDirs as $tDir) {
-                    $tFolders[] = [$tPrefix, $tDir, "PSR-4"];
-                }
-            }
-
-            // PSR-4 fallback dirs
-            foreach (Core::$loader->getFallbackDirsPsr4($tLevel) as $tDir) {
-                $tFolders[] = ["", $tDir, "PSR-4"];
-            }
-
-            // PSR-0 lookup
-            foreach (Core::$loader->getPrefixesPsr0($tLevel) as $tPrefixes) {
-                foreach ($tPrefixes as $tPrefix => $tDirs) {
-                    foreach ($tDirs as $tDir) {
-                        $tFolders[] = [$tPrefix, $tDir, "PSR-0"];
-                    }
-                }
-            }
-
-            // PSR-0 fallback dirs
-            foreach (Core::$loader->getFallbackDirsPsr0($tLevel) as $tDir) {
-                $tFolders[] = ["", $tDir, "PSR-0"];
-            }
-        }
-
-        return $tFolders;
-    }
-
-    /**
      * Processes given file to search for classes
      *
      * @param string $uFile             file
@@ -235,6 +195,6 @@ class GenerateTask extends TaskBase
             return;
         }
 
-        $this->annotationScanner->processFile($tTokenStream, $uNamespacePrefix);
+        $this->annotationScanner->process($tTokenStream, $uNamespacePrefix);
     }
 }

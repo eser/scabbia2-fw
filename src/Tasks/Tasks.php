@@ -75,7 +75,7 @@ class Tasks
         // load tasks.yml
         $tTasksYamlPath = FileSystem::combinePaths(Core::$loader->basepath, Core::translateVariables($uTasksConfigPath));
         self::$config = Core::cachedRead(
-            $tTasksYamlPath,
+            "file." . realpath($tTasksYamlPath),
             function () use ($tTasksYamlPath) {
                 $tParser = new Parser();
                 return $tParser->parse(FileSystem::read($tTasksYamlPath));

@@ -14,7 +14,6 @@
 namespace Scabbia\Code;
 
 use Scabbia\Code\TokenStream;
-use Scabbia\Yaml\Parser;
 use ReflectionClass;
 
 /**
@@ -26,23 +25,33 @@ use ReflectionClass;
  */
 class AnnotationScanner
 {
-    /** @type Parser|null $parser      yaml parser */
-    public $parser = null;
-    /** @type array       $annotations set of annotations */
-    public $annotations = [];
     /** @type array       $result      result of scanning task */
     public $result = [];
+    /** @type array       $ignoreList  annotations to be ignored */
+    public $ignoreList = [
+        "link",
+        "copyright",
+        "license",
+        "package",
+        "author",
+        "since",
+        "type",
+        "param",
+        "return",
+        "throws",
+        "todo"
+    ];
 
 
     /**
-     * Returns a minified php source
+     * Scans a token stream and extracts annotations
      *
      * @param TokenStream $uTokenStream      extracted tokens wrapped with tokenstream
      * @param string      $uNamespacePrefix  namespace prefix
      *
      * @return array the file content in printable format with comments
      */
-    public function processFile(TokenStream $uTokenStream, $uNamespacePrefix)
+    public function process(TokenStream $uTokenStream, $uNamespacePrefix)
     {
         $tBuffer = "";
 
@@ -102,7 +111,7 @@ class AnnotationScanner
                     );
                 }
 
-                if (!$tSkip) {
+                if (!$tSkip && !isset($this->result[$tLastClass])) {
                     $this->processClass($tLastClass, $uNamespacePrefix);
                 }
 
@@ -115,7 +124,7 @@ class AnnotationScanner
 
                     foreach ($tUses as $tUse) {
                         $tLength = strlen($tBuffer);
-                        if (strlen($tUse) > $tLength && substr($tUse, -$tLength) === $tBuffer) {
+                        if (strlen($tUse) >= $tLength && substr($tUse, -$tLength) === $tBuffer) {
                             $tLastClassDerivedFrom = $tUse;
                             $tFound = true;
                             break;
@@ -154,7 +163,7 @@ class AnnotationScanner
     public function processClass($uClass, $uNamespacePrefix)
     {
         $tClassAnnotations = [
-            // "class" => [],
+            "class" => [],
 
             "methods" => [],
             "properties" => [],
@@ -168,10 +177,8 @@ class AnnotationScanner
 
         $tDocComment = $tReflection->getDocComment();
         if (strlen($tDocComment) > 0) {
-            $tClassAnnotations["class"] = $this->parseAnnotations($tDocComment);
+            $tClassAnnotations["class"]["self"] = $this->parseAnnotations($tDocComment);
             $tCount++;
-        } else {
-            $tClassAnnotations["class"] = [];
         }
 
         // methods
@@ -220,9 +227,9 @@ class AnnotationScanner
             }
         }
 
-        if ($tCount > 0) {
-            $this->result[$uClass] = $tClassAnnotations;
-        }
+        // if ($tCount > 0) {
+        $this->result[$uClass] = $tClassAnnotations;
+        // }
     }
 
     /**
@@ -244,31 +251,17 @@ class AnnotationScanner
         $tParsedAnnotations = [];
 
         foreach ($tDocCommentLines as $tDocCommentLine) {
-            if (!isset($this->annotations[$tDocCommentLine[1]])) {
+            if (in_array($tDocCommentLine[1], $this->ignoreList)) {
                 continue;
             }
-
-            $tRegistryItem = $this->annotations[$tDocCommentLine[1]];
 
             if (!isset($tParsedAnnotations[$tDocCommentLine[1]])) {
                 $tParsedAnnotations[$tDocCommentLine[1]] = [];
             }
 
             if (isset($tDocCommentLine[2])) {
-                if ($tRegistryItem["format"] === "yaml") {
-                    if ($this->parser === null) {
-                        $this->parser = new Parser();
-                    }
-
-                    $tLine = $this->parser->parse($tDocCommentLine[2]);
-                } else {
-                    $tLine = $tDocCommentLine[2];
-                }
-            } else {
-                $tLine = "";
+                $tParsedAnnotations[$tDocCommentLine[1]][] = trim($tDocCommentLine[2]);
             }
-
-            $tParsedAnnotations[$tDocCommentLine[1]][] = $tLine;
         }
 
         return $tParsedAnnotations;

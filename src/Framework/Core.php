@@ -357,15 +357,15 @@ class Core
      * Reads the contents from cache folder as long as it is not expired
      * If the file is expired, invokes callback method and caches output
      *
-     * @param string      $uPath         the relative path
+     * @param string      $uKey          key for the value going to be cached
      * @param mixed       $uDefaultValue the default value
      * @param array       $uOptions      options
      *
      * @return mixed the result
      */
-    public static function cachedRead($uPath, $uDefaultValue, array $uOptions = [])
+    public static function cachedRead($uKey, $uDefaultValue, array $uOptions = [])
     {
-        $tCacheFile = self::$loader->basepath . "/var/cache/" . crc32(realpath($uPath));
+        $tCacheFile = self::$loader->basepath . "/var/cache/" . crc32($uKey);
 
         return FileSystem::readFromCacheFile(
             $tCacheFile,

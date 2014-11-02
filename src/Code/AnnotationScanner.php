@@ -165,23 +165,15 @@ class AnnotationScanner
      */
     public function processClass($uClass, $uNamespacePrefix)
     {
-        $tClassAnnotations = [
-            "class" => [],
-
-            "methods" => [],
-            "properties" => [],
-
-            "staticMethods" => [],
-            "staticProperties" => []
-        ];
-        $tCount = 0;
-
+        $tClassAnnotations = [];
         $tReflection = new ReflectionClass($uClass);
 
         $tDocComment = $tReflection->getDocComment();
         if (strlen($tDocComment) > 0) {
-            $tClassAnnotations["class"]["self"] = $this->parseAnnotations($tDocComment);
-            $tCount++;
+            $tParsedAnnotations = $this->parseAnnotations($tDocComment);
+            if (count($tParsedAnnotations) > 0) {
+                $tClassAnnotations["class"] = ["self" => $tParsedAnnotations];
+            }
         }
 
         // methods
@@ -193,16 +185,22 @@ class AnnotationScanner
 
             $tDocComment = $tMethodReflection->getDocComment();
             if (strlen($tDocComment) > 0) {
-                $tParsedDocComment = $this->parseAnnotations($tDocComment);
+                $tParsedAnnotations = $this->parseAnnotations($tDocComment);
 
-                if (count($tParsedDocComment) === 0) {
+                if (count($tParsedAnnotations) === 0) {
                     // nothing
                 } elseif ($tMethodReflection->isStatic()) {
-                    $tClassAnnotations["staticMethods"][$tMethodReflection->name] = $tParsedDocComment;
-                    $tCount++;
+                    if (!isset($tClassAnnotations["staticMethods"])) {
+                        $tClassAnnotations["staticMethods"] = [];
+                    }
+
+                    $tClassAnnotations["staticMethods"][$tMethodReflection->name] = $tParsedAnnotations;
                 } else {
-                    $tClassAnnotations["methods"][$tMethodReflection->name] = $tParsedDocComment;
-                    $tCount++;
+                    if (!isset($tClassAnnotations["methods"])) {
+                        $tClassAnnotations["methods"] = [];
+                    }
+
+                    $tClassAnnotations["methods"][$tMethodReflection->name] = $tParsedAnnotations;
                 }
             }
         }
@@ -221,18 +219,26 @@ class AnnotationScanner
                 if (count($tParsedAnnotations) === 0) {
                     // nothing
                 } elseif ($tPropertyReflection->isStatic()) {
+                    if (!isset($tClassAnnotations["staticProperties"])) {
+                        $tClassAnnotations["staticProperties"] = [];
+                    }
+
                     $tClassAnnotations["staticProperties"][$tPropertyReflection->name] = $tParsedAnnotations;
-                    $tCount++;
                 } else {
+                    if (!isset($tClassAnnotations["properties"])) {
+                        $tClassAnnotations["properties"] = [];
+                    }
+
                     $tClassAnnotations["properties"][$tPropertyReflection->name] = $tParsedAnnotations;
-                    $tCount++;
                 }
             }
         }
 
-        // if ($tCount > 0) {
-        $this->result[$uClass] = $tClassAnnotations;
-        // }
+        if (count($tClassAnnotations) > 0) {
+            $this->result[$uClass] = $tClassAnnotations;
+        } else {
+            $this->result[$uClass] = null;
+        }
     }
 
     /**

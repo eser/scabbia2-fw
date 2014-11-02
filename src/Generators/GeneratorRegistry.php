@@ -15,12 +15,10 @@ namespace Scabbia\Generators;
 
 use Scabbia\Code\AnnotationManager;
 use Scabbia\Framework\ApplicationBase;
-use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
-use RuntimeException;
 
 /**
- * Task class for "php scabbia generate"
+ * GeneratorRegistry
  *
  * @package     Scabbia\Generators
  * @author      Eser Ozvataf <eser@sent.com>
@@ -32,6 +30,8 @@ class GeneratorRegistry
     public $application;
     /** @type array                   $generators         set of generators */
     public $generators = [];
+    /** @type array|null              $outputs            set of generator outputs */
+    public $outputs = null;
     /** @type AnnotationManager|null  $annotationManager  annotation manager */
     public $annotationManager = null;
 
@@ -49,14 +49,30 @@ class GeneratorRegistry
     }
 
     /**
-     * Executes the task
-     *
-     * @param array $uParameters parameters
-     *
-     * @throws RuntimeException if configuration is invalid
-     * @return int exit code
+     * Loads saved generator outputs or start over executing them
+     * 
+     * @return void
      */
-    public function scan()
+    public function load()
+    {
+        $tGeneratorOutputsPath = $this->application->writablePath . "/generator-outputs.php";
+
+        // TODO and not in development mode
+        if (file_exists($tGeneratorOutputsPath)) {
+            $this->annotationMap = require $tGeneratorOutputsPath;
+        } else {
+            $this->execute();
+            // TODO if not in readonly mode
+            FileSystem::writePhpFile($tGeneratorOutputsPath, $this->outputs);
+        }
+    }
+
+    /**
+     * Executes available generators
+     *
+     * @return void
+     */
+    public function execute()
     {
         $this->annotationManager = new AnnotationManager($this->application);
         $this->annotationManager->load();
@@ -69,6 +85,16 @@ class GeneratorRegistry
             $this->generators[$tScanResult[0]] = new $tScanResult[0] ($this->application);
         }
 
-        return $this->generators;
+        foreach ($this->generators as $tGenerator) {
+            // TODO processAnnotations (check $tGenerator->annotations)
+            // $tGenerator->processAnnotations($uAnnotations);
+        }
+
+        // TODO processFile
+        // $tGenerator->processFile($uPath, $uFileContents, TokenStream $uTokenStream);
+
+        foreach ($this->generators as $tGeneratorKey => $tGenerator) {
+            $this->outputs[$tGeneratorKey] = $tGenerator->dump();
+        }
     }
 }

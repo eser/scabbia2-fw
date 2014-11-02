@@ -15,6 +15,7 @@ namespace Scabbia\Events;
 
 use Scabbia\Code\TokenStream;
 use Scabbia\Events\Events;
+use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
@@ -39,12 +40,16 @@ class EventGenerator extends GeneratorBase
 
 
     /**
-     * Initializes generator
+     * Initializes a generator
      *
-     * @return void
+     * @param ApplicationBase  $uApplication   application
+     *
+     * @return GeneratorBase
      */
-    public function initialize()
+    public function __construct(ApplicationBase $uApplication)
     {
+        parent::__construct($uApplication);
+
         $this->events = new Events();
     }
 

@@ -32,18 +32,8 @@ class DocumentGenerator extends GeneratorBase
     /** @type array $annotations set of annotations */
     public $annotations = [];
     /** @type array $files set of files */
-    public $files;
+    public $files = [];
 
-
-    /**
-     * Initializes generator
-     *
-     * @return void
-     */
-    public function initialize()
-    {
-        $this->files = [];
-    }
 
     /**
      * Processes a file

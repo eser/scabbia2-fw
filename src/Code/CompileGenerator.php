@@ -37,18 +37,8 @@ class CompileGenerator extends GeneratorBase
         "scabbia-compile" => ["format" => "yaml"]
     ];
     /** @type array $classes set of classes */
-    public $classes;
+    public $classes = [];
 
-
-    /**
-     * Initializes generator
-     *
-     * @return void
-     */
-    public function initialize()
-    {
-        $this->classes = [];
-    }
 
     /**
      * Processes set of annotations

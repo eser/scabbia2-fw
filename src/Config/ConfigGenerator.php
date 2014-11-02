@@ -15,6 +15,7 @@ namespace Scabbia\Config;
 
 use Scabbia\Code\TokenStream;
 use Scabbia\Config\Config;
+use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
@@ -39,12 +40,16 @@ class ConfigGenerator extends GeneratorBase
 
 
     /**
-     * Initializes generator
+     * Initializes a generator
      *
-     * @return void
+     * @param ApplicationBase  $uApplication   application
+     *
+     * @return GeneratorBase
      */
-    public function initialize()
+    public function __construct(ApplicationBase $uApplication)
     {
+        parent::__construct($uApplication);
+
         $this->unifiedConfig = new Config();
     }
 

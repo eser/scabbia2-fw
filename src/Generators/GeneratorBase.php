@@ -44,15 +44,6 @@ abstract class GeneratorBase
     }
 
     /**
-     * Initializes generator
-     *
-     * @return void
-     */
-    public function initialize()
-    {
-    }
-
-    /**
      * Processes a file
      *
      * @param string      $uPath         file path
@@ -73,15 +64,6 @@ abstract class GeneratorBase
      * @return void
      */
     public function processAnnotations($uAnnotations)
-    {
-    }
-
-    /**
-     * Finalizes generator
-     *
-     * @return void
-     */
-    public function finalize()
     {
     }
 

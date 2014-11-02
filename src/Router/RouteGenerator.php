@@ -43,24 +43,12 @@ class RouteGenerator extends GeneratorBase
         "route" => ["format" => "yaml"]
     ];
     /** @type array $staticRoutes set of static routes */
-    public $staticRoutes;
+    public $staticRoutes = [];
     /** @type array $regexToRoutesMap map of variable routes */
-    public $regexToRoutesMap;
+    public $regexToRoutesMap = [];
     /** @type array $namedRoutes map of named routes */
-    public $namedRoutes;
+    public $namedRoutes = [];
 
-
-    /**
-     * Initializes generator
-     *
-     * @return void
-     */
-    public function initialize()
-    {
-        $this->staticRoutes = [];
-        $this->regexToRoutesMap = [];
-        $this->namedRoutes = [];
-    }
 
     /**
      * Processes set of annotations

@@ -36,19 +36,6 @@ class DocumentGenerator extends GeneratorBase
 
 
     /**
-     * Initializes a generator
-     *
-     * @param mixed  $uApplicationConfig application config
-     * @param string $uOutputPath        output path
-     *
-     * @return Generator
-     */
-    public function __construct($uApplicationConfig, $uOutputPath)
-    {
-        parent::__construct($uApplicationConfig, $uOutputPath);
-    }
-
-    /**
      * Initializes generator
      *
      * @return void
@@ -111,7 +98,7 @@ class DocumentGenerator extends GeneratorBase
         }
 
         FileSystem::write(
-            Core::translateVariables($this->outputPath . "/documentor.md"),
+            Core::translateVariables($this->application->writablePath . "/documentor.md"),
             $tContent
         );
     }

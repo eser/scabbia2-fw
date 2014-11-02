@@ -14,8 +14,8 @@
 namespace Scabbia\Code;
 
 use Scabbia\Code\AnnotationScanner;
-use Scabbia\Framework\Core;
 use Scabbia\Framework\ApplicationBase;
+use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Yaml\Parser;
 
@@ -28,6 +28,8 @@ use Scabbia\Yaml\Parser;
  */
 class AnnotationManager
 {
+    /** @type ApplicationBase         $application        application */
+    public $application;
     /** @type Parser|null             $parser             yaml parser */
     public $parser = null;
     /** @type AnnotationScanner|null  $annotationScanner  annotation scanner */
@@ -37,13 +39,25 @@ class AnnotationManager
 
 
     /**
+     * Initializes an annotation manager
+     *
+     * @param ApplicationBase  $uApplication   application
+     *
+     * @return AnnotationManager
+     */
+    public function __construct(ApplicationBase $uApplication)
+    {
+        $this->application = $uApplication;
+    }
+
+    /**
      * Loads saved annotations or start over scanning
      * 
      * @return void
      */
     public function load()
     {
-        $tAnnotationMapPath = ApplicationBase::$current->writablePath . "/annotations.php";
+        $tAnnotationMapPath = $this->application->writablePath . "/annotations.php";
 
         // TODO and not in development mode
         if (file_exists($tAnnotationMapPath)) {
@@ -120,6 +134,10 @@ class AnnotationManager
                 }
 
                 foreach ($this->annotationMap as $tClass => $tAnnotationLevel) {
+                    if ($tAnnotationLevel === null) {
+                        continue;
+                    }
+
                     foreach ($tAnnotationLevel as $tAnnotationLevelKey => $tMemberAnnotations) {
                         foreach ($tMemberAnnotations as $tAnnotationMemberKey => $tAnnotations) {
                             if (isset($tAnnotations[$uAnnotation])) {

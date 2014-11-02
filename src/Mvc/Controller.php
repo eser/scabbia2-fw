@@ -15,6 +15,7 @@ namespace Scabbia\Mvc;
 
 use Scabbia\Containers\BindableContainer;
 use Scabbia\Events\Delegate;
+use Scabbia\Framework\ApplicationBase;
 use Scabbia\Objects\Collection;
 use Scabbia\Views\Views;
 
@@ -31,8 +32,8 @@ abstract class Controller
 
     /** @type array $routeInfo routing information */
     public $routeInfo;
-    /** @type mixed $applicationConfig application configuration */
-    public $applicationConfig;
+    /** @type ApplicationBase $application application */
+    public $application;
     /** @type mixed $moduleConfig module configuration */
     public $moduleConfig;
     /** @type Collection $vars variables */
@@ -73,7 +74,7 @@ abstract class Controller
         if (strncmp($uView, "\\", 1) === 0) {
             Views::viewFile($uView, $uModel, $this);
         } else {
-            $tNamespace = $this->applicationConfig["modules"][$this->routeInfo["module"]]["namespace"];
+            $tNamespace = $this->application->config["modules"][$this->routeInfo["module"]]["namespace"];
             Views::viewFile("{$tNamespace}\\Views\\{$uView}", $uModel, $this);
         }
     }

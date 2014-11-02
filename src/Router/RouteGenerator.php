@@ -78,7 +78,7 @@ class RouteGenerator extends GeneratorBase
                 }
 
                 foreach ($tMethod["route"] as $tRoute) {
-                    foreach ($this->applicationConfig["modules"] as $tModuleKey => $tModuleDefinition) {
+                    foreach ($this->application->config["modules"] as $tModuleKey => $tModuleDefinition) {
                         if (strncmp(
                             $tClassKey,
                             $tModuleDefinition["namespace"],
@@ -113,7 +113,7 @@ class RouteGenerator extends GeneratorBase
     public function dump()
     {
         FileSystem::writePhpFile(
-            Core::translateVariables($this->outputPath . "/routes.php"),
+            Core::translateVariables($this->application->writablePath . "/routes.php"),
             $this->getData()
         );
     }

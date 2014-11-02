@@ -83,7 +83,7 @@ class EventGenerator extends GeneratorBase
     public function dump()
     {
         FileSystem::writePhpFile(
-            Core::translateVariables($this->outputPath . "/events.php"),
+            Core::translateVariables($this->application->writablePath . "/events.php"),
             $this->events->events
         );
     }

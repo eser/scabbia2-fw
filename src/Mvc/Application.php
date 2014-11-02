@@ -204,7 +204,7 @@ class Application extends ApplicationBase
             $tInstance = new $tRoute["callback"][0] ();
 
             $tInstance->routeInfo = $tRoute;
-            $tInstance->applicationConfig = $this->config;
+            $tInstance->application = $this;
             if (isset($this->config["modules"][$tModule]["config"])) {
                 $tInstance->moduleConfig = $this->config["modules"][$tModule]["config"];
             } else {

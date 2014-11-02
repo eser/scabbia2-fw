@@ -100,7 +100,7 @@ class CompileGenerator extends GeneratorBase
         $tContent = str_replace(" ?" . "><" . "?php ", " ", $tBinder->compile());
 
         FileSystem::write(
-            Core::translateVariables($this->outputPath . "/compiled.php"),
+            Core::translateVariables($this->application->writablePath . "/compiled.php"),
             $tContent
         );
     }

@@ -75,7 +75,7 @@ class ConfigGenerator extends GeneratorBase
     public function dump()
     {
         FileSystem::writePhpFile(
-            Core::translateVariables($this->outputPath . "/unified-config.php"),
+            Core::translateVariables($this->application->writablePath . "/unified-config.php"),
             $this->unifiedConfig->get()
         );
     }

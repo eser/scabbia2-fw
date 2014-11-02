@@ -14,6 +14,7 @@
 namespace Scabbia\Generators;
 
 use Scabbia\Code\AnnotationManager;
+use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
 use RuntimeException;
@@ -27,11 +28,25 @@ use RuntimeException;
  */
 class GeneratorRegistry
 {
+    /** @type ApplicationBase         $application        application */
+    public $application;
     /** @type array                   $generators         set of generators */
     public $generators = [];
     /** @type AnnotationManager|null  $annotationManager  annotation manager */
     public $annotationManager = null;
 
+
+    /**
+     * Initializes a generator registry
+     *
+     * @param ApplicationBase  $uApplication   application
+     *
+     * @return GeneratorRegistry
+     */
+    public function __construct(ApplicationBase $uApplication)
+    {
+        $this->application = $uApplication;
+    }
 
     /**
      * Executes the task
@@ -43,9 +58,17 @@ class GeneratorRegistry
      */
     public function scan()
     {
-        $this->annotationManager = new AnnotationManager();
-        $this->load();
+        $this->annotationManager = new AnnotationManager($this->application);
+        $this->annotationManager->load();
 
-        $this->get("scabbia-generator");
+        foreach ($this->annotationManager->get("scabbia-generator") as $tScanResult) {
+            if ($tScanResult[1] !== "class") {
+                continue;
+            }
+
+            $this->generators[$tScanResult[0]] = new $tScanResult[0] ($this->application);
+        }
+
+        return $this->generators;
     }
 }

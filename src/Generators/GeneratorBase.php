@@ -14,6 +14,7 @@
 namespace Scabbia\Generators;
 
 use Scabbia\Code\TokenStream;
+use Scabbia\Framework\ApplicationBase;
 
 /**
  * Default methods needed for implementation of a generator
@@ -24,26 +25,22 @@ use Scabbia\Code\TokenStream;
  */
 abstract class GeneratorBase
 {
-    /** @type array       $annotations        annotations to be processed */
+    /** @type array                   $annotations        annotations to be processed */
     public $annotations;
-    /** @type mixed       $applicationConfig  application configuration */
-    public $applicationConfig;
-    /** @type string      $outputPath         output path for generated files */
-    public $outputPath;
+    /** @type ApplicationBase         $application        application */
+    public $application;
 
 
     /**
      * Initializes a generator
      *
-     * @param mixed  $uApplicationConfig application config
-     * @param string $uOutputPath        output path
+     * @param ApplicationBase  $uApplication   application
      *
      * @return GeneratorBase
      */
-    public function __construct($uApplicationConfig, $uOutputPath)
+    public function __construct(ApplicationBase $uApplication)
     {
-        $this->applicationConfig = $uApplicationConfig;
-        $this->outputPath = $uOutputPath;
+        $this->application = $uApplication;
     }
 
     /**

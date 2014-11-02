@@ -18,7 +18,7 @@ use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Router\Router;
-use Exception;
+use UnexpectedValueException;
 
 /**
  * RouteGenerator
@@ -148,7 +148,7 @@ class RouteGenerator extends GeneratorBase
      * @param callable      $uCallback   callback
      * @param string|null   $uName       name of route
      *
-     * @throws Exception if an routing problem occurs
+     * @throws UnexpectedValueException if an routing problem occurs
      * @return void
      */
     public function addStaticRoute(array $uMethods, $uRouteData, $uCallback, $uName = null)
@@ -157,7 +157,7 @@ class RouteGenerator extends GeneratorBase
 
         foreach ($uMethods as $tMethod) {
             if (isset($this->staticRoutes[$tRouteStr][$tMethod])) {
-                throw new Exception(sprintf(
+                throw new UnexpectedValueException(sprintf(
                     "Cannot register two routes matching \"%s\" for method \"%s\"",
                     $tRouteStr,
                     $tMethod
@@ -173,7 +173,7 @@ class RouteGenerator extends GeneratorBase
 
                 $tRoute = $tRoutes[$tMethod];
                 if (preg_match("~^{$tRoute["regex"]}$~", $tRouteStr) === 1) {
-                    throw new Exception(sprintf(
+                    throw new UnexpectedValueException(sprintf(
                         "Static route \"%s\" is shadowed by previously defined variable route \"%s\" for method \"%s\"",
                         $tRouteStr,
                         $tRoute["regex"],
@@ -207,7 +207,7 @@ class RouteGenerator extends GeneratorBase
      * @param callable      $uCallback   callback
      * @param string|null   $uName       name of route
      *
-     * @throws Exception if an routing problem occurs
+     * @throws UnexpectedValueException if an routing problem occurs
      * @return void
      */
     public function addVariableRoute(array $uMethods, $uRouteData, $uCallback, $uName = null)
@@ -226,7 +226,7 @@ class RouteGenerator extends GeneratorBase
             list($tVariableName, $tRegexPart) = $tPart;
 
             if (isset($tVariables[$tVariableName])) {
-                throw new Exception(sprintf("Cannot use the same placeholder \"%s\" twice", $tVariableName));
+                throw new UnexpectedValueException(sprintf("Cannot use the same placeholder \"%s\" twice", $tVariableName));
             }
 
             $tVariables[$tVariableName] = $tVariableName;
@@ -236,7 +236,7 @@ class RouteGenerator extends GeneratorBase
 
         foreach ($uMethods as $tMethod) {
             if (isset($this->regexToRoutesMap[$tRegex][$tMethod])) {
-                throw new Exception(
+                throw new UnexpectedValueException(
                     sprintf("Cannot register two routes matching \"%s\" for method \"%s\"", $tRegex, $tMethod)
                 );
             }

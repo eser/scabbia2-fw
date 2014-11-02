@@ -14,7 +14,7 @@
 namespace Scabbia\Views;
 
 use Scabbia\Framework\Core;
-use Exception;
+use UnexpectedValueException;
 
 /**
  * Views
@@ -87,7 +87,7 @@ class Views
      * @param mixed  $uModel      view model
      * @param mixed  $uController controller instance
      *
-     * @throws Exception if any render engine is not associated with the extension
+     * @throws UnexpectedValueException if any render engine is not associated with the extension
      * @return void
      */
     public static function viewFile($uView, $uModel = null, $uController = null)
@@ -99,7 +99,7 @@ class Views
 
         if ($tViewEngine === null) {
             // TODO exception
-            throw new Exception("");
+            throw new UnexpectedValueException("");
         }
 
         $tViewEngine->render("{$tViewFileInfo["dirname"]}/", $tViewFileInfo["basename"], $uModel, $uController);

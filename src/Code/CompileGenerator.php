@@ -19,7 +19,7 @@ use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Objects\Binder;
-use Exception;
+use RuntimeException;
 
 /**
  * CompileGenerator
@@ -69,6 +69,7 @@ class CompileGenerator extends GeneratorBase
     /**
      * Dumps generated data into file
      *
+     * @throws RuntimeException if class could not be loaded
      * @return void
      */
     public function dump()
@@ -88,7 +89,7 @@ class CompileGenerator extends GeneratorBase
             $tFilePath = Core::$loader->findFile($tClass);
             if ($tFilePath === false) {
                 // TODO exception
-                throw new Exception("");
+                throw new RuntimeException("");
             }
 
             // $tBinder->addContent("<" . "?php if (!class_exists(\"{$tClass}\", false)) { ?" . ">");

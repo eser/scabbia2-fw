@@ -18,7 +18,7 @@ use Scabbia\Framework\Core;
 use Scabbia\Helpers\String;
 use Scabbia\Router\Router;
 use Scabbia\LightStack\RequestInterface;
-use Exception;
+use UnexpectedValueException;
 
 /**
  * Application Implementation for MVC layered architecture
@@ -176,7 +176,7 @@ class Application extends ApplicationBase
      * @param string $uPathInfo        pathinfo
      * @param array  $uQueryParameters query parameters
      *
-     * @throws Exception if routing fails
+     * @throws UnexpectedValueException if routing fails
      * @return RequestInterface request object
      */
     public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters)
@@ -217,10 +217,10 @@ class Application extends ApplicationBase
             // pop previously pushed variables
         } elseif ($tRoute["status"] === Router::METHOD_NOT_ALLOWED) {
             // TODO exception
-            throw new Exception("");
+            throw new UnexpectedValueException("");
         } elseif ($tRoute["status"] === Router::NOT_FOUND) {
             // TODO exception
-            throw new Exception("");
+            throw new UnexpectedValueException("");
         }
 
         $this->events->invoke("requestEnd", $tRoute);

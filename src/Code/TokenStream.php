@@ -16,6 +16,7 @@ namespace Scabbia\Code;
 use Countable;
 use Exception;
 use SeekableIterator;
+use UnexpectedValueException;
 use OutOfBoundsException;
 
 /**
@@ -84,7 +85,7 @@ class TokenStream implements Countable, SeekableIterator
     public function seek($uPosition)
     {
         if (!isset($this->tokens[$uPosition])) {
-            throw new OutOfBoundsException("invalid seek position ($uPosition)");
+            throw new OutOfBoundsException("invalid seek position ({$uPosition})");
         }
 
         $this->position = $uPosition;
@@ -225,7 +226,7 @@ class TokenStream implements Countable, SeekableIterator
      * @param  array|string|null $uValue
      * @param  string|null       $uMessage
      *
-     * @throws Exception
+     * @throws UnexpectedValueException
      * @return void
      */
     public function expect($uType, $uValue = null, $uMessage = null)
@@ -233,7 +234,7 @@ class TokenStream implements Countable, SeekableIterator
         if (!$this->test($uType, $uValue)) {
             $tToken = $this->tokens[$this->position];
 
-            throw new Exception(sprintf(
+            throw new UnexpectedValueException(sprintf(
                 "%sUnexpected token \"%s\" of value \"%s\" (\"%s\" expected%s)",
                 $uMessage ? "{$uMessage}. " : "",
                 token_name($tToken[0]),

@@ -14,7 +14,7 @@
 namespace Scabbia\Facades;
 
 use Scabbia\Helpers\Runtime;
-use Exception;
+use UnexpectedValueException;
 
 /**
  * Default methods needed for implementation of a facade interface
@@ -35,7 +35,7 @@ abstract class FacadeBase
      * @param string $uMethod     method name
      * @param array  $uParameters parameters
      *
-     * @throws Exception if method not found
+     * @throws UnexpectedValueException if mapped method not found
      * @return mixed
      */
     public static function __callStatic($uMethod, $uParameters)
@@ -48,6 +48,6 @@ abstract class FacadeBase
         }
 
         // TODO exception
-        throw new Exception("");
+        throw new UnexpectedValueException("");
     }
 }

@@ -14,6 +14,7 @@
 namespace Scabbia\Code;
 
 use Scabbia\Code\TokenStream;
+use LogicException;
 use ReflectionClass;
 
 /**
@@ -48,10 +49,11 @@ class AnnotationScanner
      *
      * @param TokenStream $uTokenStream      extracted tokens wrapped with tokenstream
      * @param string      $uNamespacePrefix  namespace prefix
+     * @param bool        $uThrowExceptions  throw exceptions if any error occurred
      *
      * @return array the file content in printable format with comments
      */
-    public function process(TokenStream $uTokenStream, $uNamespacePrefix)
+    public function process(TokenStream $uTokenStream, $uNamespacePrefix, $uThrowExceptions = false)
     {
         $tBuffer = "";
 
@@ -103,12 +105,13 @@ class AnnotationScanner
                 $tSkip = false;
                 if ($tLastClassDerivedFrom !== null && !class_exists($tLastClassDerivedFrom)) {
                     $tSkip = true;
-                    // TODO throw exception instead.
-                    echo sprintf(
-                        "\"%s\" derived from \"%s\", but it could not be found.\n",
-                        $tLastClass,
-                        $tLastClassDerivedFrom
-                    );
+                    if ($uThrowExceptions) {
+                        throw new LogicException(sprintf(
+                            "\"%s\" derived from \"%s\", but it could not be found.\n",
+                            $tLastClass,
+                            $tLastClassDerivedFrom
+                        ));
+                    }
                 }
 
                 if (!$tSkip && !isset($this->result[$tLastClass])) {

@@ -14,7 +14,7 @@
 namespace Scabbia\Helpers;
 
 use DirectoryIterator;
-use Exception;
+use UnexpectedValueException;
 
 /**
  * A bunch of utility methods for file system functionality
@@ -325,14 +325,14 @@ class FileSystem
      *
      * @param string $uPath the path
      *
-     * @throws Exception if path contains invalid chars
+     * @throws UnexpectedValueException if path contains invalid chars
      * @return bool true if the path is rooted
      */
     public static function isPathRooted($uPath)
     {
         if (!self::checkInvalidPathChars($uPath)) {
             // TODO exception
-            throw new Exception("");
+            throw new UnexpectedValueException("");
         }
 
         $tLength = strlen($uPath);
@@ -355,14 +355,14 @@ class FileSystem
      *
      * @param string $uPath the path
      *
-     * @throws Exception if path contains invalid chars
+     * @throws UnexpectedValueException if path contains invalid chars
      * @return bool true if the path is relative
      */
     public static function isPathRelative($uPath)
     {
         if (!self::checkInvalidPathChars($uPath)) {
             // TODO exception
-            throw new Exception("");
+            throw new UnexpectedValueException("");
         }
 
         $tLength = strlen($uPath);

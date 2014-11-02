@@ -14,6 +14,7 @@
 namespace Scabbia\Objects;
 
 use Scabbia\Interfaces\IInterface;
+use UnexpectedValueException;
 
 /**
  * Command Interpreter
@@ -153,7 +154,7 @@ class CommandInterpreter
      * @param array  $uCommandParameters parameters
      * @param array  $uCommandOptions    options
      *
-     * @throws Exception
+     * @throws UnexpectedValueException
      * @return array
      */
     protected function executeCommand($uCommandKey, array $uCommandParameters = [], array $uCommandOptions = [])
@@ -161,7 +162,7 @@ class CommandInterpreter
         $tParameters = [];
 
         if (!isset($this->commands[$uCommandKey])) {
-            throw new Exception(sprintf("command not found - %s", $uCommandKey));
+            throw new UnexpectedValueException(sprintf("command not found - %s", $uCommandKey));
         }
 
         foreach ($this->commands[$uCommandKey][1] as $tOption) {
@@ -170,7 +171,7 @@ class CommandInterpreter
             } elseif ($tOption[0] === Console::PARAMETER_REQUIRED) {
                 $tParameters[$tOption[1]] = array_shift($uCommandParameters);
                 if ($tParameters[$tOption[1]] === false) {
-                    throw new Exception(sprintf("%s parameter required for command %s", $tOption[1], $uCommandKey));
+                    throw new UnexpectedValueException(sprintf("%s parameter required for command %s", $tOption[1], $uCommandKey));
                 }
             } elseif ($tOption[0] === Console::OPTION ||
                 $tOption[0] === Console::OPTION_MULTIPLE ||
@@ -180,7 +181,7 @@ class CommandInterpreter
         }
 
         if (count($uCommandOptions) > 0) {
-            throw new Exception(sprintf("Invalid options used - %s", implode($uCommandOptions, ", ")));
+            throw new UnexpectedValueException(sprintf("Invalid options used - %s", implode($uCommandOptions, ", ")));
         }
 
         return $tParameters;

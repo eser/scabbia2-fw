@@ -15,7 +15,8 @@
 require __DIR__ . "/src/Loader/Loader.php";
 
 // instantiate and register the loader
-$tLoader = \Scabbia\Loader\Loader::init();
+$tLoader = new \Scabbia\Loader\Loader();
+$tLoader->register(true);
 
 // register the base directories for the namespace prefix
 $tLoader->addPsr4("Scabbia\\", __DIR__ . "/src/");

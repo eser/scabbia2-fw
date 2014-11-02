@@ -13,6 +13,8 @@
 
 namespace Scabbia\Loader;
 
+use Scabbia\Framework\Core;
+use Scabbia\Tasks\Tasks;
 use InvalidArgumentException;
 
 /**
@@ -52,42 +54,47 @@ class Loader
 
 
     /**
-     * Initializes the framework
+     * Loads the framework
      *
-     * @param string $uBasePath the path of project files installed in
+     * @param string $uParameters the settings for loading procecedure
      *
-     * @return void
+     * @return Loader an instantiated Loader object
      */
-    public static function initFramework($uBasePath, $uProjectFiles)
+    public static function load($uParameters = [])
     {
-        $tInstance = static::init($uBasePath);
+        $tBasePath = isset($uParameters["basepath"]) ? $uParameters["basepath"] : null;
+
+        $tInstance = new static($tBasePath);
+        if ($tInstance->vendorpath !== null) {
+            $tInstance->importFromComposer();
+        }
+        $tInstance->register(true);
 
         // MD - initializes the autoloader and framework variables.
-        \Scabbia\Framework\Core::init($tInstance);
+        Core::init($tInstance);
 
-        // MD - read the application definitions from project.yml file and cache
-        // MD - its content into cache/project.yml.php
-        foreach ((array)$uProjectFiles as $tProjectFile) {
-            \Scabbia\Framework\Core::loadProject($tProjectFile);
+        if (isset($uParameters["projects"])) {
+            // MD - read the application definitions from project.yml file and cache
+            // MD - its content into cache/project.yml.php
+            foreach ((array)$uParameters["projects"] as $tProjectFile) {
+                Core::loadProject($tProjectFile);
+            }
+
+            // MD - pick which application is going to run
+            Core::pickApplication();
         }
 
-        // MD - pick which application is going to run
-        \Scabbia\Framework\Core::pickApplication();
-    }
+        if (isset($uParameters["tasks"])) {
+            // MD - read the application definitions from tasks.yml file and cache
+            // MD - its content into cache/tasks.yml.php
+            foreach ((array)$uParameters["tasks"] as $tTasksFile) {
+                Tasks::load($tTasksFile);
+            }
+        }
 
-    /**
-     * Initializes the autoloader and registers it
-     *
-     * @param string $uBasePath the path of project files installed in
-     *
-     * @return Loader the instance
-     */
-    public static function init($uBasePath)
-    {
-        $tInstance = new static($uBasePath);
-        $tInstance->importFromComposer();
-
-        $tInstance->register(true);
+        if (isset($uParameters["run"]) && $uParameters["run"] === true) {
+            Core::runApplication();
+        }
 
         return $tInstance;
     }

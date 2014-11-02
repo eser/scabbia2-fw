@@ -89,12 +89,12 @@ abstract class ApplicationBase implements ApplicationInterface
     abstract public function generateRequestFromGlobals();
 
     /**
-     * Processes a request
+     * Handles a request
      *
      * @param RequestInterface $uRequest        request object
      * @param bool             $uIsSubRequest   whether is a sub-request or not
      *
      * @return ResponseInterface response object
      */
-    abstract public function processRequest(RequestInterface $uRequest, $uIsSubRequest);
+    abstract public function handleRequest(RequestInterface $uRequest, $uIsSubRequest);
 }

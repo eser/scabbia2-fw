@@ -241,14 +241,14 @@ class Application extends ApplicationBase
     }
 
     /**
-     * Processes a request
+     * Handles a request
      *
      * @param RequestInterface $uRequest        request object
      * @param bool             $uIsSubRequest   whether is a sub-request or not
      *
      * @return ResponseInterface response object
      */
-    public function processRequest(RequestInterface $uRequest, $uIsSubRequest)
+    public function handleRequest(RequestInterface $uRequest, $uIsSubRequest)
     {
         // TODO move generate request code here
     }

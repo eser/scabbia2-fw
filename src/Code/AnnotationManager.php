@@ -38,26 +38,26 @@ class AnnotationManager
     const VALUE = 3;
 
 
-    /** @type ApplicationBase         $application        application */
-    public $application;
-    /** @type Parser|null             $parser             yaml parser */
+    /** @type string                  $applicationWritablePath application writable path */
+    public $applicationWritablePath;
+    /** @type Parser|null             $parser                  yaml parser */
     public $parser = null;
-    /** @type AnnotationScanner|null  $annotationScanner  annotation scanner */
+    /** @type AnnotationScanner|null  $annotationScanner       annotation scanner */
     public $annotationScanner = null;
-    /** @type array                   $annotationMap      annotation map */
+    /** @type array                   $annotationMap           annotation map */
     public $annotationMap = null;
 
 
     /**
      * Initializes an annotation manager
      *
-     * @param ApplicationBase  $uApplication   application
+     * @param string $uApplicationWritablePath   application writable path
      *
      * @return AnnotationManager
      */
-    public function __construct(ApplicationBase $uApplication)
+    public function __construct($uApplicationWritablePath)
     {
-        $this->application = $uApplication;
+        $this->applicationWritablePath = $uApplicationWritablePath;
     }
 
     /**
@@ -67,7 +67,7 @@ class AnnotationManager
      */
     public function load()
     {
-        $tAnnotationMapPath = $this->application->writablePath . "/annotations.php";
+        $tAnnotationMapPath = $this->applicationWritablePath . "/annotations.php";
 
         // TODO and not in development mode
         if (file_exists($tAnnotationMapPath)) {

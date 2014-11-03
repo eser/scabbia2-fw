@@ -173,7 +173,8 @@ class GenerateTask extends TaskBase
         Core::popSourcePaths();
         */
 
-        $tGeneratorRegistry = new GeneratorRegistry(ApplicationBase::$current);
+        $tApplication = ApplicationBase::$current;
+        $tGeneratorRegistry = new GeneratorRegistry($tApplication->config, $tApplication->writablePath);
         $tGeneratorRegistry->execute();
 
         $this->interface->writeColor("yellow", "done.");

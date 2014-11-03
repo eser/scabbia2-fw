@@ -64,7 +64,7 @@ class RouteGenerator extends GeneratorBase
             }
 
             foreach ($tScanResult[AnnotationManager::VALUE] as $tRoute) {
-                foreach ($this->generatorRegistry->application->config["modules"] as $tModuleKey => $tModuleDefinition) {
+                foreach ($this->generatorRegistry->applicationConfig["modules"] as $tModuleKey => $tModuleDefinition) {
                     if (strncmp(
                         $tScanResult[AnnotationManager::SOURCE],
                         $tModuleDefinition["namespace"],

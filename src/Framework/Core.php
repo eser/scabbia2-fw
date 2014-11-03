@@ -14,6 +14,7 @@
 namespace Scabbia\Framework;
 
 use Scabbia\Framework\ApplicationBase;
+use Scabbia\Generators\GeneratorRegistry;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Config\Config;
 use Scabbia\Loader\Loader;
@@ -221,22 +222,24 @@ class Core
      */
     public static function pushApplication($uApplicationConfig, $uWritablePath)
     {
+        // MD push framework variables to undo application's own variable definitions
+        self::pushSourcePaths($uApplicationConfig);
+
         // MD include compilation file for the application
         // FIXME is it needed to be loaded before Core and ApplicationBase?
         if (file_exists($tFile = "{$uWritablePath}/compiled.php")) {
             require $tFile;
+        } else {
+            $tGeneratorRegistry = new GeneratorRegistry($uApplicationConfig, $uWritablePath);
+            $tGeneratorRegistry->execute();
         }
 
         // MD add configuration entries too
-        if (file_exists($tFile = "{$uWritablePath}/unified-config.php")) {
-            $uApplicationConfig += require $tFile;
-        }
-
-        // MD push framework variables to undo application's own variable definitions
-        self::pushSourcePaths($uApplicationConfig);
-        self::$runningApplications[] = [ApplicationBase::$current, self::$variables];
+        $uApplicationConfig += require "{$uWritablePath}/unified-config.php";
 
         // MD construct the application class
+        self::$runningApplications[] = [ApplicationBase::$current, self::$variables];
+
         $tApplicationType = $uApplicationConfig["type"];
         $tApplication = new $tApplicationType ($uApplicationConfig, $uWritablePath);
 

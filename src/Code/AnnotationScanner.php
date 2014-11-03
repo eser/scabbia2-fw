@@ -41,7 +41,8 @@ class AnnotationScanner
         "return",
         "throws",
         "todo",
-        "see"
+        "see",
+        "ignore"
     ];
 
 

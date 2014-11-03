@@ -27,24 +27,28 @@ use Scabbia\Helpers\FileSystem;
  */
 class GeneratorRegistry
 {
-    /** @type ApplicationBase         $application        application */
-    public $application;
-    /** @type array                   $generators         set of generators */
+    /** @type mixed                   $applicationConfig       application config */
+    public $applicationConfig;
+    /** @type string                  $applicationWritablePath application writable path */
+    public $applicationWritablePath;
+    /** @type array                   $generators              set of generators */
     public $generators = [];
-    /** @type AnnotationManager|null  $annotationManager  annotation manager */
+    /** @type AnnotationManager|null  $annotationManager       annotation manager */
     public $annotationManager = null;
 
 
     /**
      * Initializes a generator registry
      *
-     * @param ApplicationBase  $uApplication   application
+     * @param mixed  $uApplicationConfig         application config
+     * @param string $uApplicationWritablePath   application writable path
      *
      * @return GeneratorRegistry
      */
-    public function __construct(ApplicationBase $uApplication)
+    public function __construct($uApplicationConfig, $uApplicationWritablePath)
     {
-        $this->application = $uApplication;
+        $this->applicationConfig = $uApplicationConfig;
+        $this->applicationWritablePath = $uApplicationWritablePath;
     }
 
     /**
@@ -54,7 +58,7 @@ class GeneratorRegistry
      */
     public function execute()
     {
-        $this->annotationManager = new AnnotationManager($this->application);
+        $this->annotationManager = new AnnotationManager($this->applicationWritablePath);
         $this->annotationManager->load();
 
         foreach ($this->annotationManager->get("scabbia-generator") as $tScanResult) {
@@ -90,7 +94,7 @@ class GeneratorRegistry
     {
         if ($uSaveAsPHP) {
             FileSystem::writePhpFile(
-                Core::translateVariables($this->application->writablePath . "/{$uFilename}"),
+                Core::translateVariables($this->applicationWritablePath . "/{$uFilename}"),
                 $uContent
             );
 
@@ -98,7 +102,7 @@ class GeneratorRegistry
         }
 
         FileSystem::write(
-            Core::translateVariables($this->application->writablePath . "/{$uFilename}"),
+            Core::translateVariables($this->applicationWritablePath . "/{$uFilename}"),
             $uContent
         );
     }

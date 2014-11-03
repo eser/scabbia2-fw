@@ -13,10 +13,12 @@
 
 namespace Scabbia\Code;
 
+use Scabbia\Code\AnnotationManager;
 use Scabbia\Code\Minifier;
 use Scabbia\Code\TokenStream;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
+use Scabbia\Generators\GeneratorRegistry;
 use Scabbia\Helpers\FileSystem;
 use Scabbia\Objects\Binder;
 use RuntimeException;
@@ -32,10 +34,6 @@ use RuntimeException;
  */
 class CompileGenerator extends GeneratorBase
 {
-    /** @type array $annotations set of annotations */
-    public $annotations = [
-        "scabbia-compile" => ["format" => "yaml"]
-    ];
     /** @type array $classes set of classes */
     public $classes = [];
 
@@ -43,26 +41,25 @@ class CompileGenerator extends GeneratorBase
     /**
      * Processes set of annotations
      *
-     * @param array $uAnnotations annotations
-     *
      * @return void
      */
-    public function processAnnotations($uAnnotations)
+    public function processAnnotations()
     {
-        foreach ($uAnnotations as $tClass => $tAnnotation) {
-            if (isset($tAnnotation["class"]["scabbia-compile"])) {
-                $this->classes[] = $tClass;
+        foreach ($this->generatorRegistry->annotationManager->get("scabbia-compile") as $tScanResult) {
+            if ($tScanResult[AnnotationManager::LEVEL] !== "class") {
+                continue;
             }
+
+            $this->classes[] = $tScanResult[AnnotationManager::SOURCE];
         }
     }
 
     /**
-     * Dumps generated data into file
+     * Finalizes generator process
      *
-     * @throws RuntimeException if class could not be loaded
      * @return void
      */
-    public function dump()
+    public function finalize()
     {
         $tMinifier = new Minifier();
 
@@ -89,9 +86,6 @@ class CompileGenerator extends GeneratorBase
 
         $tContent = str_replace(" ?" . "><" . "?php ", " ", $tBinder->compile());
 
-        FileSystem::write(
-            Core::translateVariables($this->application->writablePath . "/compiled.php"),
-            $tContent
-        );
+        $this->generatorRegistry->saveFile("compiled.php", $tContent);
     }
 }

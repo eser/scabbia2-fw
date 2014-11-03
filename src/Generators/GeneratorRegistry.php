@@ -15,6 +15,7 @@ namespace Scabbia\Generators;
 
 use Scabbia\Code\AnnotationManager;
 use Scabbia\Framework\ApplicationBase;
+use Scabbia\Framework\Core;
 use Scabbia\Helpers\FileSystem;
 
 /**
@@ -30,8 +31,6 @@ class GeneratorRegistry
     public $application;
     /** @type array                   $generators         set of generators */
     public $generators = [];
-    /** @type array|null              $outputs            set of generator outputs */
-    public $outputs = null;
     /** @type AnnotationManager|null  $annotationManager  annotation manager */
     public $annotationManager = null;
 
@@ -49,25 +48,6 @@ class GeneratorRegistry
     }
 
     /**
-     * Loads saved generator outputs or start over executing them
-     * 
-     * @return void
-     */
-    public function load()
-    {
-        $tGeneratorOutputsPath = $this->application->writablePath . "/generator-outputs.php";
-
-        // TODO and not in development mode
-        if (file_exists($tGeneratorOutputsPath)) {
-            $this->annotationMap = require $tGeneratorOutputsPath;
-        } else {
-            $this->execute();
-            // TODO if not in readonly mode
-            FileSystem::writePhpFile($tGeneratorOutputsPath, $this->outputs);
-        }
-    }
-
-    /**
      * Executes available generators
      *
      * @return void
@@ -82,19 +62,44 @@ class GeneratorRegistry
                 continue;
             }
 
-            $this->generators[$tScanResult[0]] = new $tScanResult[0] ($this->application);
+            $this->generators[$tScanResult[0]] = new $tScanResult[0] ($this);
         }
 
         foreach ($this->generators as $tGenerator) {
-            // TODO processAnnotations (check $tGenerator->annotations)
-            // $tGenerator->processAnnotations($uAnnotations);
+            $tGenerator->processAnnotations();
         }
 
         // TODO processFile
         // $tGenerator->processFile($uPath, $uFileContents, TokenStream $uTokenStream);
 
-        foreach ($this->generators as $tGeneratorKey => $tGenerator) {
-            $this->outputs[$tGeneratorKey] = $tGenerator->dump();
+        foreach ($this->generators as $tGenerator) {
+            $tGenerator->finalize();
         }
+    }
+
+    /**
+     * Saves a file into writable folder
+     *
+     * @param string $uFilename   filename
+     * @param mixed  $uContent    file content to be written
+     * @param bool   $uSaveAsPHP  saves file contents as php file if it is true
+     *
+     * @return void
+     */
+    public function saveFile($uFilename, $uContent, $uSaveAsPHP = false)
+    {
+        if ($uSaveAsPHP) {
+            FileSystem::writePhpFile(
+                Core::translateVariables($this->application->writablePath . "/{$uFilename}"),
+                $uContent
+            );
+
+            return;
+        }
+
+        FileSystem::write(
+            Core::translateVariables($this->application->writablePath . "/{$uFilename}"),
+            $uContent
+        );
     }
 }

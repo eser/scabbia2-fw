@@ -13,6 +13,7 @@
 
 namespace Scabbia\Router;
 
+use Scabbia\Code\AnnotationManager;
 use Scabbia\Code\TokenStream;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
@@ -38,10 +39,6 @@ class RouteGenerator extends GeneratorBase
     const APPROX_CHUNK_SIZE = 10;
 
 
-    /** @type array $annotations set of annotations */
-    public $annotations = [
-        "route" => ["format" => "yaml"]
-    ];
     /** @type array $staticRoutes set of static routes */
     public $staticRoutes = [];
     /** @type array $regexToRoutesMap map of variable routes */
@@ -53,56 +50,57 @@ class RouteGenerator extends GeneratorBase
     /**
      * Processes set of annotations
      *
-     * @param array $uAnnotations annotations
-     *
      * @return void
      */
-    public function processAnnotations($uAnnotations)
+    public function processAnnotations()
     {
-        foreach ($uAnnotations as $tClassKey => $tClass) {
-            foreach ($tClass["methods"] as $tMethodKey => $tMethod) {
-                if (!isset($tMethod["route"])) {
-                    continue;
-                }
+        foreach ($this->generatorRegistry->annotationManager->get("route", true) as $tScanResult) {
+            if ($tScanResult[AnnotationManager::LEVEL] === "staticMethods") {
+                $tCallback = $tScanResult[AnnotationManager::SOURCE] . "::" . $tScanResult[AnnotationManager::MEMBER];
+            } elseif ($tScanResult[AnnotationManager::LEVEL] === "methods") {
+                $tCallback = [$tScanResult[AnnotationManager::SOURCE], $tScanResult[AnnotationManager::MEMBER]];
+            } else {
+                continue;
+            }
 
-                foreach ($tMethod["route"] as $tRoute) {
-                    foreach ($this->application->config["modules"] as $tModuleKey => $tModuleDefinition) {
-                        if (strncmp(
-                            $tClassKey,
-                            $tModuleDefinition["namespace"],
-                            strlen($tModuleDefinition["namespace"])
-                        ) !== 0) {
-                            continue;
-                        }
-
-                        if ($tModuleKey === "front") {
-                            $tModulePrefix = "";
-                        } else {
-                            $tModulePrefix = "/{$tModuleKey}";
-                        }
-
-                        $this->addRoute(
-                            $tRoute["method"],
-                            "{$tModulePrefix}{$tRoute["path"]}",
-                            [$tClassKey, $tMethodKey],
-                            isset($tRoute["name"]) ? $tRoute["name"] : null
-                        );
+            foreach ($tScanResult[AnnotationManager::VALUE] as $tRoute) {
+                foreach ($this->generatorRegistry->application->config["modules"] as $tModuleKey => $tModuleDefinition) {
+                    if (strncmp(
+                        $tScanResult[AnnotationManager::SOURCE],
+                        $tModuleDefinition["namespace"],
+                        strlen($tModuleDefinition["namespace"])
+                    ) !== 0) {
+                        continue;
                     }
+
+                    if ($tModuleKey === "front") {
+                        $tModulePrefix = "";
+                    } else {
+                        $tModulePrefix = "/{$tModuleKey}";
+                    }
+
+                    $this->addRoute(
+                        $tRoute["method"],
+                        "{$tModulePrefix}{$tRoute["path"]}",
+                        $tCallback,
+                        isset($tRoute["name"]) ? $tRoute["name"] : null
+                    );
                 }
             }
         }
     }
 
     /**
-     * Dumps generated data into file
+     * Finalizes generator process
      *
      * @return void
      */
-    public function dump()
+    public function finalize()
     {
-        FileSystem::writePhpFile(
-            Core::translateVariables($this->application->writablePath . "/routes.php"),
-            $this->getData()
+        $this->generatorRegistry->saveFile(
+            "routes.php",
+            $this->getData(),
+            true
         );
     }
 

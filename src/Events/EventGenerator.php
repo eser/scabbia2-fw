@@ -13,11 +13,12 @@
 
 namespace Scabbia\Events;
 
+use Scabbia\Code\AnnotationManager;
 use Scabbia\Code\TokenStream;
 use Scabbia\Events\Events;
-use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
+use Scabbia\Generators\GeneratorRegistry;
 use Scabbia\Helpers\FileSystem;
 
 /**
@@ -31,10 +32,6 @@ use Scabbia\Helpers\FileSystem;
  */
 class EventGenerator extends GeneratorBase
 {
-    /** @type array $annotations set of annotations */
-    public $annotations = [
-        "event" => ["format" => "yaml"]
-    ];
     /** @type Events $events set of events */
     public $events;
 
@@ -42,13 +39,13 @@ class EventGenerator extends GeneratorBase
     /**
      * Initializes a generator
      *
-     * @param ApplicationBase  $uApplication   application
+     * @param GeneratorRegistry  $uGeneratorRegistry   generator registry
      *
      * @return GeneratorBase
      */
-    public function __construct(ApplicationBase $uApplication)
+    public function __construct(GeneratorRegistry $uGeneratorRegistry)
     {
-        parent::__construct($uApplication);
+        parent::__construct($uGeneratorRegistry);
 
         $this->events = new Events();
     }
@@ -56,40 +53,37 @@ class EventGenerator extends GeneratorBase
     /**
      * Processes set of annotations
      *
-     * @param array $uAnnotations annotations
-     *
      * @return void
      */
-    public function processAnnotations($uAnnotations)
+    public function processAnnotations()
     {
-        foreach ($uAnnotations as $tClassKey => $tClass) {
-            foreach ($tClass["staticMethods"] as $tMethodKey => $tMethod) {
-                if (!isset($tMethod["event"])) {
-                    continue;
-                }
+        foreach ($this->generatorRegistry->annotationManager->get("event", true) as $tScanResult) {
+            if ($tScanResult[AnnotationManager::LEVEL] !== "staticMethods") {
+                continue;
+            }
 
-                foreach ($tMethod["event"] as $tEvent) {
-                    $this->events->register(
-                        $tEvent["on"],
-                        [$tClassKey, $tMethodKey],
-                        null,
-                        isset($tEvent["priority"]) ? $tEvent["priority"] : null
-                    );
-                }
+            foreach ($tScanResult[AnnotationManager::VALUE] as $tEvent) {
+                $this->events->register(
+                    $tEvent["on"],
+                    [$tScanResult[AnnotationManager::SOURCE], $tScanResult[AnnotationManager::MEMBER]],
+                    null,
+                    isset($tEvent["priority"]) ? $tEvent["priority"] : null
+                );
             }
         }
     }
 
     /**
-     * Dumps generated data into file
+     * Finalizes generator process
      *
      * @return void
      */
-    public function dump()
+    public function finalize()
     {
-        FileSystem::writePhpFile(
-            Core::translateVariables($this->application->writablePath . "/events.php"),
-            $this->events->events
+        $this->generatorRegistry->saveFile(
+            "events.php",
+            $this->events->events,
+            true
         );
     }
 }

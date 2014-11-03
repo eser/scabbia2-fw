@@ -223,10 +223,14 @@ class Core
     {
         // MD include compilation file for the application
         // FIXME is it needed to be loaded before Core and ApplicationBase?
-        require "{$uWritablePath}/compiled.php";
+        if (file_exists($tFile = "{$uWritablePath}/compiled.php")) {
+            require $tFile;
+        }
 
         // MD add configuration entries too
-        $uApplicationConfig += require "{$uWritablePath}/unified-config.php";
+        if (file_exists($tFile = "{$uWritablePath}/unified-config.php")) {
+            $uApplicationConfig += require $tFile;
+        }
 
         // MD push framework variables to undo application's own variable definitions
         self::pushSourcePaths($uApplicationConfig);

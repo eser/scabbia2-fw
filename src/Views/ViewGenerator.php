@@ -28,10 +28,6 @@ use Scabbia\Views\Views;
  */
 class ViewGenerator extends GeneratorBase
 {
-    /** @type array $annotations set of annotations */
-    public $annotations = [];
-
-
     /**
      * Processes a file
      *

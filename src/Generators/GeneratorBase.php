@@ -13,8 +13,9 @@
 
 namespace Scabbia\Generators;
 
+use Scabbia\Code\AnnotationManager;
 use Scabbia\Code\TokenStream;
-use Scabbia\Framework\ApplicationBase;
+use Scabbia\Generators\GeneratorRegistry;
 
 /**
  * Default methods needed for implementation of a generator
@@ -25,22 +26,20 @@ use Scabbia\Framework\ApplicationBase;
  */
 abstract class GeneratorBase
 {
-    /** @type array                   $annotations        annotations to be processed */
-    public $annotations;
-    /** @type ApplicationBase         $application        application */
-    public $application;
+    /** @type GeneratorRegistry         $generatorRegistry        generator registry */
+    public $generatorRegistry;
 
 
     /**
      * Initializes a generator
      *
-     * @param ApplicationBase  $uApplication   application
+     * @param GeneratorRegistry  $uGeneratorRegistry   generator registry
      *
      * @return GeneratorBase
      */
-    public function __construct(ApplicationBase $uApplication)
+    public function __construct(GeneratorRegistry $uGeneratorRegistry)
     {
-        $this->application = $uApplication;
+        $this->generatorRegistry = $uGeneratorRegistry;
     }
 
     /**
@@ -59,20 +58,18 @@ abstract class GeneratorBase
     /**
      * Processes set of annotations
      *
-     * @param array $uAnnotations annotations
-     *
      * @return void
      */
-    public function processAnnotations($uAnnotations)
+    public function processAnnotations()
     {
     }
 
     /**
-     * Dumps generated data into file
+     * Finalizes generator process
      *
      * @return void
      */
-    public function dump()
+    public function finalize()
     {
     }
 }

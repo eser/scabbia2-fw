@@ -16,6 +16,8 @@ namespace Scabbia\Generators;
 use Scabbia\Code\AnnotationScanner;
 use Scabbia\Code\TokenStream;
 use Scabbia\Config\Config;
+use Scabbia\Generators\GeneratorRegistry;
+use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
 use Scabbia\Loader\Loader;
 use Scabbia\Helpers\FileSystem;
@@ -82,6 +84,7 @@ class GenerateTask extends TaskBase
      */
     public function executeTask(array $uParameters)
     {
+        /*
         if (count($uParameters) === 0) {
             $tProjectFile = "etc/project.yml";
             $tApplicationKey = "default";
@@ -168,6 +171,10 @@ class GenerateTask extends TaskBase
         }
 
         Core::popSourcePaths();
+        */
+
+        $tGeneratorRegistry = new GeneratorRegistry(ApplicationBase::$current);
+        $tGeneratorRegistry->execute();
 
         $this->interface->writeColor("yellow", "done.");
 
@@ -182,6 +189,7 @@ class GenerateTask extends TaskBase
      *
      * @return void
      */
+    /*
     public function processFile($uFile, $uNamespacePrefix)
     {
         $tFileContents = FileSystem::read($uFile);
@@ -197,4 +205,5 @@ class GenerateTask extends TaskBase
 
         $this->annotationScanner->process($tTokenStream, $uNamespacePrefix);
     }
+    */
 }

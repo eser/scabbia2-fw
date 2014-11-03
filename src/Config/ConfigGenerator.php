@@ -15,9 +15,9 @@ namespace Scabbia\Config;
 
 use Scabbia\Code\TokenStream;
 use Scabbia\Config\Config;
-use Scabbia\Framework\ApplicationBase;
 use Scabbia\Framework\Core;
 use Scabbia\Generators\GeneratorBase;
+use Scabbia\Generators\GeneratorRegistry;
 use Scabbia\Helpers\FileSystem;
 
 /**
@@ -33,8 +33,6 @@ use Scabbia\Helpers\FileSystem;
  */
 class ConfigGenerator extends GeneratorBase
 {
-    /** @type array $annotations set of annotations */
-    public $annotations = [];
     /** @type Config $unifiedConfig unified configuration */
     public $unifiedConfig;
 
@@ -42,13 +40,13 @@ class ConfigGenerator extends GeneratorBase
     /**
      * Initializes a generator
      *
-     * @param ApplicationBase  $uApplication   application
+     * @param GeneratorRegistry  $uGeneratorRegistry   generator registry
      *
      * @return GeneratorBase
      */
-    public function __construct(ApplicationBase $uApplication)
+    public function __construct(GeneratorRegistry $uGeneratorRegistry)
     {
-        parent::__construct($uApplication);
+        parent::__construct($uGeneratorRegistry);
 
         $this->unifiedConfig = new Config();
     }
@@ -73,15 +71,16 @@ class ConfigGenerator extends GeneratorBase
     }
 
     /**
-     * Dumps generated data into file
+     * Finalizes generator process
      *
      * @return void
      */
-    public function dump()
+    public function finalize()
     {
-        FileSystem::writePhpFile(
-            Core::translateVariables($this->application->writablePath . "/unified-config.php"),
-            $this->unifiedConfig->get()
+        $this->generatorRegistry->saveFile(
+            "unified-config.php",
+            $this->unifiedConfig->get(),
+            true
         );
     }
 }

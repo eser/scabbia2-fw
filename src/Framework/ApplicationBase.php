@@ -55,7 +55,9 @@ abstract class ApplicationBase implements ApplicationInterface
         $this->development = $uConfig["development"];
 
         $this->events = new Events();
-        $this->events->events = require "{$this->writablePath}/events.php";
+        if (file_exists($tFile = "{$this->writablePath}/events.php")) {
+            $this->events->events = require $tFile;
+        }
 
         // TODO initialize the proper environment
         if ($this->development) {

@@ -28,6 +28,16 @@ use Scabbia\Yaml\Parser;
  */
 class AnnotationManager
 {
+    /** @type int SOURCE     source */
+    const SOURCE = 0;
+    /** @type int LEVEL      level */
+    const LEVEL = 1;
+    /** @type int MEMBER     member */
+    const MEMBER = 2;
+    /** @type int VALUE      value */
+    const VALUE = 3;
+
+
     /** @type ApplicationBase         $application        application */
     public $application;
     /** @type Parser|null             $parser             yaml parser */
@@ -149,7 +159,12 @@ class AnnotationManager
                                     }
                                 }
 
-                                $tResult[] = [ $tClass, $tAnnotationLevelKey, $tAnnotationMemberKey, $tValue ];
+                                $tResult[] = [
+                                    self::SOURCE     => $tClass,
+                                    self::LEVEL      => $tAnnotationLevelKey,
+                                    self::MEMBER     => $tAnnotationMemberKey,
+                                    self::VALUE      => $tValue
+                                ];
                             }
                         }
                     }

@@ -29,8 +29,6 @@ use Scabbia\Helpers\FileSystem;
  */
 class DocumentGenerator extends GeneratorBase
 {
-    /** @type array $annotations set of annotations */
-    public $annotations = [];
     /** @type array $files set of files */
     public $files = [];
 
@@ -70,11 +68,11 @@ class DocumentGenerator extends GeneratorBase
     }
 
     /**
-     * Dumps generated data into file
+     * Finalizes generator process
      *
      * @return void
      */
-    public function dump()
+    public function finalize()
     {
         $tContent = "";
         foreach ($this->files as $tFileKey => $tFileContent) {
@@ -87,9 +85,6 @@ class DocumentGenerator extends GeneratorBase
             $tContent .= "\n\n";
         }
 
-        FileSystem::write(
-            Core::translateVariables($this->application->writablePath . "/documentor.md"),
-            $tContent
-        );
+        $this->generatorRegistry->saveFile("documentor.md", $tContent);
     }
 }

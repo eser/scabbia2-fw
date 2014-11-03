@@ -40,7 +40,8 @@ class AnnotationScanner
         "param",
         "return",
         "throws",
-        "todo"
+        "todo",
+        "see"
     ];
 
 

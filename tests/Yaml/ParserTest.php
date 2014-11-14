@@ -667,7 +667,7 @@ EOT
             "map" => ["key" => "var-value"],
             "list_in_map" => ["key" => ["var-value"]],
             "map_in_map" => ["foo" => ["bar" => "var-value"]],
-        ], Yaml::parse(<<<EOF
+        ], $this->parser->parse(<<<EOF
 var:  &var var-value
 scalar: *var
 list: [ *var ]

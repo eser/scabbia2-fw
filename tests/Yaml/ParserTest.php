@@ -109,10 +109,10 @@ class ParserTest extends UnitTestFixture
     {
         // test tabs in YAML
         $yamls = [
-            "foo:\n bar",
-            "foo:\n     bar",
-            "foo:\n  bar",
-            "foo:\n      bar",
+            "foo:\n\tbar",
+            "foo:\n \tbar",
+            "foo:\n\t bar",
+            "foo:\n \t bar",
         ];
 
         foreach ($yamls as $yaml) {

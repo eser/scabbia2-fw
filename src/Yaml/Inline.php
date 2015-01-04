@@ -203,7 +203,8 @@ class Inline
                 if (!is_array($value) && !$isQuoted && strpos($value, ": ") !== false) {
                     // embedded mapping?
                     try {
-                        $value = self::parseMapping("{" . $value . "}", 0, $references);
+                        $pos = 0;
+                        $value = self::parseMapping("{" . $value . "}", $pos, $references);
                     } catch (\InvalidArgumentException $e) {
                         // no, it's not
                     }

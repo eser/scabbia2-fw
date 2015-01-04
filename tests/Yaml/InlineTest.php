@@ -196,26 +196,22 @@ class InlineTest extends UnitTestFixture
         $this->assertSame($expect, Inline::parseScalar($value));
     }
 
-    /**
-     * @dataProvider getDataForParseReferences
-     */
-    public function testParseReferences($yaml, $expected)
+    public function testParseReferences()
     {
-        $this->assertSame($expected, Inline::parse($yaml, false, false, ["var" => "var-value"]));
-    }
-
-    public function getDataForParseReferences()
-    {
-        return [
-            "scalar" => ["*var", "var-value"],
-            "list" => ["[ *var ]", ["var-value"]],
-            "list-in-list" => ["[[ *var ]]", [["var-value"]]],
-            "map-in-list" => ["[ { key: *var } ]", [["key" => "var-value"]]],
+        $data = [
+            "scalar"        => ["*var", "var-value"],
+            "list"          => ["[ *var ]", ["var-value"]],
+            "list-in-list"  => ["[[ *var ]]", [["var-value"]]],
+            "map-in-list"   => ["[ { key: *var } ]", [["key" => "var-value"]]],
             "embedded-mapping-in-list" => ["[ key: *var ]", [["key" => "var-value"]]],
-            "map" => ["{ key: *var }", ["key" => "var-value"]],
-            "list-in-map" => ["{ key: [*var] }", ["key" => ["var-value"]]],
-            "map-in-map" => ["{ foo: { bar: *var } }", ["foo" => ["bar" => "var-value"]]]
+            "map"           => ["{ key: *var }", ["key" => "var-value"]],
+            "list-in-map"   => ["{ key: [*var] }", ["key" => ["var-value"]]],
+            "map-in-map"    => ["{ foo: { bar: *var } }", ["foo" => ["bar" => "var-value"]]]
         ];
+
+        foreach ($data as $item) {
+            $this->assertSame($item[1], Inline::parse($item[0], ["var" => "var-value"]));
+        }
     }
 
     public function testParseMapReferenceInSequence()
@@ -226,7 +222,7 @@ class InlineTest extends UnitTestFixture
             "c" => "Brian",
         ];
 
-        $this->assertSame([$foo], Inline::parse("[*foo]", false, false, ["foo" => $foo]));
+        $this->assertSame([$foo], Inline::parse("[*foo]", ["foo" => $foo]));
     }
 
     public function testParseUnquotedAsterisk()

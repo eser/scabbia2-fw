@@ -171,7 +171,9 @@ class CommandInterpreter
             } elseif ($tOption[0] === Console::PARAMETER_REQUIRED) {
                 $tParameters[$tOption[1]] = array_shift($uCommandParameters);
                 if ($tParameters[$tOption[1]] === false) {
-                    throw new UnexpectedValueException(sprintf("%s parameter required for command %s", $tOption[1], $uCommandKey));
+                    throw new UnexpectedValueException(
+                        sprintf("%s parameter required for command %s", $tOption[1], $uCommandKey)
+                    );
                 }
             } elseif ($tOption[0] === Console::OPTION ||
                 $tOption[0] === Console::OPTION_MULTIPLE ||

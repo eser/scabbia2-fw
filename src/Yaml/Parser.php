@@ -370,8 +370,8 @@ class Parser
         $data = [substr($this->currentLine, $newIndent)];
 
         if ($inSequence && $oldLineIndentation === $newIndent && $data[0][0] === "-") {
-            // the previous line contained a dash but no item content, this line is a sequence item with the same indentation
-            // and therefore no nested list or mapping
+            // the previous line contained a dash but no item content, this line is a sequence item
+            // with the same indentation and therefore no nested list or mapping
             $this->moveToPreviousLine();
 
             return;

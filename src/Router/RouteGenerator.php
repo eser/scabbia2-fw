@@ -156,7 +156,8 @@ class RouteGenerator extends GeneratorBase
                 foreach ($this->regexToRoutesMap[$tMethod] as $tRoute) {
                     if (preg_match("~^{$tRoute["regex"]}$~", $tRouteStr) === 1) {
                         throw new UnexpectedValueException(sprintf(
-                            "Static route \"%s\" is shadowed by previously defined variable route \"%s\" for method \"%s\"",
+                            "Static route \"%s\" is shadowed by previously defined variable " .
+                            "route \"%s\" for method \"%s\"",
                             $tRouteStr,
                             $tRoute["regex"],
                             $tMethod
@@ -209,7 +210,10 @@ class RouteGenerator extends GeneratorBase
             list($tVariableName, $tRegexPart) = $tPart;
 
             if (isset($tVariables[$tVariableName])) {
-                throw new UnexpectedValueException(sprintf("Cannot use the same placeholder \"%s\" twice", $tVariableName));
+                throw new UnexpectedValueException(sprintf(
+                    "Cannot use the same placeholder \"%s\" twice",
+                    $tVariableName
+                ));
             }
 
             $tVariables[$tVariableName] = $tVariableName;

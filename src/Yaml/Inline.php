@@ -315,8 +315,8 @@ class Inline
         } elseif ($scalarLower === "false") {
             return false;
         } elseif ($scalar[0] === "+" || $scalar[0] === "-" || $scalar[0] === "." || $scalar[0] === "!" ||
-            is_numeric($scalar[0])) { // Optimise for returning strings.
-
+            is_numeric($scalar[0])) {
+            // Optimise for returning strings.
             if (strpos($scalar, "!str") === 0) {
                 return (string)substr($scalar, 5);
             } elseif (strpos($scalar, "! ") === 0) {

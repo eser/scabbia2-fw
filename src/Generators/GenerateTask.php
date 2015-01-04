@@ -99,7 +99,10 @@ class GenerateTask extends TaskBase
             }
         }
 
-        $tProjectFile = FileSystem::combinePaths(Core::$instance->loader->basepath, Core::$instance->translateVariables($tProjectFile));
+        $tProjectFile = FileSystem::combinePaths(
+            Core::$instance->loader->basepath,
+            Core::$instance->translateVariables($tProjectFile)
+        );
         $uApplicationConfig = Config::load($tProjectFile)->get();
 
         if (!isset($uApplicationConfig[$tApplicationKey])) {

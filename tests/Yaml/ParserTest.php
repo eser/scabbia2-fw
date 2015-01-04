@@ -499,12 +499,15 @@ EOF;
     }
 
     /**
-     * @expectedException \Scabbia\Yaml\ParseException
-     * @expectedExceptionMessage Multiple documents are not supported.
+     * Tests multiple document exceptions
+     *
+     * @return void
      */
     public function testMultipleDocumentsNotSupportedException()
     {
-        Yaml::parse(<<<EOL
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+
+        $yaml = <<<EOF
 # Ranking of 1998 home runs
 ---
 - Mark McGwire
@@ -515,8 +518,9 @@ EOF;
 ---
 - Chicago Cubs
 - St Louis Cardinals
-EOL
-        );
+EOF;
+
+        $this->parser->parse($yaml);
     }
 
     /**
@@ -576,7 +580,7 @@ EOF;
      */
     public function testStringBlockWithComments()
     {
-        $yaml1 = <<<EOT
+        $yaml1 = <<<EOF
 # comment 1
 header
 
@@ -586,7 +590,7 @@ header
     </body>
 
 footer # comment3
-EOT;
+EOF;
 
         $yaml2 = <<<EOF
 content: |
@@ -611,7 +615,7 @@ EOF;
      */
     public function testFoldedStringBlockWithComments()
     {
-        $yaml1 = <<<EOT
+        $yaml1 = <<<EOF
 # comment 1
 header
 
@@ -621,7 +625,7 @@ header
     </body>
 
 footer # comment3
-EOT;
+EOF;
 
         $yaml2 = <<<EOF
 -
@@ -660,7 +664,7 @@ EOF;
         $this->assertEquals(
             [[
                 "title"   => "some title",
-                "content" => <<<EOT
+                "content" => <<<EOF
 # comment 1
 header
 
@@ -670,7 +674,7 @@ header
     </body>
 
 footer # comment3
-EOT
+EOF
             ]],
             $this->parser->parse($yaml)
         );
@@ -678,17 +682,7 @@ EOT
 
     public function testReferenceResolvingInInlineStrings()
     {
-        $this->assertEquals([
-            "var" => "var-value",
-            "scalar" => "var-value",
-            "list" => ["var-value"],
-            "list_in_list" => [["var-value"]],
-            "map_in_list" => [["key" => "var-value"]],
-            "embedded_mapping" => [["key" => "var-value"]],
-            "map" => ["key" => "var-value"],
-            "list_in_map" => ["key" => ["var-value"]],
-            "map_in_map" => ["foo" => ["bar" => "var-value"]],
-        ], $this->parser->parse(<<<EOF
+        $yaml = <<<EOF
 var:  &var var-value
 scalar: *var
 list: [ *var ]
@@ -698,7 +692,21 @@ embedded_mapping: [ key: *var ]
 map: { key: *var }
 list_in_map: { key: [*var] }
 map_in_map: { foo: { bar: *var } }
-EOF
-        ));
+EOF;
+
+        $this->assertEquals(
+            [
+                "var" => "var-value",
+                "scalar" => "var-value",
+                "list" => ["var-value"],
+                "list_in_list" => [["var-value"]],
+                "map_in_list" => [["key" => "var-value"]],
+                "embedded_mapping" => [["key" => "var-value"]],
+                "map" => ["key" => "var-value"],
+                "list_in_map" => ["key" => ["var-value"]],
+                "map_in_map" => ["foo" => ["bar" => "var-value"]],
+            ],
+            $this->parser->parse($yaml)
+        );
     }
 }

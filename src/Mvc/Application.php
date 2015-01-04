@@ -110,7 +110,14 @@ class Application extends ApplicationBase
         if (!isset(Core::$instance->variables["http-pathroot"])) {
             Core::$instance->variables["http-pathroot"] = pathinfo($_SERVER["SCRIPT_NAME"], PATHINFO_DIRNAME);
         }
-        Core::$instance->variables["http-pathroot"] = trim(str_replace("\\", "/", Core::$instance->variables["http-pathroot"]), "/");
+        Core::$instance->variables["http-pathroot"] = trim(
+            str_replace(
+                "\\",
+                "/",
+                Core::$instance->variables["http-pathroot"]
+            ),
+            "/"
+        );
         if (strlen(Core::$instance->variables["http-pathroot"]) > 0) {
             Core::$instance->variables["http-pathroot"] = "/" . Core::$instance->variables["http-pathroot"];
         }
@@ -122,7 +129,10 @@ class Application extends ApplicationBase
             $tBaseUriPath = Core::$instance->variables["http-request-uri"];
         }
 
-        Core::$instance->variables["http-pathinfo"] = substr($tBaseUriPath, strlen(Core::$instance->variables["http-pathroot"]));
+        Core::$instance->variables["http-pathinfo"] = substr(
+            $tBaseUriPath,
+            strlen(Core::$instance->variables["http-pathroot"])
+        );
 
         Core::$instance->updateVariablesCache();
 

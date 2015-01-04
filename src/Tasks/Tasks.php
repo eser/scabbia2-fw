@@ -73,7 +73,10 @@ class Tasks
     public static function load($uTasksConfigPath)
     {
         // load tasks.yml
-        $tTasksYamlPath = FileSystem::combinePaths(Core::$instance->loader->basepath, Core::$instance->translateVariables($uTasksConfigPath));
+        $tTasksYamlPath = FileSystem::combinePaths(
+            Core::$instance->loader->basepath,
+            Core::$instance->translateVariables($uTasksConfigPath)
+        );
         self::$config = Core::$instance->cachedRead(
             "file." . realpath($tTasksYamlPath),
             function () use ($tTasksYamlPath) {

@@ -133,7 +133,11 @@ EOF;
                     // TODO
                 } else {
                     eval("$expected = " . trim($test["php"]) . ";");
-                    $this->assertSame($expected, $this->parser->parse($this->dumper->dump($expected, 10)), $test["test"]);
+                    $this->assertSame(
+                        $expected,
+                        $this->parser->parse($this->dumper->dump($expected, 10)),
+                        $test["test"]
+                    );
                 }
             }
         }
@@ -142,10 +146,25 @@ EOF;
     public function testInlineLevel()
     {
         $expected = <<<EOF
-{ '': bar, foo: '#bar', 'foo''bar': {  }, bar: [1, foo], foobar: { foo: bar, bar: [1, foo], foobar: { foo: bar, bar: [1, foo] } } }
+{
+    '': bar,
+    foo: '#bar',
+    'foo''bar': {  },
+    bar: [1, foo],
+    foobar: { foo: bar, bar: [1, foo], foobar: { foo: bar, bar: [1, foo] } }
+}
 EOF;
-        $this->assertEquals($expected, $this->dumper->dump($this->array, -10), "->dump() takes an inline level argument");
-        $this->assertEquals($expected, $this->dumper->dump($this->array, 0), "->dump() takes an inline level argument");
+        $this->assertEquals(
+            $expected,
+            $this->dumper->dump($this->array, -10),
+            "->dump() takes an inline level argument"
+        );
+
+        $this->assertEquals(
+            $expected,
+            $this->dumper->dump($this->array, 0),
+            "->dump() takes an inline level argument"
+        );
 
         $expected = <<<EOF
 '': bar
@@ -155,7 +174,11 @@ bar: [1, foo]
 foobar: { foo: bar, bar: [1, foo], foobar: { foo: bar, bar: [1, foo] } }
 
 EOF;
-        $this->assertEquals($expected, $this->dumper->dump($this->array, 1), "->dump() takes an inline level argument");
+        $this->assertEquals(
+            $expected,
+            $this->dumper->dump($this->array, 1),
+            "->dump() takes an inline level argument"
+        );
 
         $expected = <<<EOF
 '': bar
@@ -210,15 +233,28 @@ foobar:
             - foo
 
 EOF;
-        $this->assertEquals($expected, $this->dumper->dump($this->array, 4), "->dump() takes an inline level argument");
-        $this->assertEquals($expected, $this->dumper->dump($this->array, 10), "->dump() takes an inline level argument");
+        $this->assertEquals(
+            $expected,
+            $this->dumper->dump($this->array, 4),
+            "->dump() takes an inline level argument"
+        );
+
+        $this->assertEquals(
+            $expected,
+            $this->dumper->dump($this->array, 10),
+            "->dump() takes an inline level argument"
+        );
     }
 
     public function testObjectSupport()
     {
         $dump = $this->dumper->dump(["foo" => new DummyClass(), "bar" => 1], 0, 0, false, true);
 
-        $this->assertEquals("{ foo: !!php/object:O:30:\"Scabbia\Tests\Yaml\DummyClass\":1:{s:1:\"b\";s:3:\"foo\";}, bar: 1 }", $dump, "->dump() is able to dump objects");
+        $this->assertEquals(
+            "{ foo: !!php/object:O:30:\"Scabbia\Tests\Yaml\DummyClass\":1:{s:1:\"b\";s:3:\"foo\";}, bar: 1 }",
+            $dump,
+            "->dump() is able to dump objects"
+        );
     }
 
     /**

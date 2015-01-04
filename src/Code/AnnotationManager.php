@@ -62,7 +62,7 @@ class AnnotationManager
 
     /**
      * Loads saved annotations or start over scanning
-     * 
+     *
      * @return void
      */
     public function load()

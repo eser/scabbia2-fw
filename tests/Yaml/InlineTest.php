@@ -229,21 +229,17 @@ class InlineTest extends UnitTestFixture
         $this->assertSame([$foo], Inline::parse("[*foo]", false, false, ["foo" => $foo]));
     }
 
-    /**
-     * @expectedException ParseException
-     * @expectedExceptionMessage A reference must contain at least one character.
-     */
     public function testParseUnquotedAsterisk()
     {
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+
         Inline::parse("{ foo: * }");
     }
 
-    /**
-     * @expectedException ParseException
-     * @expectedExceptionMessage A reference must contain at least one character.
-     */
     public function testParseUnquotedAsteriskFollowedByAComment()
     {
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+
         Inline::parse("{ foo: * #foo }");
     }
 

@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
@@ -281,7 +281,7 @@ class Inline
      * @param string $scalar
      * @param array  $references
      *
-     * @throws ParseException when reference does not exist
+     * @throws ParseException when a reference could not be resolved
      * @return string A YAML string
      */
     protected static function evaluateScalar($scalar, $references = [])
@@ -294,6 +294,11 @@ class Inline
                 $value = substr($scalar, 1, $pos - 2);
             } else {
                 $value = substr($scalar, 1);
+            }
+
+            // an unquoted *
+            if ($value === false || $value === "") {
+                throw new ParseException("A reference must contain at least one character.");
             }
 
             if (!array_key_exists($value, $references)) {
@@ -318,6 +323,8 @@ class Inline
                 return intval(self::parseScalar(substr($scalar, 2)));
             } elseif (strpos($scalar, "!!php/object:") === 0) {
                 return unserialize(substr($scalar, 13));
+            } elseif (strpos($scalar, "!!float ") === 0) {
+                return (float)substr($scalar, 8);
             } elseif (ctype_digit($scalar)) {
                 $raw = $scalar;
                 $cast = intval($scalar);

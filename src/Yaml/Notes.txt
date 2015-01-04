@@ -14,5 +14,5 @@ Modifications made:
 - Encoding checks removed.
 
 Latest commit applied:
-https://github.com/symfony/Yaml/commit/6db64aa92ce2b2aa35a72a0d0508de4d60c70b20
-6db64aa92ce2b2aa35a72a0d0508de4d60c70b20
+https://github.com/symfony/Yaml/commit/44d09645715d04db154d8a875610bab1e486f931
+44d09645715d04db154d8a875610bab1e486f931

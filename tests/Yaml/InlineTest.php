@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
@@ -75,11 +75,11 @@ class InlineTest extends UnitTestFixture
         }
 
         foreach ($this->getTestsForParse() as $value) {
-            $this->assertEquals($value, Inline::parse(Dumper::dumpInline($value)), "check consistency");
+            $this->assertSame($value, Inline::parse(Dumper::dumpInline($value)), "check consistency");
         }
 
         foreach ($testsForDump as $value) {
-            $this->assertEquals($value, Inline::parse(Dumper::dumpInline($value)), "check consistency");
+            $this->assertSame($value, Inline::parse(Dumper::dumpInline($value)), "check consistency");
         }
     }
 
@@ -230,6 +230,24 @@ class InlineTest extends UnitTestFixture
     }
 
     /**
+     * @expectedException ParseException
+     * @expectedExceptionMessage A reference must contain at least one character.
+     */
+    public function testParseUnquotedAsterisk()
+    {
+        Inline::parse("{ foo: * }");
+    }
+
+    /**
+     * @expectedException ParseException
+     * @expectedExceptionMessage A reference must contain at least one character.
+     */
+    public function testParseUnquotedAsteriskFollowedByAComment()
+    {
+        Inline::parse("{ foo: * #foo }");
+    }
+
+    /**
      * Set of test cases for parser
      *
      * @return array
@@ -346,7 +364,7 @@ class InlineTest extends UnitTestFixture
             "true" => true,
             "12" => 12,
             "'quoted string'" => "quoted string",
-            "12.30e+02" => 12.30e+02,
+            "!!float 1230" => 12.30e+02,
             "1234" => 0x4D2,
             "1243" => 02333,
             // ".Inf" => -log(0),

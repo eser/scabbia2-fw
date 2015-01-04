@@ -7,14 +7,12 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
 namespace Scabbia\Loader;
 
-use Scabbia\Framework\Core;
-use Scabbia\Tasks\Tasks;
 use InvalidArgumentException;
 
 /**
@@ -48,52 +46,29 @@ class Loader
     protected $pushStack = [];
 
     /** @type string $basepath the base directory which framework runs in */
-    public $basepath = null;
+    public $basepath;
     /** @type string $vendorpath the vendor directory for 3rd party components */
-    public $vendorpath = null;
+    public $vendorpath;
 
 
     /**
      * Loads the framework
      *
-     * @param string $uParameters the settings for loading procecedure
+     * @param string|null $uBasePath the path of project files installed in
+     * @param callable    $uCallback callback method
      *
-     * @return Loader an instantiated Loader object
+     * @return Loader
      */
-    public static function load($uParameters = [])
+    public static function load($uBasePath, /* callable */ $uCallback = null)
     {
-        $tBasePath = isset($uParameters["basepath"]) ? $uParameters["basepath"] : null;
-
-        $tInstance = new static($tBasePath);
+        $tInstance = new static($uBasePath);
         if ($tInstance->vendorpath !== null) {
             $tInstance->importFromComposer();
         }
         $tInstance->register(true);
 
-        // MD - initializes the autoloader and framework variables.
-        Core::init($tInstance);
-
-        if (isset($uParameters["projects"])) {
-            // MD - read the application definitions from project.yml file and cache
-            // MD - its content into cache/project.yml.php
-            foreach ((array)$uParameters["projects"] as $tProjectFile) {
-                Core::loadProject($tProjectFile);
-            }
-
-            // MD - pick which application is going to run
-            Core::pickApplication();
-        }
-
-        if (isset($uParameters["tasks"])) {
-            // MD - read the application definitions from tasks.yml file and cache
-            // MD - its content into cache/tasks.yml.php
-            foreach ((array)$uParameters["tasks"] as $tTasksFile) {
-                Tasks::load($tTasksFile);
-            }
-        }
-
-        if (isset($uParameters["run"]) && $uParameters["run"] === true) {
-            Core::runApplication();
+        if ($uCallback !== null) {
+            $uCallback($tInstance);
         }
 
         return $tInstance;
@@ -398,7 +373,7 @@ class Loader
         }
 
         foreach ((array)$uExtensions as $tExtension) {
-            if (($tFile = $this->findFileWithExtension($uClass, $tExtension)) !== null) {
+            if (($tFile = $this->findResource($uClass, $tExtension)) !== null) {
                 return $tFile;
             }
         }
@@ -416,7 +391,7 @@ class Loader
      *
      * @return string|false the path if found, false otherwise
      */
-    public function findFileWithExtension($uClass, $uExtension)
+    public function findResource($uClass, $uExtension = "")
     {
         // PSR-4 logical name
         $tLogicalPathPsr4 = strtr($uClass, "\\", "/") . $uExtension;

@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
@@ -52,7 +52,7 @@ class Escaper
      * proper escaping because str_replace operates iteratively on the input arrays. This ordering of the characters
      * avoids the use of strtr, which performs more slowly
      */
-    protected static $escapees = ["\\\\", "\\\"", "\"",
+    protected static $escapees = ["\\", "\\\\", "\\\"", "\"",
                                 "\x00",  "\x01",  "\x02",  "\x03",  "\x04",  "\x05",  "\x06",  "\x07",
                                 "\x08",  "\x09",  "\x0a",  "\x0b",  "\x0c",  "\x0d",  "\x0e",  "\x0f",
                                 "\x10",  "\x11",  "\x12",  "\x13",  "\x14",  "\x15",  "\x16",  "\x17",
@@ -63,7 +63,7 @@ class Escaper
      * proper escaping because str_replace operates iteratively on the input arrays. This ordering of the characters
      * avoids the use of strtr, which performs more slowly
      */
-    protected static $escaped  = ["\\\"", "\\\\", "\\\"",
+    protected static $escaped  = ["\\\\", "\\\"", "\\\\", "\\\"",
                                 "\\0",   "\\x01", "\\x02", "\\x03", "\\x04", "\\x05", "\\x06", "\\a",
                                 "\\b",   "\\t",   "\\n",   "\\v",   "\\f",   "\\r",   "\\x0e", "\\x0f",
                                 "\\x10", "\\x11", "\\x12", "\\x13", "\\x14", "\\x15", "\\x16", "\\x17",
@@ -140,9 +140,8 @@ class Escaper
      */
     public function unescapeDoubleQuotedString($value)
     {
-        $self = $this;
-        $callback = function ($match) use ($self) {
-            return $self->unescapeCharacter($match[0]);
+        $callback = function ($match) {
+            return $this->unescapeCharacter($match[0]);
         };
 
         // evaluate the string

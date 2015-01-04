@@ -10,5 +10,5 @@ Modifications made:
 - Completely implemented to Scabbia2's own generator-based system.
 
 Latest commit applied:
-https://github.com/nikic/FastRoute/commit/7dc9a43cb856debc22fe158a1144018e16f7a637
-7dc9a43cb856debc22fe158a1144018e16f7a637
+https://github.com/nikic/FastRoute/commit/5460d7875f07e1bb6af8f07b7ed8d061a7604494
+5460d7875f07e1bb6af8f07b7ed8d061a7604494

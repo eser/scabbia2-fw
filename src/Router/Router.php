@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
@@ -118,38 +118,55 @@ REGEX;
             }
         }
 
-        foreach (self::$routes["variable"] as $tVariableRoute) {
-            if (preg_match($tVariableRoute["regex"], $uPathInfo, $tMatches) !== 1) {
-                continue;
-            }
+        if ($uMethod === "HEAD" && !isset(self::$routes["variable"]["HEAD"])) {
+            $tQueryMethod = "GET";
+        } else {
+            $tQueryMethod = $uMethod;
+        }
 
-            $tRoute = $tVariableRoute["routeMap"][count($tMatches)];
-            if (!isset($tRoute[$uMethod])) {
-                if ($uMethod === "HEAD" && isset($tRoute["GET"])) {
-                    $uMethod = "GET";
-                } else {
-                    return [
-                        "status"     => self::METHOD_NOT_ALLOWED,
-                        "methods"    => array_keys($tRoute)
-                    ];
+        if (isset(self::$routes["variable"][$tQueryMethod])) {
+            foreach (self::$routes["variable"][$tQueryMethod] as $tVariableRoute) {
+                if (preg_match($tVariableRoute["regex"], $uPathInfo, $tMatches) !== 1) {
+                    continue;
                 }
+
+                list($tCallback, $tVariableNames) = $tVariableRoute["routeMap"][count($tMatches)];
+
+                $tVariables = [];
+                $tCount = 0;
+                foreach ($tVariableNames as $tVariableName) {
+                    $tVariables[$tVariableName] = $tMatches[++$tCount];
+                }
+
+                return [
+                    "status"     => self::FOUND,
+                    "callback"   => $tCallback,
+                    "parameters" => $tVariables
+                ];
             }
+        }
 
-            list($tCallback, $tVariableNames) = $tRoute[$uMethod];
+        // Find allowed methods for this URI by matching against all other
+        // HTTP methods as well
+        $tAllowedMethods = [];
+        foreach (self::$routes["variable"] as $tCurrentMethod => $tVariableRouteSets) {
+            foreach ($tVariableRouteSets as $tVariableRoute) {
+                if (preg_match($tVariableRoute["regex"], $uPathInfo, $tMatches) !== 1) {
+                    continue;
+                }
 
-            $tVariables = [];
-            $tCount = 0;
-            foreach ($tVariableNames as $tVariableName) {
-                $tVariables[$tVariableName] = $tMatches[++$tCount];
+                $tAllowedMethods[] = $tCurrentMethod;
             }
+        }
 
+        if (count($tAllowedMethods) > 0) {
             return [
-                "status"     => self::FOUND,
-                "callback"   => $tCallback,
-                "parameters" => $tVariables
+                "status"     => self::METHOD_NOT_ALLOWED,
+                "methods"    => $tAllowedMethods
             ];
         }
 
+        // If there are no allowed methods the route simply does not exist
         return [
             "status"     => self::NOT_FOUND
         ];

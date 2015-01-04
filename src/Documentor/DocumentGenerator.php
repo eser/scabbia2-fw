@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
@@ -45,7 +45,7 @@ class DocumentGenerator extends GeneratorBase
     public function processFile($uPath, $uFileContents, TokenStream $uTokenStream)
     {
         $tDocLines = [];
-        $tRelativePath = substr($uPath, strlen(Core::$loader->basepath) + 1);
+        $tRelativePath = substr($uPath, strlen(Core::$instance->loader->basepath) + 1);
         $tDocTitle = $tRelativePath;
 
         foreach ($uTokenStream as $tToken) {

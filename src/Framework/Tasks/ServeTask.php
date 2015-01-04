@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
@@ -75,7 +75,7 @@ class ServeTask extends TaskBase
         $this->interface->writeColor("yellow", sprintf("Built-in server started on port %d.", $tPort));
         $this->interface->writeColor("yellow", sprintf("Navigate to http://localhost:%d/\n", $tPort));
         $this->interface->write("Ctrl-C to stop.");
-        passthru("\"" . PHP_BINARY . "\" -S localhost:{$tPort} -t \"" . Core::$loader->basepath . "\" index.php");
+        passthru("\"" . PHP_BINARY . "\" -S localhost:{$tPort} -t \"" . Core::$instance->loader->basepath . "\" index.php");
 
         return 0;
     }

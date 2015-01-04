@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
@@ -152,19 +152,16 @@ class RouteGenerator extends GeneratorBase
         }
 
         foreach ($uMethods as $tMethod) {
-            foreach ($this->regexToRoutesMap as $tRoutes) {
-                if (!isset($tRoutes[$tMethod])) {
-                    continue;
-                }
-
-                $tRoute = $tRoutes[$tMethod];
-                if (preg_match("~^{$tRoute["regex"]}$~", $tRouteStr) === 1) {
-                    throw new UnexpectedValueException(sprintf(
-                        "Static route \"%s\" is shadowed by previously defined variable route \"%s\" for method \"%s\"",
-                        $tRouteStr,
-                        $tRoute["regex"],
-                        $tMethod
-                    ));
+            if (isset($this->regexToRoutesMap[$tMethod])) {
+                foreach ($this->regexToRoutesMap[$tMethod] as $tRoute) {
+                    if (preg_match("~^{$tRoute["regex"]}$~", $tRouteStr) === 1) {
+                        throw new UnexpectedValueException(sprintf(
+                            "Static route \"%s\" is shadowed by previously defined variable route \"%s\" for method \"%s\"",
+                            $tRouteStr,
+                            $tRoute["regex"],
+                            $tMethod
+                        ));
+                    }
                 }
             }
 
@@ -221,7 +218,7 @@ class RouteGenerator extends GeneratorBase
         }
 
         foreach ($uMethods as $tMethod) {
-            if (isset($this->regexToRoutesMap[$tRegex][$tMethod])) {
+            if (isset($this->regexToRoutesMap[$tMethod][$tRegex])) {
                 throw new UnexpectedValueException(
                     sprintf("Cannot register two routes matching \"%s\" for method \"%s\"", $tRegex, $tMethod)
                 );
@@ -229,7 +226,7 @@ class RouteGenerator extends GeneratorBase
         }
 
         foreach ($uMethods as $tMethod) {
-            $this->regexToRoutesMap[$tRegex][$tMethod] = [
+            $this->regexToRoutesMap[$tRegex] = [
                 "method"    => $tMethod,
                 "callback"  => $uCallback,
                 "regex"     => $tRegex,
@@ -258,16 +255,15 @@ class RouteGenerator extends GeneratorBase
      */
     public function getData()
     {
-        $tRegexToRoutesMapCount = count($this->regexToRoutesMap);
+        $tVariableRouteData = [];
+        foreach ($this->regexToRoutesMap as $tMethod => $tRegexToRoutesMapOfMethod) {
+            $tRegexToRoutesMapOfMethodCount = count($tRegexToRoutesMapOfMethod);
 
-        if ($tRegexToRoutesMapCount === 0) {
-            $tVariableRouteData = [];
-        } else {
-            $tNumParts = max(1, round($tRegexToRoutesMapCount / self::APPROX_CHUNK_SIZE));
-            $tChunkSize = ceil($tRegexToRoutesMapCount / $tNumParts);
+            $tNumParts = max(1, round($tRegexToRoutesMapOfMethodCount / self::APPROX_CHUNK_SIZE));
+            $tChunkSize = ceil($tRegexToRoutesMapOfMethodCount / $tNumParts);
 
-            $tChunks = array_chunk($this->regexToRoutesMap, $tChunkSize, true);
-            $tVariableRouteData = array_map([$this, "processChunk"], $tChunks);
+            $tChunks = array_chunk($tRegexToRoutesMapOfMethod, $tChunkSize, true);
+            $tVariableRouteData[$tMethod] = array_map([$this, "processChunk"], $tChunks);
         }
 
         return [
@@ -290,16 +286,12 @@ class RouteGenerator extends GeneratorBase
         $tRegexes = [];
         $tNumGroups = 0;
 
-        foreach ($uRegexToRoutesMap as $tRegex => $tRoutes) {
-            $tFirstRoute = reset($tRoutes);
-            $tNumVariables = count($tFirstRoute["variables"]);
+        foreach ($uRegexToRoutesMap as $tRegex => $tRoute) {
+            $tNumVariables = count($tRoute["variables"]);
             $tNumGroups = max($tNumGroups, $tNumVariables);
 
             $tRegexes[] = $tRegex . str_repeat("()", $tNumGroups - $tNumVariables);
-
-            foreach ($tRoutes as $tRoute) {
-                $tRouteMap[$tNumGroups + 1][$tRoute["method"]] = [$tRoute["callback"], $tRoute["variables"]];
-            }
+            $tRouteMap[$tNumGroups + 1] = [$tRoute["callback"], $tRoute["variables"]];
 
             ++$tNumGroups;
         }

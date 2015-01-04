@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
@@ -122,7 +122,7 @@ class Parser
                     $c = $this->getRealCurrentLineNb() + 1;
                     $parser = new static($c);
                     $parser->refs =& $this->refs;
-                    $data[] = $parser->parse($this->getNextEmbedBlock());
+                    $data[] = $parser->parse($this->getNextEmbedBlock(null, true));
                 } else {
                     if (isset($values["leadspaces"])
                         && $values["leadspaces"] === " "
@@ -252,6 +252,11 @@ class Parser
                     }
                 }
             } else {
+                // multiple documents are not supported
+                if ($this->currentLine === "---") {
+                    throw new ParseException("Multiple documents are not supported.");
+                }
+
                 // 1-liner optionally followed by newline
                 $lineCount = count($this->lines);
                 if ($lineCount === 1 || ($lineCount === 2 && strlen($this->lines[1]) === 0)) {
@@ -336,14 +341,19 @@ class Parser
     /**
      * Returns the next embed block of YAML
      *
-     * @param int $indentation The indent level at which the block is to be read, or null for default
+     * @param int  $indentation The indent level at which the block is to be read, or null for default
+     * @param bool $inSequence  True if the enclosing data structure is a sequence
      *
      * @throws ParseException When indentation problem are detected
      * @return string A YAML string
      */
-    protected function getNextEmbedBlock($indentation = null)
+    protected function getNextEmbedBlock($indentation = null, $inSequence = false)
     {
-        $this->moveToNextLine();
+        $oldLineIndentation = $this->getCurrentLineIndentation();
+
+        if (!$this->moveToNextLine()) {
+            return;
+        }
 
         if ($indentation === null) {
             $newIndent = $this->getCurrentLineIndentation();
@@ -358,6 +368,14 @@ class Parser
         }
 
         $data = [substr($this->currentLine, $newIndent)];
+
+        if ($inSequence && $oldLineIndentation === $newIndent && $data[0][0] === "-") {
+            // the previous line contained a dash but no item content, this line is a sequence item with the same indentation
+            // and therefore no nested list or mapping
+            $this->moveToPreviousLine();
+
+            return;
+        }
 
         $isItUnindentedCollection = $this->isStringUnIndentedCollectionItem($this->currentLine);
 

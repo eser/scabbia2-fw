@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
@@ -43,31 +43,31 @@ class Application extends ApplicationBase
 
         // remote host
         if (isset($_SERVER["HTTP_CLIENT_IP"])) {
-            Core::$variables["http-remotehost"] = $_SERVER["HTTP_CLIENT_IP"];
+            Core::$instance->variables["http-remotehost"] = $_SERVER["HTTP_CLIENT_IP"];
         } elseif (isset($_SERVER["REMOTE_ADDR"])) {
-            Core::$variables["http-remotehost"] = $_SERVER["REMOTE_ADDR"];
+            Core::$instance->variables["http-remotehost"] = $_SERVER["REMOTE_ADDR"];
         } elseif (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
-            Core::$variables["http-remotehost"] = $_SERVER["HTTP_X_FORWARDED_FOR"];
+            Core::$instance->variables["http-remotehost"] = $_SERVER["HTTP_X_FORWARDED_FOR"];
         } else {
-            Core::$variables["http-remotehost"] = "0.0.0.0";
+            Core::$instance->variables["http-remotehost"] = "0.0.0.0";
         }
 
         // http method
         if (isset($_SERVER["X-HTTP-METHOD-OVERRIDE"])) {
-            Core::$variables["http-method"] = strtolower($_SERVER["X-HTTP-METHOD-OVERRIDE"]);
+            Core::$instance->variables["http-method"] = strtolower($_SERVER["X-HTTP-METHOD-OVERRIDE"]);
         } elseif (isset($_POST["_method"])) {
-            Core::$variables["http-method"] = strtolower($_POST["_method"]);
+            Core::$instance->variables["http-method"] = strtolower($_POST["_method"]);
         } elseif (isset($_SERVER["REQUEST_METHOD"])) {
-            Core::$variables["http-method"] = strtolower($_SERVER["REQUEST_METHOD"]);
+            Core::$instance->variables["http-method"] = strtolower($_SERVER["REQUEST_METHOD"]);
         } else {
-            Core::$variables["http-method"] = "GET";
+            Core::$instance->variables["http-method"] = "GET";
         }
 
         // http requested with
         if (isset($_SERVER["HTTP_X_REQUESTED_WITH"])) {
-            Core::$variables["http-requested-with"] = strtolower($_SERVER["HTTP_X_REQUESTED_WITH"]);
+            Core::$instance->variables["http-requested-with"] = strtolower($_SERVER["HTTP_X_REQUESTED_WITH"]);
         } else {
-            Core::$variables["http-requested-with"] = null;
+            Core::$instance->variables["http-requested-with"] = null;
         }
 
         // http accept language
@@ -78,53 +78,53 @@ class Application extends ApplicationBase
 
         // http original url
         if (isset($_SERVER["X_ORIGINAL_URL"])) {
-            Core::$variables["http-request-uri"] = $_SERVER["X_ORIGINAL_URL"];
+            Core::$instance->variables["http-request-uri"] = $_SERVER["X_ORIGINAL_URL"];
         } elseif (isset($_SERVER["X_REWRITE_URL"])) {
-            Core::$variables["http-request-uri"] = $_SERVER["X_REWRITE_URL"];
+            Core::$instance->variables["http-request-uri"] = $_SERVER["X_REWRITE_URL"];
         } elseif (isset($_SERVER["HTTP_X_REWRITE_URL"])) {
-            Core::$variables["http-request-uri"] = $_SERVER["HTTP_X_REWRITE_URL"];
+            Core::$instance->variables["http-request-uri"] = $_SERVER["HTTP_X_REWRITE_URL"];
         } elseif (isset($_SERVER["IIS_WasUrlRewritten"]) && (string)$_SERVER["IIS_WasUrlRewritten"] === "1" &&
             isset($_SERVER["UNENCODED_URL"])) {
-            Core::$variables["http-request-uri"] = $_SERVER["UNENCODED_URL"];
+            Core::$instance->variables["http-request-uri"] = $_SERVER["UNENCODED_URL"];
         } elseif (isset($_SERVER["REQUEST_URI"])) {
             if (strncmp(
                 $_SERVER["REQUEST_URI"],
-                Core::$variables["host"],
-                $tHostLength = strlen(Core::$variables["host"])
+                Core::$instance->variables["host"],
+                $tHostLength = strlen(Core::$instance->variables["host"])
             ) === 0) {
-                Core::$variables["http-request-uri"] = substr($_SERVER["REQUEST_URI"], $tHostLength);
+                Core::$instance->variables["http-request-uri"] = substr($_SERVER["REQUEST_URI"], $tHostLength);
             } else {
-                Core::$variables["http-request-uri"] = $_SERVER["REQUEST_URI"];
+                Core::$instance->variables["http-request-uri"] = $_SERVER["REQUEST_URI"];
             }
         } elseif (isset($_SERVER["ORIG_PATH_INFO"])) {
-            Core::$variables["http-request-uri"] = $_SERVER["ORIG_PATH_INFO"];
+            Core::$instance->variables["http-request-uri"] = $_SERVER["ORIG_PATH_INFO"];
 
             if (isset($_SERVER["QUERY_STRING"]) && strlen($_SERVER["QUERY_STRING"]) > 0) {
-                Core::$variables["http-request-uri"] .= "?" . $_SERVER["QUERY_STRING"];
+                Core::$instance->variables["http-request-uri"] .= "?" . $_SERVER["QUERY_STRING"];
             }
         } else {
-            Core::$variables["http-request-uri"] = "";
+            Core::$instance->variables["http-request-uri"] = "";
         }
 
         // http pathroot
-        if (!isset(Core::$variables["http-pathroot"])) {
-            Core::$variables["http-pathroot"] = pathinfo($_SERVER["SCRIPT_NAME"], PATHINFO_DIRNAME);
+        if (!isset(Core::$instance->variables["http-pathroot"])) {
+            Core::$instance->variables["http-pathroot"] = pathinfo($_SERVER["SCRIPT_NAME"], PATHINFO_DIRNAME);
         }
-        Core::$variables["http-pathroot"] = trim(str_replace("\\", "/", Core::$variables["http-pathroot"]), "/");
-        if (strlen(Core::$variables["http-pathroot"]) > 0) {
-            Core::$variables["http-pathroot"] = "/" . Core::$variables["http-pathroot"];
+        Core::$instance->variables["http-pathroot"] = trim(str_replace("\\", "/", Core::$instance->variables["http-pathroot"]), "/");
+        if (strlen(Core::$instance->variables["http-pathroot"]) > 0) {
+            Core::$instance->variables["http-pathroot"] = "/" . Core::$instance->variables["http-pathroot"];
         }
 
         // http pathinfo
-        if (($tPos = strpos(Core::$variables["http-request-uri"], "?")) !== false) {
-            $tBaseUriPath = substr(Core::$variables["http-request-uri"], 0, $tPos);
+        if (($tPos = strpos(Core::$instance->variables["http-request-uri"], "?")) !== false) {
+            $tBaseUriPath = substr(Core::$instance->variables["http-request-uri"], 0, $tPos);
         } else {
-            $tBaseUriPath = Core::$variables["http-request-uri"];
+            $tBaseUriPath = Core::$instance->variables["http-request-uri"];
         }
 
-        Core::$variables["http-pathinfo"] = substr($tBaseUriPath, strlen(Core::$variables["http-pathroot"]));
+        Core::$instance->variables["http-pathinfo"] = substr($tBaseUriPath, strlen(Core::$instance->variables["http-pathroot"]));
 
-        Core::updateVariablesCache();
+        Core::$instance->updateVariablesCache();
 
         $this->events->invoke("applicationInit");
     }
@@ -136,7 +136,7 @@ class Application extends ApplicationBase
      */
     public function getRequestMethod()
     {
-        return Core::$variables["http-method"];
+        return Core::$instance->variables["http-method"];
     }
 
     /**
@@ -146,7 +146,7 @@ class Application extends ApplicationBase
      */
     public function getRequestPathInfo()
     {
-        return Core::$variables["http-pathinfo"];
+        return Core::$instance->variables["http-pathinfo"];
     }
 
     /**

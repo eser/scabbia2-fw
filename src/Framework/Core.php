@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
@@ -29,103 +29,83 @@ use Scabbia\Loader\Loader;
 // MD-TITLE Core Class
 class Core
 {
-    /** @type object $loader the instance of the autoloader class */
-    public static $loader = null;
+    /** @type Core $instance the singleton instance of core */
+    public static $instance = null;
+    /** @type Loader $loader the instance of the autoloader class */
+    public $loader;
     /** @type array $variable array of framework variables */
-    public static $variables = [];
+    public $variables;
     /** @type array $variablesPlaceholderCache cache for framework variables which will be used for translation */
-    public static $variablesPlaceholderCache = [[], []];
+    public $variablesPlaceholderCache = [[], []];
     /** @type Config project configuration */
-    public static $projectConfiguration = null;
+    public $projectConfiguration;
     /** @type array $runningApplications array of running applications */
-    public static $runningApplications = [];
+    public $runningApplications = [];
 
 
     /**
-     * Constructor to prevent new instances of Core class
-     *
-     * @return Core
-     */
-    final private function __construct()
-    {
-    }
-
-    /**
-     * Clone method to prevent duplication of Core class
-     *
-     * @return Core
-     */
-    final private function __clone()
-    {
-    }
-
-    /**
-     * Unserialization method to prevent restoration of Core class
-     *
-     * @return Core
-     */
-    final private function __wakeup()
-    {
-    }
-
-    // MD ## Core::init method
-    /**
-     * Initializes the framework to be ready to boot
+     * Initializes a new instance of Core class
      *
      * @param Loader $uLoader The instance of the autoloader class
      *
-     * @return void
+     * @return Core
      */
-    public static function init(Loader $uLoader)
+    public function __construct(Loader $uLoader)
     {
+        if (static::$instance === null) {
+            static::$instance = $this;
+        }
+
         // MD assign autoloader to Core::$loader
-        self::$loader = $uLoader;
+        $this->loader = $uLoader;
 
         // MD determine environment variables
         // basepath
-        self::$variables["basepath"] = &self::$loader->basepath;
+        $this->variables = [
+            "basepath" => &$this->loader->basepath
+        ];
 
         // secure
         if (isset($_SERVER["HTTPS"]) &&
             ((string)$_SERVER["HTTPS"] === "1" || strcasecmp($_SERVER["HTTPS"], "on") === 0)) {
-            self::$variables["secure"] = true;
+            $this->variables["secure"] = true;
         } elseif (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] === "https") {
-            self::$variables["secure"] = true;
+            $this->variables["secure"] = true;
         } else {
-            self::$variables["secure"] = false;
+            $this->variables["secure"] = false;
         }
 
         // protocol
         if (PHP_SAPI === "cli") {
-            self::$variables["protocol"] = "CLI";
+            $this->variables["protocol"] = "CLI";
         } elseif (isset($_SERVER["SERVER_PROTOCOL"]) && $_SERVER["SERVER_PROTOCOL"] === "HTTP/1.0") {
-            self::$variables["protocol"] = "HTTP/1.0";
+            $this->variables["protocol"] = "HTTP/1.0";
         } else {
-            self::$variables["protocol"] = "HTTP/1.1";
+            $this->variables["protocol"] = "HTTP/1.1";
         }
 
         // host
         if (isset($_SERVER["HTTP_HOST"]) && strlen($_SERVER["HTTP_HOST"]) > 0) {
-            self::$variables["host"] = $_SERVER["HTTP_HOST"];
+            $this->variables["host"] = $_SERVER["HTTP_HOST"];
         } else {
             if (isset($_SERVER["SERVER_NAME"])) {
-                self::$variables["host"] = $_SERVER["SERVER_NAME"];
+                $this->variables["host"] = $_SERVER["SERVER_NAME"];
             } elseif (isset($_SERVER["SERVER_ADDR"])) {
-                self::$variables["host"] = $_SERVER["SERVER_ADDR"];
+                $this->variables["host"] = $_SERVER["SERVER_ADDR"];
             } elseif (isset($_SERVER["LOCAL_ADDR"])) {
-                self::$variables["host"] = $_SERVER["LOCAL_ADDR"];
+                $this->variables["host"] = $_SERVER["LOCAL_ADDR"];
             } else {
-                self::$variables["host"] = "localhost";
+                $this->variables["host"] = "localhost";
             }
 
             if (isset($_SERVER["SERVER_PORT"])) {
-                if (self::$https) {
+                if ($this->https) {
                     if ($_SERVER["SERVER_PORT"] !== "443") {
-                        self::$variables["host"] .= $_SERVER["SERVER_PORT"];
+                        $this->variables["host"] .= $_SERVER["SERVER_PORT"];
                     }
                 } else {
                     if ($_SERVER["SERVER_PORT"] !== "80") {
-                        self::$variables["host"] .= $_SERVER["SERVER_PORT"];
+                        $this->variables["host"] .= $_SERVER["SERVER_PORT"];
                     }
                 }
             }
@@ -133,14 +113,14 @@ class Core
 
         // os
         if (strncasecmp(PHP_OS, "WIN", 3) === 0) {
-            self::$variables["os"] = "windows";
+            $this->variables["os"] = "windows";
         } else {
-            self::$variables["os"] = "*nix";
+            $this->variables["os"] = "*nix";
         }
 
-        self::updateVariablesCache();
+        $this->updateVariablesCache();
 
-        self::$projectConfiguration = new Config();
+        $this->projectConfiguration = new Config();
     }
 
     // MD ## Core::loadProject method
@@ -151,11 +131,11 @@ class Core
      *
      * @return void
      */
-    public static function loadProject($uProjectConfigPath)
+    public function loadProject($uProjectConfigPath)
     {
         // MD add configuration file to project configuration stack
-        self::$projectConfiguration->add(
-            FileSystem::combinePaths(Core::$loader->basepath, self::translateVariables($uProjectConfigPath))
+        $this->projectConfiguration->add(
+            FileSystem::combinePaths($this->loader->basepath, $this->translateVariables($uProjectConfigPath))
         );
     }
 
@@ -165,18 +145,18 @@ class Core
      *
      * @return void
      */
-    public static function pickApplication()
+    public function pickApplication()
     {
         // MD loop through application definitions in project configuration
         // test cases for applications, and bind configuration to app
-        foreach (self::$projectConfiguration->get() as $tApplicationKey => $tApplicationConfig) {
+        foreach ($this->projectConfiguration->get() as $tApplicationKey => $tApplicationConfig) {
             // TODO is sanitizing $tApplicationKey needed for paths?
             $tTargetApplication = $tApplicationKey;
 
             // MD - test conditions for each application definition
             if (isset($tApplicationConfig["tests"])) {
                 foreach ($tApplicationConfig["tests"] as $tApplicationTest) {
-                    $tSubject = self::translateVariables($tApplicationTest[0]);
+                    $tSubject = $this->translateVariables($tApplicationTest[0]);
                     if (!preg_match($tApplicationTest[1], $tSubject)) {
                         $tTargetApplication = false;
                         break;
@@ -186,8 +166,8 @@ class Core
 
             // MD - if selected application fits all test conditions, run it
             if ($tTargetApplication !== false) {
-                $tApplicationWritablePath = self::$loader->basepath . "/var/generated/app.{$tTargetApplication}";
-                self::pushApplication($tApplicationConfig, $tApplicationWritablePath);
+                $tApplicationWritablePath = $this->loader->basepath . "/var/generated/app.{$tTargetApplication}";
+                $this->pushApplication($tApplicationConfig, $tApplicationWritablePath);
             }
         }
     }
@@ -198,9 +178,9 @@ class Core
      *
      * @return void
      */
-    public static function runApplication()
+    public function runApplication()
     {
-        foreach (self::$runningApplications as $tApplicationInfo) {
+        foreach ($this->runningApplications as $tApplicationInfo) {
             if ($tApplicationInfo[0] !== null) {
                 $tApplicationInfo[0]->generateRequestFromGlobals();
             }
@@ -220,10 +200,10 @@ class Core
      *
      * @return void
      */
-    public static function pushApplication($uApplicationConfig, $uWritablePath)
+    public function pushApplication($uApplicationConfig, $uWritablePath)
     {
         // MD push framework variables to undo application's own variable definitions
-        self::pushSourcePaths($uApplicationConfig);
+        $this->pushSourcePaths($uApplicationConfig);
 
         // MD include compilation file for the application
         // FIXME is it needed to be loaded before Core and ApplicationBase?
@@ -238,7 +218,7 @@ class Core
         $uApplicationConfig += require "{$uWritablePath}/unified-config.php";
 
         // MD construct the application class
-        self::$runningApplications[] = [ApplicationBase::$current, self::$variables];
+        $this->runningApplications[] = [ApplicationBase::$current, $this->variables];
 
         $tApplicationType = $uApplicationConfig["type"];
         $tApplication = new $tApplicationType ($uApplicationConfig, $uWritablePath);
@@ -252,11 +232,11 @@ class Core
      *
      * @return void
      */
-    public static function popApplication()
+    public function popApplication()
     {
         // MD pop framework variables
-        list(ApplicationBase::$current, self::$variables) = array_pop(self::$runningApplications);
-        self::popSourcePaths();
+        list(ApplicationBase::$current, $this->variables) = array_pop($this->runningApplications);
+        $this->popSourcePaths();
     }
 
     /**
@@ -266,7 +246,7 @@ class Core
      *
      * @return void
      */
-    public static function pushSourcePaths($uConfig)
+    public function pushSourcePaths($uConfig)
     {
         if (!isset($uConfig["autoload"])) {
             return;
@@ -278,10 +258,10 @@ class Core
             $tCodepools = ["local", "core"];
         }
 
-        self::$loader->push();
+        $this->loader->push();
 
-        $tPreviousPrependedPaths = self::$loader->getPrefixesPsr4(0);
-        $tPreviousPrependedPaths[false] = self::$loader->getFallbackDirsPsr4(0);
+        $tPreviousPrependedPaths = $this->loader->getPrefixesPsr4(0);
+        $tPreviousPrependedPaths[false] = $this->loader->getFallbackDirsPsr4(0);
 
         foreach ($uConfig["autoload"] as $tNamespace => $tPaths) {
             $tLoaderNamespace = ($tNamespace !== "default") ? $tNamespace : false;
@@ -292,7 +272,7 @@ class Core
                     $tTranslatedPath = str_replace(
                         "{codepool}",
                         $tCodepool,
-                        self::translateVariables($tPath)
+                        $this->translateVariables($tPath)
                     );
 
                     if (isset($tPreviousPrependedPaths[$tLoaderNamespace]) &&
@@ -302,7 +282,7 @@ class Core
                 }
             }
 
-            self::$loader->addPsr4($tLoaderNamespace, $tTranslatedPaths, 0);
+            $this->loader->addPsr4($tLoaderNamespace, $tTranslatedPaths, 0);
         }
     }
 
@@ -311,9 +291,9 @@ class Core
      *
      * @return void
      */
-    public static function popSourcePaths()
+    public function popSourcePaths()
     {
-        self::$loader->pop();
+        $this->loader->pop();
     }
 
     /**
@@ -321,18 +301,18 @@ class Core
      *
      * @return void
      */
-    public static function updateVariablesCache()
+    public function updateVariablesCache()
     {
-        self::$variablesPlaceholderCache[0] = [];
-        self::$variablesPlaceholderCache[1] = [];
+        $this->variablesPlaceholderCache[0] = [];
+        $this->variablesPlaceholderCache[1] = [];
 
-        foreach (self::$variables as $tKey => $tValue) {
+        foreach ($this->variables as $tKey => $tValue) {
             if (!is_scalar($tValue)) {
                 continue;
             }
 
-            self::$variablesPlaceholderCache[0][] = "{" . $tKey . "}";
-            self::$variablesPlaceholderCache[1][] = $tValue;
+            $this->variablesPlaceholderCache[0][] = "{" . $tKey . "}";
+            $this->variablesPlaceholderCache[1][] = $tValue;
         }
     }
 
@@ -343,21 +323,9 @@ class Core
      *
      * @return string translated string
      */
-    public static function translateVariables($uInput)
+    public function translateVariables($uInput)
     {
-        return str_replace(self::$variablesPlaceholderCache[0], self::$variablesPlaceholderCache[1], $uInput);
-    }
-
-    /**
-     * Gets a resource path using composer loader
-     *
-     * @param string $uPath the path needed to be resolved by composer loader
-     *
-     * @return string|false the path if found, false otherwise
-     */
-    public static function findResource($uPath)
-    {
-        return self::$loader->findFileWithExtension($uPath, "");
+        return str_replace($this->variablesPlaceholderCache[0], $this->variablesPlaceholderCache[1], $uInput);
     }
 
     /**
@@ -370,9 +338,9 @@ class Core
      *
      * @return mixed the result
      */
-    public static function cachedRead($uKey, $uDefaultValue, array $uOptions = [])
+    public function cachedRead($uKey, $uDefaultValue, array $uOptions = [])
     {
-        $tCacheFile = self::$loader->basepath . "/var/cache/" . crc32($uKey);
+        $tCacheFile = $this->loader->basepath . "/var/cache/" . crc32($uKey);
 
         return FileSystem::readFromCacheFile(
             $tCacheFile,

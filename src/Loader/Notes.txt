@@ -14,5 +14,5 @@ Modifications made:
 - Added prepended paths for overriding vendor resources.
 
 Latest commit applied:
-https://github.com/composer/composer/commit/d79f2b0fd33ee9b89f3d9f1969f43dc3d570a33a
-d79f2b0fd33ee9b89f3d9f1969f43dc3d570a33a
+https://github.com/composer/composer/commit/e172cd81a146666d844d2b7b37b5feccb89e2b61
+e172cd81a146666d844d2b7b37b5feccb89e2b61

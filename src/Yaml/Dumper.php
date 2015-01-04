@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
@@ -102,10 +102,18 @@ class Dumper
             if ($locale !== false) {
                 setlocale(LC_NUMERIC, "C");
             }
-            if (is_string($value)) {
+
+            if (is_float($value)) {
+                $repr = strval($value);
+
+                if (is_infinite($value)) {
+                    $repr = str_ireplace("INF", ".Inf", $repr);
+                } elseif (floor($value) == $value && $repr == $value) {
+                    // Preserve float data type since storing a whole number will result in integer value.
+                    $repr = "!!float {$repr}";
+                }
+            } elseif (is_string($value)) {
                 $repr = "'$value'";
-            } elseif (is_infinite($value)) {
-                $repr = str_ireplace("INF", ".Inf", strval($value));
             } else {
                 $repr = strval($value);
             }

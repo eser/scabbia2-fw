@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  */
 
@@ -99,7 +99,7 @@ class GenerateTask extends TaskBase
             }
         }
 
-        $tProjectFile = FileSystem::combinePaths(Core::$loader->basepath, Core::translateVariables($tProjectFile));
+        $tProjectFile = FileSystem::combinePaths(Core::$instance->loader->basepath, Core::$instance->translateVariables($tProjectFile));
         $uApplicationConfig = Config::load($tProjectFile)->get();
 
         if (!isset($uApplicationConfig[$tApplicationKey])) {
@@ -107,7 +107,7 @@ class GenerateTask extends TaskBase
         }
 
         // TODO is sanitizing $tApplicationKey needed for paths?
-        $tApplicationWritablePath = Core::$loader->basepath . "/var/generated/app.{$tApplicationKey}";
+        $tApplicationWritablePath = Core::$instance->loader->basepath . "/var/generated/app.{$tApplicationKey}";
 
         if (!file_exists($tApplicationWritablePath)) {
             mkdir($tApplicationWritablePath, 0777, true);
@@ -133,8 +133,8 @@ class GenerateTask extends TaskBase
         }
 
         // -- scan composer maps
-        Core::pushSourcePaths($uApplicationConfig[$tApplicationKey]);
-        $tFolders = iterator_to_array(Core::$loader->getComposerFolders(), false);
+        Core::$instance->pushSourcePaths($uApplicationConfig[$tApplicationKey]);
+        $tFolders = iterator_to_array(Core::$instance->loader->getComposerFolders(), false);
 
         $this->interface->writeColor("green", "Composer Maps:");
         foreach ($tFolders as $tFolder) {
@@ -170,7 +170,7 @@ class GenerateTask extends TaskBase
             $tGenerator->dump();
         }
 
-        Core::popSourcePaths();
+        Core::$instance->popSourcePaths();
         */
 
         $tApplication = ApplicationBase::$current;

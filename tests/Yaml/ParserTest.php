@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @link        http://github.com/scabbiafw/scabbia2-fw for the canonical source repository
- * @copyright   2010-2014 Scabbia Framework Organization. (http://www.scabbiafw.com/)
+ * @copyright   2010-2015 Scabbia Framework Organization. (http://www.scabbiafw.com/)
  * @license     http://www.apache.org/licenses/LICENSE-2.0 - Apache License, Version 2.0
  *
  * -------------------------
@@ -109,10 +109,10 @@ class ParserTest extends UnitTestFixture
     {
         // test tabs in YAML
         $yamls = [
-            "foo:\n	bar",
-            "foo:\n 	bar",
-            "foo:\n	 bar",
-            "foo:\n 	 bar",
+            "foo:\n bar",
+            "foo:\n     bar",
+            "foo:\n  bar",
+            "foo:\n      bar",
         ];
 
         foreach ($yamls as $yaml) {
@@ -464,7 +464,7 @@ EOF;
      *
      * @return void
      */
-    public function testObjectSupportEnabled()
+    public function testObjectSupport()
     {
         $input = <<<EOF
 foo: !!php/object:O:29:"Scabbia\Tests\Yaml\DummyClass":1:{s:1:"b";s:3:"foo";}
@@ -496,6 +496,27 @@ collection:
 EOF;
 
         $this->parser->parse($yaml);
+    }
+
+    /**
+     * @expectedException \Scabbia\Yaml\ParseException
+     * @expectedExceptionMessage Multiple documents are not supported.
+     */
+    public function testMultipleDocumentsNotSupportedException()
+    {
+        Yaml::parse(<<<EOL
+# Ranking of 1998 home runs
+---
+- Mark McGwire
+- Sammy Sosa
+- Ken Griffey
+
+# Team ranking
+---
+- Chicago Cubs
+- St Louis Cardinals
+EOL
+        );
     }
 
     /**

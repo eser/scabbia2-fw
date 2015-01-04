@@ -202,6 +202,11 @@ class Core
      */
     public function pushApplication($uApplicationConfig, $uWritablePath)
     {
+        // MD create application directory if it does not exist
+        if (!file_exists($uWritablePath)) {
+            mkdir($uWritablePath, 0777, true);
+        }
+
         // MD push framework variables to undo application's own variable definitions
         $this->pushSourcePaths($uApplicationConfig);
 

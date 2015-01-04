@@ -226,8 +226,12 @@ class RouteGenerator extends GeneratorBase
         }
 
         foreach ($uMethods as $tMethod) {
-            $this->regexToRoutesMap[$tRegex] = [
-                "method"    => $tMethod,
+            if (!isset($this->regexToRoutesMap[$tMethod])) {
+                $this->regexToRoutesMap[$tMethod] = [];
+            }
+
+            $this->regexToRoutesMap[$tMethod][$tRegex] = [
+                // "method"    => $tMethod,
                 "callback"  => $uCallback,
                 "regex"     => $tRegex,
                 "variables" => $tVariables

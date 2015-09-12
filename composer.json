@@ -25,6 +25,7 @@
         "scabbiafw/scabbia2-helpers": "*",
         "scabbiafw/scabbia2-interfaces": "*",
         "scabbiafw/scabbia2-lightstack": "*",
+        "scabbiafw/scabbia2-router": "*",
         "scabbiafw/scabbia2-tasks": "*",
         "scabbiafw/scabbia2-testing": "*",
         "scabbiafw/scabbia2-yaml": "*"

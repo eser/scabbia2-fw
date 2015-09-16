@@ -36,13 +36,18 @@
         "php": ">=5.6.0",
         "psr/log": "1.0.0",
         "scabbiafw/scabbia2-events": "*",
+        "scabbiafw/scabbia2-formatters": "*",
         "scabbiafw/scabbia2-helpers": "*",
-        "scabbiafw/scabbia2-interfaces": "*",
         "scabbiafw/scabbia2-lightstack": "*",
         "scabbiafw/scabbia2-router": "*",
+        "scabbiafw/scabbia2-scanners": "*",
+        "scabbiafw/scabbia2-services": "*",
         "scabbiafw/scabbia2-tasks": "*",
         "scabbiafw/scabbia2-testing": "*",
         "scabbiafw/scabbia2-yaml": "*"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "2.*"
     },
     "suggest": {
         "ext-curl": "ext/curl for http communication",

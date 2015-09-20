@@ -13,10 +13,11 @@
 
 namespace Scabbia\Framework;
 
-use Scabbia\LightStack\ApplicationInterface;
+use Scabbia\Events\Events;
+use Scabbia\LightStack\MiddlewareInterface;
+use Scabbia\LightStack\Request;
 use Scabbia\LightStack\RequestInterface;
 use Scabbia\LightStack\ResponseInterface;
-use Scabbia\Events\Events;
 
 /**
  * Default methods needed for implementation of an application
@@ -25,7 +26,7 @@ use Scabbia\Events\Events;
  * @author      Eser Ozvataf <eser@ozvataf.com>
  * @since       2.0.0
  */
-abstract class ApplicationBase implements ApplicationInterface
+abstract class ApplicationBase implements MiddlewareInterface
 {
     /** @type ApplicationBase $current current application instance */
     public static $current = null;
@@ -73,22 +74,28 @@ abstract class ApplicationBase implements ApplicationInterface
     }
 
     /**
-     * Generates request
+     * Generates a request object
      *
-     * @param string $uMethod          method
-     * @param string $uPathInfo        pathinfo
-     * @param array  $uQueryParameters query parameters
+     * @param string      $uMethod            method
+     * @param string      $uPathInfo          pathinfo
+     * @param array|null  $uDetails           available keys: get, post, files, server, session, cookies, headers
      *
      * @return RequestInterface request object
      */
-    abstract public function generateRequest($uMethod, $uPathInfo, array $uQueryParameters);
+    public function generateRequest($uMethod, $uPathInfo, array $uDetails = null)
+    {
+        return new Request($uMethod, $uPathInfo, $uDetails);
+    }
 
     /**
-     * Generates request from globals
+     * Generates a request object from globals
      *
      * @return RequestInterface request object
      */
-    abstract public function generateRequestFromGlobals();
+    public function generateRequestFromGlobals()
+    {
+        return Request::generateFromGlobals();
+    }
 
     /**
      * Handles a request

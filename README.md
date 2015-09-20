@@ -19,7 +19,7 @@ This project derived from [Scabbia Framework](https://github.com/larukedi/Scabbi
 
 
 ## Links
-- [Documentation](http://scabbiafw.com/docs/)
+- [Documentation](http://docs.scabbiafw.com/)
 - [Twitter](https://twitter.com/scabbiafw)
 - [Contributor List](contributors.md)
 - [License Information](LICENSE)

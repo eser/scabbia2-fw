@@ -32,7 +32,7 @@ class Project
     /** @type mixed             $loader     the instance of the autoloader class */
     public $loader;
     /** @type ConfigCollection  $config     configuration */
-    public $config = new ConfigCollection();
+    public $config;
 
 
     /**
@@ -50,5 +50,8 @@ class Project
 
         // MD assign autoloader to Project::$loader
         $this->loader = $uLoader;
+
+        // MD construct configuration collection
+        $this->config = new ConfigCollection();
     }
 }

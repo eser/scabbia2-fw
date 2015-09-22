@@ -5,11 +5,11 @@
 [This repository](https://github.com/scabbiafw/scabbia2-fw/) contains the files of Scabbia2 PHP Framework Code which is required for Scabbia2 packages to run.
 
 [![Build Status](https://travis-ci.org/scabbiafw/scabbia2-fw.png?branch=master)](https://travis-ci.org/scabbiafw/scabbia2-fw)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-fw/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-fw/?branch=master)
 [![Total Downloads](https://poser.pugx.org/scabbiafw/scabbia2-fw/downloads.png)](https://packagist.org/packages/scabbiafw/scabbia2-fw)
 [![Latest Stable Version](https://poser.pugx.org/scabbiafw/scabbia2-fw/v/stable)](https://packagist.org/packages/scabbiafw/scabbia2-fw)
 [![Latest Unstable Version](https://poser.pugx.org/scabbiafw/scabbia2-fw/v/unstable)](https://packagist.org/packages/scabbiafw/scabbia2-fw)
 [![Documentation Status](https://readthedocs.org/projects/scabbia2-documentation/badge/?version=latest)](http://docs.scabbiafw.com/)
-[![License](https://poser.pugx.org/scabbiafw/scabbia2-fw/license.png)](https://packagist.org/packages/scabbiafw/scabbia2-fw)
 
 ## History
 

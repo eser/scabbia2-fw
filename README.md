@@ -27,31 +27,31 @@ This project derived from [Scabbia Framework][scabbia-1x-url] with taken advanta
 
 
 ## Contributing
-It is publicly open for any contribution. Bugfixes, new features and extra modules are welcome. All contributions should be filed on the [scabbiafw/scabbia2-fw][scabbia-scabbiafw-repository-url] repository.
+It is publicly open for any contribution. Bugfixes, new features and extra modules are welcome. All contributions should be filed on the [eserozvataf/scabbia2-fw][scabbia-scabbiafw-repository-url] repository.
 
 * To contribute to code: Fork the repo, push your changes to your fork, and submit a pull request.
 * To report a bug: If something does not work, please report it using GitHub issues.
 * To support, donate the current lead maintainer: [![Donate][eserozvataf-gratipay-image]][eserozvataf-gratipay-url]
 
-[scabbia-organization-homepage-url]: http://scabbiafw.com/
-[scabbia-organization-twitter-url]: https://twitter.com/scabbiafw
-[scabbia-organization-repositories-url]: https://github.com/scabbiafw/
+[scabbia-organization-homepage-url]: https://github.com/eserozvataf/scabbia2
+[scabbia-organization-twitter-url]: https://twitter.com/eserozvataf
+[scabbia-organization-repositories-url]: https://github.com/eserozvataf/
 [scabbia-scabbiafw-contributors-url]: contributors.md
 [scabbia-scabbiafw-license-url]: LICENSE
-[scabbia-scabbiafw-repository-url]: https://github.com/scabbiafw/scabbia2-fw/
-[scabbia-scabbiafw-travis-image]: https://travis-ci.org/scabbiafw/scabbia2-fw.png?branch=master
-[scabbia-scabbiafw-travis-url]: https://travis-ci.org/scabbiafw/scabbia2-fw
-[scabbia-scabbiafw-scrutinizer-image]: https://scrutinizer-ci.com/g/scabbiafw/scabbia2-fw/badges/quality-score.png?b=master
-[scabbia-scabbiafw-scrutinizer-url]: https://scrutinizer-ci.com/g/scabbiafw/scabbia2-fw/?branch=master
-[scabbia-scabbiafw-downloads-image]: https://poser.pugx.org/scabbiafw/scabbia2-fw/downloads.png
-[scabbia-scabbiafw-downloads-url]: https://packagist.org/packages/scabbiafw/scabbia2-fw
-[scabbia-scabbiafw-stable-image]: https://poser.pugx.org/scabbiafw/scabbia2-fw/v/stable
-[scabbia-scabbiafw-stable-url]: https://packagist.org/packages/scabbiafw/scabbia2-fw
-[scabbia-scabbiafw-unstable-image]: https://poser.pugx.org/scabbiafw/scabbia2-fw/v/unstable
-[scabbia-scabbiafw-unstable-url]: https://packagist.org/packages/scabbiafw/scabbia2-fw
+[scabbia-scabbiafw-repository-url]: https://github.com/eserozvataf/scabbia2-fw
+[scabbia-scabbiafw-travis-image]: https://travis-ci.org/eserozvataf/scabbia2-fw.png?branch=master
+[scabbia-scabbiafw-travis-url]: https://travis-ci.org/eserozvataf/scabbia2-fw
+[scabbia-scabbiafw-scrutinizer-image]: https://scrutinizer-ci.com/g/eserozvataf/scabbia2-fw/badges/quality-score.png?b=master
+[scabbia-scabbiafw-scrutinizer-url]: https://scrutinizer-ci.com/g/eserozvataf/scabbia2-fw/?branch=master
+[scabbia-scabbiafw-downloads-image]: https://poser.pugx.org/eserozvataf/scabbia2-fw/downloads.png
+[scabbia-scabbiafw-downloads-url]: https://packagist.org/packages/eserozvataf/scabbia2-fw
+[scabbia-scabbiafw-stable-image]: https://poser.pugx.org/eserozvataf/scabbia2-fw/v/stable
+[scabbia-scabbiafw-stable-url]: https://packagist.org/packages/eserozvataf/scabbia2-fw
+[scabbia-scabbiafw-unstable-image]: https://poser.pugx.org/eserozvataf/scabbia2-fw/v/unstable
+[scabbia-scabbiafw-unstable-url]: https://packagist.org/packages/eserozvataf/scabbia2-fw
 [scabbia-scabbiafw-documentation-image]: https://readthedocs.org/projects/scabbia2-documentation/badge/?version=latest
-[scabbia-scabbiafw-documentation-url]: http://docs.scabbiafw.com/
-[scabbia-1x-url]: https://github.com/larukedi/Scabbia-Framework/
+[scabbia-scabbiafw-documentation-url]: https://readthedocs.org/projects/scabbia2-documentation
+[scabbia-1x-url]: https://github.com/eserozvataf/scabbia1
 [eserozvataf-homepage-url]: http://eser.ozvataf.com/
 [eserozvataf-gratipay-image]: https://img.shields.io/gratipay/eserozvataf.svg
 [eserozvataf-gratipay-url]: https://gratipay.com/eserozvataf/

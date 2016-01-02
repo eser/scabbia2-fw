@@ -1,5 +1,5 @@
 {
-    "name": "scabbiafw/scabbia2-fw",
+    "name": "eserozvataf/scabbia2-fw",
     "description": "Scabbia2 PHP Framework Code",
     "type": "library",
     "minimum-stability": "dev",
@@ -8,45 +8,45 @@
         "preferred-install": "dist"
     },
     "keywords": [
-        "larukedi",
+        "eserozvataf",
         "scabbia",
         "scabbia2",
         "scabbiafw",
         "framework"
     ],
-    "homepage": "http://www.scabbiafw.com/",
+    "homepage": "https://github.com/eserozvataf/scabbia2",
     "license": [
         "Apache-2.0"
     ],
     "authors": [
         {
-            "name": "Scabbia Framework Organization",
-            "homepage": "http://scabbiafw.com/"
+            "name": "Eser Ozvataf",
+            "homepage": "http://eser.ozvataf.com/"
         },
         {
             "name": "Contributors",
-            "homepage": "https://github.com/scabbiafw/scabbia2-fw/blob/master/contributors.md"
+            "homepage": "https://github.com/eserozvataf/scabbia2-fw/blob/master/contributors.md"
         }
     ],
     "support": {
-        "issues": "https://github.com/scabbiafw/scabbia2-fw/issues",
-        "source": "https://github.com/scabbiafw/scabbia2-fw"
+        "issues": "https://github.com/eserozvataf/scabbia2-fw/issues",
+        "source": "https://github.com/eserozvataf/scabbia2-fw"
     },
     "require": {
         "php": ">=5.6.0",
-        "scabbiafw/scabbia2-config": "*",
-        "scabbiafw/scabbia2-events": "*",
-        "scabbiafw/scabbia2-formatters": "*",
-        "scabbiafw/scabbia2-helpers": "*",
-        "scabbiafw/scabbia2-lightstack": "*",
-        "scabbiafw/scabbia2-router": "*",
-        "scabbiafw/scabbia2-scanners": "*",
-        "scabbiafw/scabbia2-services": "*",
-        "scabbiafw/scabbia2-tasks": "*",
-        "scabbiafw/scabbia2-yaml": "*"
+        "eserozvataf/scabbia2-config": "*",
+        "eserozvataf/scabbia2-events": "*",
+        "eserozvataf/scabbia2-formatters": "*",
+        "eserozvataf/scabbia2-helpers": "*",
+        "eserozvataf/scabbia2-lightstack": "*",
+        "eserozvataf/scabbia2-router": "*",
+        "eserozvataf/scabbia2-scanners": "*",
+        "eserozvataf/scabbia2-services": "*",
+        "eserozvataf/scabbia2-tasks": "*",
+        "eserozvataf/scabbia2-yaml": "*"
     },
     "require-dev": {
-        "scabbiafw/scabbia2-testing": "*",
+        "eserozvataf/scabbia2-testing": "*",
         "squizlabs/php_codesniffer": "2.*"
     },
     "suggest": {

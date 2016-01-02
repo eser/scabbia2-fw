@@ -1,0 +1,27 @@
+default:
+    development:   true
+    disableCaches: false
+
+    type: "Scabbia\\Mvc\\Application"
+
+    tests:
+        # - ["{host}", "/(a-z).scabbiafw.com|scabbiafw.com/"]
+        # - ["{os}", "/win.*/"]
+
+    # events:
+    #     preenvironment:
+    #         - "MyProject\\Project::autoexec"
+
+    modules:
+        front:
+            namespace: "MyProject\\FrontModule"
+            config:
+                fancyName: "Base Module"
+
+        front2:
+            namespace: "MyProject\\FrontModule"
+            config:
+                fancyName: "Spare Module"
+
+        admin:
+            namespace: "Scabbia\\Modules\\PanelModule"

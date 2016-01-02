@@ -1,8 +1,6 @@
-# Scabbia2 PHP Framework Code
+# Scabbia2 PHP Framework
 
-**Scabbia2** is an open source PHP framework project which is currently on planning stage. Keep visiting our [homepage][scabbia-organization-homepage-url] and [repositories][scabbia-organization-repositories-url] for further updates.
-
-[This repository][scabbia-scabbiafw-repository-url] contains the files of Scabbia2 PHP Framework Code which is required for Scabbia2 packages to run.
+[Scabbia2][scabbia-organization-repositories-url] is a set of open source PHP components. And [this repository][scabbia-scabbiafw-repository-url] contains a framework forged with Scabbia2 components.
 
 [![Build Status][scabbia-scabbiafw-travis-image]][scabbia-scabbiafw-travis-url]
 [![Scrutinizer Code Quality][scabbia-scabbiafw-scrutinizer-image]][scabbia-scabbiafw-scrutinizer-url]
@@ -13,9 +11,40 @@
 
 ## History
 
-This project derived from [Scabbia Framework][scabbia-1x-url] with taken advantage of modern software tools. Since we don't have active GitHub users and online continous integration tools for free when we started in 2008, we think it's time to create a new branch of the existing framework idea/brand for a reset.
+This project derived from [Scabbia PHP Framework (1.x branch)][scabbia-1x-url] with taken advantage of modern software tools. Since we don't have active GitHub users and online continous integration tools for free when we started in 2008, we think it's time to create a new branch of the existing framework idea/brand for a reset.
 
 1.x versions had been under development by [Eser Ozvataf][eserozvataf-homepage-url] for 2 years and reached version 1.5 on stable branch. You can take a look to the repository of [Scabbia 1.x][scabbia-1x-url]. It's active development is frozen but small bugfixes will be available in time.
+
+
+## Installation
+Please make sure that you can access php command line tool via `php` command. Further commands will be executed on Terminal or Command Prompt:
+
+**Step 1:**
+Download and install composer dependency manager.
+
+``` bash
+php -r "readfile('https://getcomposer.org/installer');" | php
+```
+
+**Step 2:**
+Create a new scabbia2-fw project under the directory named `project`.
+
+``` bash
+php composer.phar create-project eserozvataf/scabbia2-fw:dev-master project
+```
+
+**Step 3:**
+Make `project/var` directory writable.
+
+``` bash
+cd project
+chmod 0777 -R var
+```
+
+
+## Requirements
+* PHP 5.6.0+ (http://www.php.net/)
+* Composer Dependency Manager (http://getcomposer.org/)
 
 
 ## Links
@@ -33,9 +62,8 @@ It is publicly open for any contribution. Bugfixes, new features and extra modul
 * To report a bug: If something does not work, please report it using GitHub issues.
 * To support, donate the current lead maintainer: [![Donate][eserozvataf-gratipay-image]][eserozvataf-gratipay-url]
 
-[scabbia-organization-homepage-url]: https://github.com/eserozvataf/scabbia2
+[scabbia-organization-repositories-url]: https://github.com/eserozvataf/scabbia2
 [scabbia-organization-twitter-url]: https://twitter.com/eserozvataf
-[scabbia-organization-repositories-url]: https://github.com/eserozvataf/
 [scabbia-scabbiafw-contributors-url]: contributors.md
 [scabbia-scabbiafw-license-url]: LICENSE
 [scabbia-scabbiafw-repository-url]: https://github.com/eserozvataf/scabbia2-fw

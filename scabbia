@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+SRC_DIR="`pwd`"
+cd "`dirname "$0"`"
+cd "vendor/eserozvataf/scabbia2-tasks/bin"
+BIN_TARGET="`pwd`/scabbia"
+cd "$SRC_DIR"
+"$BIN_TARGET" "$@"
+

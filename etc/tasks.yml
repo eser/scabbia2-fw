@@ -1,0 +1,34 @@
+default:
+    tasks:
+        # will be registered as "default:generate", also config will be passed as parameter to task.
+        generate:
+            class: "Scabbia\\Generators\\GenerateTask"
+            config:
+                generators:
+                    # - "Scabbia\\Assets\\AssetGenerator"
+                    - "Scabbia\\Code\\CompileGenerator"
+                    - "Scabbia\\Config\\ConfigGenerator"
+                    - "Scabbia\\Documentor\\DocumentGenerator"
+                    - "Scabbia\\Events\\EventGenerator"
+                    - "Scabbia\\Router\\RouteGenerator"
+                    - "Scabbia\\Views\\ViewGenerator"
+
+        tests:
+            class: "Scabbia\\Testing\\TestsTask"
+            config:
+                fixtures:
+                    - "Scabbia\\Tests\\Yaml\\ParserTest"
+                    - "Scabbia\\Tests\\Yaml\\InlineTest"
+                    - "Scabbia\\Tests\\Security\\HashTest"
+
+        console:
+            class: "Scabbia\\Framework\\Tasks\\ConsoleTask"
+
+        serve:
+            class: "Scabbia\\Framework\\Tasks\\ServeTask"
+
+        clean:
+            class: "Scabbia\\Framework\\Tasks\\CleanTask"
+
+        test:
+            class: "MyProject\\FrontModule\\Tasks\\TestTask"

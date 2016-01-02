@@ -1,7 +1,7 @@
 {
     "name": "eserozvataf/scabbia2-fw",
-    "description": "Scabbia2 PHP Framework Code",
-    "type": "library",
+    "description": "Scabbia2 PHP Framework",
+    "type": "project",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
@@ -12,7 +12,12 @@
         "scabbia",
         "scabbia2",
         "scabbiafw",
-        "framework"
+        "framework",
+        "standard",
+        "package",
+        "skeleton",
+        "project",
+        "distribution"
     ],
     "homepage": "https://github.com/eserozvataf/scabbia2",
     "license": [

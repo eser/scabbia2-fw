@@ -1,6 +1,6 @@
 # Scabbia2 PHP Framework
 
-[Scabbia2][scabbia-organization-repositories-url] is a set of open source PHP components. And [this repository][scabbia-scabbiafw-repository-url] contains a framework forged with Scabbia2 components.
+[Scabbia2][scabbia-repositories-url] is a set of open source PHP components. And [this repository][scabbia-scabbiafw-repository-url] contains a framework forged with Scabbia2 components.
 
 [![Build Status][scabbia-scabbiafw-travis-image]][scabbia-scabbiafw-travis-url]
 [![Scrutinizer Code Quality][scabbia-scabbiafw-scrutinizer-image]][scabbia-scabbiafw-scrutinizer-url]
@@ -48,9 +48,9 @@ chmod 0777 -R var
 
 
 ## Links
-- [Organization Homepage][scabbia-organization-homepage-url]
-- [Organization Twitter][scabbia-organization-twitter-url]
+- [List of All Scabbia2 Components][scabbia-repositories-url]
 - [Documentation][scabbia-scabbiafw-documentation-url]
+- [Twitter][eserozvataf-twitter-url]
 - [Contributor List][scabbia-scabbiafw-contributors-url]
 - [License Information][scabbia-scabbiafw-license-url]
 
@@ -62,8 +62,7 @@ It is publicly open for any contribution. Bugfixes, new features and extra modul
 * To report a bug: If something does not work, please report it using GitHub issues.
 * To support, donate the current lead maintainer: [![Donate][eserozvataf-gratipay-image]][eserozvataf-gratipay-url]
 
-[scabbia-organization-repositories-url]: https://github.com/eserozvataf/scabbia2
-[scabbia-organization-twitter-url]: https://twitter.com/eserozvataf
+[scabbia-repositories-url]: https://github.com/eserozvataf/scabbia2
 [scabbia-scabbiafw-contributors-url]: contributors.md
 [scabbia-scabbiafw-license-url]: LICENSE
 [scabbia-scabbiafw-repository-url]: https://github.com/eserozvataf/scabbia2-fw
@@ -83,3 +82,4 @@ It is publicly open for any contribution. Bugfixes, new features and extra modul
 [eserozvataf-homepage-url]: http://eser.ozvataf.com/
 [eserozvataf-gratipay-image]: https://img.shields.io/gratipay/eserozvataf.svg
 [eserozvataf-gratipay-url]: https://gratipay.com/eserozvataf/
+[eserozvataf-twitter-url]: https://twitter.com/eserozvataf
